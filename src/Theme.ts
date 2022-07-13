@@ -19,7 +19,7 @@ const DefaultTheme = {
     radius: "0.5rem",
     radius_sm: "0.25rem",
     width: "2px",
-    standard_borders: "1px solid #555",
+    standard_borders: "none",
     standard_box_shadow: "0 0 10px rgba(0, 0, 0, 0.1)",
   },
   text: {
@@ -65,7 +65,7 @@ const DefaultTheme = {
       ? new Colour([174, 174, 174, 0.2])
       : new Colour([34, 34, 34, 0.2]),
     faded: new Colour("#666"),
-    background: new Colour(PreferDark ? "#242424" : "#fff"),
+    background: new Colour(PreferDark ? "#242424" : "#ffffff"),
     surface: new Colour(PreferDark ? "#2e2d2d" : "#f7f7f7"),
   },
   colours: {

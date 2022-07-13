@@ -1,6 +1,6 @@
 import Jsx from "Src/Jsx";
 import Define from "Src/Component";
-import { Columns, Size, Sizes, CT } from "Src/Theme";
+import { Columns, Sizes, CT, GetColour } from "Src/Theme";
 import C from "Src/utils/Class";
 import { IsLiteral, IsString, Optional } from "@paulpopat/safe-type";
 import Object from "Src/utils/Object";
