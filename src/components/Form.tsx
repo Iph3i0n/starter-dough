@@ -182,13 +182,7 @@ Define(
             {this.props.help && (
               <span class="help-text">{this.props.help}</span>
             )}
-            <p-icon
-              area="System"
-              variant="arrow-down-s"
-              width="35px"
-              height="35px"
-              colour="dark"
-            />
+            <p-icon name="arrow-down-s" size="35px" colour="dark" />
           </p-col>
         </p-row>
       );

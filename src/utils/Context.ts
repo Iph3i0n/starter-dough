@@ -1,23 +1,23 @@
 import { v4 as Guid } from "uuid";
 
 export default function CreateContext<T>(default_value: T) {
-  const id = "data-" + Guid();
+  const id = "context" + Guid().replace(/-/gm, '');
 
   const store = {} as Record<string, T>;
   let listeners: (() => void)[] = [];
 
   return {
     Attach(target: HTMLElement, value: T) {
-      const current = target.getAttribute(id);
+      const current = target.dataset[id]
       if (current) delete store[current];
 
       const instance = Guid();
-      target.setAttribute(id, instance);
+      target.dataset[id] = instance;
       store[instance] = value;
       for (const listener of listeners) listener();
     },
     Retrieve(target: HTMLElement): T {
-      const current = target.getAttribute(id);
+      const current = target.dataset[id];
       if (current) return store[current];
       if (target.parentElement) return this.Retrieve(target.parentElement);
       return default_value;

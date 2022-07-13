@@ -31,6 +31,7 @@ type ComponentContext<TProps extends Props, TState> = {
 type ComponentSpec<TProps extends Props, TState> = {
   render: (this: ComponentContext<TProps, TState>) => NodeModel[];
   css?: (this: ComponentContext<TProps, TState>) => any;
+  additional_css?: string;
 };
 
 function Register(tag: string, extension?: string) {
@@ -74,7 +75,8 @@ export default function Define<TProps extends Props, TState extends object>(
       }
 
       private set Styles(styles: any) {
-        this.styles.textContent = RenderCSS(styles);
+        this.styles.textContent =
+          RenderCSS(styles) + (spec.additional_css ?? "");
         this.shadow.append(this.styles);
       }
 

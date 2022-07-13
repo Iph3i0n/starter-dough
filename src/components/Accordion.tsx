@@ -33,7 +33,8 @@ Define(
   { height: 0 },
   {
     render() {
-      const { click } = this.use_context(AccordionContext);
+      const { click, current } = this.use_context(AccordionContext);
+      const open = current === GetIndexOfParent(this.ele);
       this.listen("render", function () {
         const height = this.root.querySelector(".content")?.clientHeight ?? -1;
         if (height !== this.state.height) this.set_state({ height });
@@ -43,11 +44,12 @@ Define(
         <>
           <div
             class="item-heading"
-            on_click={() => click(GetIndexOfParent(this.ele))}
+            on_click={() => click(open ? -1 : GetIndexOfParent(this.ele))}
           >
             <p-heading level="6" no-margin>
               {this.props.title}
             </p-heading>
+            <p-icon name="arrow-down" size={CT.text.size.h6} colour="dark" />
           </div>
           <div class="container">
             <div class="content">
@@ -71,14 +73,22 @@ Define(
         },
         ".item-heading": {
           padding: CT.padding.block,
-          background: open ? CT.colours.bg_surface.Hex : CT.colours.bg_white.Hex,
+          background: open
+            ? CT.colours.bg_surface.Hex
+            : CT.colours.bg_white.Hex,
           cursor: "pointer",
           borderRadius: CT.border.radius,
           marginBottom: CT.padding.block,
-          position: "relative",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
         },
         ".item-heading:hover": {
           background: CT.colours.bg_surface.Hex,
+        },
+        "p-icon": {
+          transition: `transform ${CT.animation.time_fast}`,
+          transform: open ? "rotate(180deg)" : "rotate(0deg)",
         },
       };
     },
