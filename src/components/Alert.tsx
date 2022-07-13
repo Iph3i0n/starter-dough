@@ -35,7 +35,7 @@ Define(
       return {
         ".alert": {
           backgroundColor: colour,
-          color: FromText(colour?.Text),
+          color: FromText(colour),
           padding: CT.padding.block,
           fontFamily: CT.text.font_family,
           lineHeight: CT.text.line_height,

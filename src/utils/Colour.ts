@@ -52,7 +52,7 @@ export default class Colour {
       (this.r * 299 + this.g * 587 + this.b * 114) / 1000
     );
 
-    return brightness > 125 ? "body_dark" : ("body_white" as const);
+    return brightness > 125 ? "dark" : ("light" as const);
   }
 
   public GreyscaleTransform(amount: number) {

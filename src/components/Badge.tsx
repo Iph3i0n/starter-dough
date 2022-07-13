@@ -17,7 +17,7 @@ Define(
       return {
         ":host": {
           backgroundColor: colour,
-          color: FromText(colour?.Text),
+          color: FromText(colour),
           padding: `${CT.padding.badge} ${CT.padding.text_sm}`,
           display: "inline-block",
           borderRadius: CT.border.radius,

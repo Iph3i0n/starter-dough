@@ -71,7 +71,7 @@ Define(
           boxShadow: !this.props.outline
             ? CT.border.standard_box_shadow
             : `0 0 0 transparent, inset 0 0 0 ${CT.border.width} ${colour.Hex}`,
-          color: this.props.outline ? colour.Hex : FromText(colour.Text),
+          color: this.props.outline ? colour.Hex : FromText(colour),
           boxSizing: "border-box",
 
           ...(sharp_left
@@ -89,7 +89,7 @@ Define(
         },
         ".button:hover": {
           backgroundColor: colour.GreyscaleTransform(120).Hex,
-          color: CT.colours[colour.GreyscaleTransform(120).Text].Hex,
+          color: FromText(colour.GreyscaleTransform(120)),
         },
       };
     },

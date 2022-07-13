@@ -63,7 +63,7 @@ const InputStyling = {
     fontFamily: CT.text.font_family,
     fontSize: CT.text.size.body,
     padding: CT.padding.text_sm,
-    background: CT.colours.bg_surface.Hex,
+    background: GetColour(CT.colours.bg_surface),
     borderRadius: CT.border.radius,
     lineHeight: CT.text.line_height,
     margin: "0",
@@ -73,16 +73,16 @@ const InputStyling = {
     boxShadow: CT.border.standard_box_shadow,
   },
   ".input[disabled]": {
-    backgroundColor: CT.colours.bg_white.GreyscaleTransform(99.9).Hex,
+    backgroundColor: GetColour(CT.colours.bg_white).GreyscaleTransform(99.9),
   },
   ".input:hover:not([disabled])": {
-    backgroundColor: CT.colours.bg_surface.GreyscaleTransform(95).Hex,
+    backgroundColor: GetColour(CT.colours.bg_surface).GreyscaleTransform(95),
   },
   ".help-text": {
     fontSize: CT.text.size.small,
     fontFamily: CT.text.font_family,
     margin: `${CT.padding.text_sm} 0`,
-    color: CT.colours.body_fade.Hex,
+    color: GetColour(CT.colours.body_fade),
   },
 };
 
@@ -337,7 +337,9 @@ Define(
           marginRight: CT.padding.block,
           transition: `border-color ${CT.animation.time_fast}, background-color ${CT.animation.time_fast}`,
           height: CT.text.size.body,
-          border: `${CT.border.width} solid ${CT.colours.body_dark.Hex}`,
+          border: `${CT.border.width} solid ${
+            GetColour(CT.colours.body_dark).Hex
+          }`,
           padding: "0",
           boxShadow: CT.border.standard_box_shadow,
         },
@@ -357,7 +359,7 @@ Define(
           left: CT.border.width,
           width: `calc(${CT.text.size.body} / 2)`,
           height: `calc(${CT.text.size.body} / 2)`,
-          background: CT.colours.body_dark.Hex,
+          background: GetColour(CT.colours.body_dark),
           transition: `left ${CT.animation.time_fast}, background-color ${CT.animation.time_fast}`,
           borderRadius: CT.text.size.body,
         },
@@ -365,11 +367,11 @@ Define(
           borderRadius: CT.text.size.body,
         },
         "input[checked]": {
-          borderColor: GetColour(this.props.colour)?.Hex,
-          backgroundColor: GetColour(this.props.colour)?.Hex,
+          borderColor: GetColour(this.props.colour),
+          backgroundColor: GetColour(this.props.colour),
         },
         ".switch[checked]::after": {
-          backgroundColor: FromText(GetColour(this.props.colour)?.Text),
+          backgroundColor: FromText(GetColour(this.props.colour)),
           left: `calc(100% - (${CT.border.width} * 5))`,
         },
       };

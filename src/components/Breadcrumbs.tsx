@@ -3,7 +3,7 @@ import Define from "Src/Component";
 import CreateContext from "Src/utils/Context";
 import { IsString, Optional } from "@paulpopat/safe-type";
 import { GetIndexOfParent } from "Src/utils/Html";
-import { CT } from "Src/Theme";
+import { CT, GetColour } from "Src/Theme";
 
 type Crumb = { name: string; url: string };
 
@@ -58,11 +58,11 @@ Define(
           marginRight: "0",
         },
         a: {
-          color: CT.colours.anchor,
+          color: GetColour(CT.colours.anchor),
           textDecoration: "none",
         },
         span: {
-          color: CT.colours.body_fade,
+          color: GetColour(CT.colours.body_fade),
         },
       };
     },

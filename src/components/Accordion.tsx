@@ -5,7 +5,7 @@ import EventManager from "Src/utils/EventManager";
 import CreateContext from "Src/utils/Context";
 import { GetIndexOfParent } from "Src/utils/Html";
 import C from "Src/utils/Class";
-import { CT } from "Src/Theme";
+import { CT, GetColour } from "Src/Theme";
 
 const AccordionContext = CreateContext({
   click: (index: number) => {},
@@ -74,8 +74,8 @@ Define(
         ".item-heading": {
           padding: CT.padding.block,
           background: open
-            ? CT.colours.bg_surface.Hex
-            : CT.colours.bg_white.Hex,
+            ? GetColour(CT.colours.bg_surface)
+            : GetColour(CT.colours.bg_white),
           cursor: "pointer",
           borderRadius: CT.border.radius,
           marginBottom: CT.padding.block,
@@ -87,7 +87,7 @@ Define(
           position: "relative",
         },
         ".item-heading:hover": {
-          background: CT.colours.bg_surface.Hex,
+          background: GetColour(CT.colours.bg_surface),
         },
         "p-icon": {
           transition: `transform ${CT.animation.time_fast}`,

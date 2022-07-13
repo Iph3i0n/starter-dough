@@ -20,9 +20,9 @@ Define(
     },
     css() {
       return {
-        'span': {
+        span: {
           fontSize: this.props.size,
-          color: GetColour(this.props.colour)?.Hex,
+          color: GetColour(this.props.colour),
         },
       };
     },

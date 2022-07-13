@@ -1,7 +1,7 @@
 import Jsx from "Src/Jsx";
 import { IsString, Optional } from "@paulpopat/safe-type";
 import Define from "Src/Component";
-import { CT } from "Src/Theme";
+import { CT, GetColour } from "Src/Theme";
 
 Define(
   "p-card",
@@ -32,7 +32,7 @@ Define(
     css() {
       return {
         ".card": {
-          background: CT.colours.bg_surface.Hex,
+          background: GetColour(CT.colours.bg_surface),
           borderRadius: CT.border.radius,
           overflow: "hidden",
           border: CT.border.standard_borders,
@@ -44,8 +44,8 @@ Define(
           maxWidth: "100%",
           width: "100%",
           objectFit: "cover",
-          background: CT.colours.bg_dark.Hex,
-          color: CT.colours.body_white.Hex,
+          background: GetColour(CT.colours.bg_dark),
+          color: GetColour(CT.colours.body_white),
           fontFamily: CT.text.font_family,
           textAlign: "center",
           border: "none",
