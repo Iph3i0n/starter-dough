@@ -339,6 +339,7 @@ Define(
           height: CT.text.size.body,
           border: `${CT.border.width} solid ${CT.colours.body_dark.Hex}`,
           padding: "0",
+          boxShadow: CT.border.standard_box_shadow,
         },
         ".radio, .checkbox": {
           width: CT.text.size.body,

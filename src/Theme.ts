@@ -64,6 +64,7 @@ export const IsTheme = IsObject({
     bg_dark: IsColour,
     rainbow: IsArray(IsObject({ name: IsString, value: IsColour })),
     box_shadow: IsColour,
+    anchor: IsColour,
   }),
   screen: IsObject({
     xs: IsObject({ breakpoint: IsString, width: IsString }),
@@ -132,6 +133,7 @@ export const CT = ((): Theme => {
         bg_white: new Colour(PreferDark ? "#242424" : "#fff"),
         bg_surface: new Colour(PreferDark ? "#2e2d2d" : "#f7f7f7"),
         bg_dark: new Colour("#666"),
+        anchor: new Colour("#277da1"),
         rainbow: [
           { name: "red", value: new Colour("#f94144") },
           { name: "dark-orange", value: new Colour("#f3722c") },

@@ -1,15 +1,16 @@
 import { Range } from "./Type";
 
-function AsReadonly<T extends object>(subject: T): Readonly<T> {
+function AsReadonly<T>(input: T): Readonly<T> {
+  if (Array.isArray(input) || typeof input !== "object") return input;
+
+  const subject = input as any;
   let result = {} as any;
   for (const key in subject)
     if (!subject.hasOwnProperty(key)) continue;
     else
       result = Object.assign(result, {
         get [key]() {
-          const part = subject[key];
-          if (typeof part === "object") return AsReadonly(part as any);
-          return part;
+          return AsReadonly(subject[key]);
         },
       });
 
