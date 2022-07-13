@@ -67,3 +67,5 @@ export default class Colour {
 export function IsColour(arg: any): arg is Colour {
   return arg instanceof Colour;
 }
+
+(window as any).Colour = Colour;

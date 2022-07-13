@@ -1,10 +1,3 @@
-import {
-  Assert,
-  IsArray,
-  IsObject,
-  IsString,
-  IsType,
-} from "@paulpopat/safe-type";
 import Colour, { IsColour } from "./utils/Colour";
 import Object from "./utils/Object";
 
@@ -94,6 +87,7 @@ const DefaultTheme = {
   },
   animation: {
     time_fast: PreferNoMotion ? "0ms" : "100ms",
+    time_slow: PreferNoMotion ? "0ms" : "500ms",
   },
 };
 
