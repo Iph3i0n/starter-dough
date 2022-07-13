@@ -7,7 +7,7 @@
     <p-container>
       <p-row>
         <p-col xs="12">
-          <p-alert colour="red"> This is an alert </p-alert>
+          <p-alert colour="red" dismissable> This is an alert </p-alert>
         </p-col>
       </p-row>
       <p-row>
@@ -162,7 +162,10 @@
           </p-col>
 
           <p-col xs="12">
-            <p-button type="submit" colour="green"> Submit </p-button>
+            <p-button type="submit" colour="green">
+              Submit
+              <p-badge colour="red" top-right>3</p-badge>
+            </p-button>
           </p-col>
         </p-row>
       </p-form>
@@ -174,13 +177,14 @@
                 Lorem Ipsum is simply dummy text of the printing and
               </p-body>
               <p-body>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque
-                malesuada, enim nec finibus accumsan, enim massa ullamcorper
-                libero, non scelerisque orci velit id ligula. Donec nunc justo,
-                lobortis ac vestibulum in, vehicula id nunc. Aliquam nec nisi
-                lacus. Etiam lacus diam, tempus quis elementum eu, pellentesque
-                a magna. Sed id faucibus elit, eget ullamcorper magna. Nulla et
-                cursus dui. Nunc porttitor vitae orci nec fringilla.
+                Lorem ipsum <p-badge colour="dark">dolor</p-badge> sit amet,
+                consectetur adipiscing elit. Quisque malesuada, enim nec finibus
+                accumsan, enim massa ullamcorper libero, non scelerisque orci
+                velit id ligula. Donec nunc justo, lobortis ac vestibulum in,
+                vehicula id nunc. Aliquam nec nisi lacus. Etiam lacus diam,
+                tempus quis elementum eu, pellentesque a magna. Sed id faucibus
+                elit, eget ullamcorper magna. Nulla et cursus dui. Nunc
+                porttitor vitae orci nec fringilla.
               </p-body>
               <p-body>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque

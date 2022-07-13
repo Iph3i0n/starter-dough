@@ -35,6 +35,9 @@ Define(
           background: CT.colours.bg_surface.Hex,
           borderRadius: CT.border.radius,
           overflow: "hidden",
+          border: CT.border.standard_borders,
+          boxShadow: CT.border.standard_box_shadow,
+          position: "relative",
         },
         ".card .card-img-top": {
           display: "block",
@@ -46,6 +49,7 @@ Define(
           fontFamily: CT.text.font_family,
           textAlign: "center",
           border: "none",
+          borderBottom: CT.border.standard_borders,
         },
         ".card .card-body": {
           padding: CT.padding.block,

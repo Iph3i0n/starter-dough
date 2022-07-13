@@ -20,10 +20,14 @@ export const IsTheme = IsObject({
     text_sm: IsString,
     text_lg: IsString,
     block: IsString,
+    badge: IsString,
   }),
   border: IsObject({
     radius: IsString,
+    radius_sm: IsString,
     width: IsString,
+    standard_borders: IsString,
+    standard_box_shadow: IsString,
   }),
   text: IsObject({
     font_family: IsString,
@@ -86,10 +90,14 @@ export const CT = ((): Theme => {
         text_sm: "0.5rem",
         text_lg: "1rem",
         block: "1rem",
+        badge: "0.2rem",
       },
       border: {
         radius: "0.5rem",
+        radius_sm: "0.25rem",
         width: "2px",
+        standard_borders: "1px solid #555",
+        standard_box_shadow: "0 0 10px rgba(0, 0, 0, 0.1)",
       },
       text: {
         font_family: '"Poppins", sans-serif',

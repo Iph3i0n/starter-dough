@@ -65,10 +65,11 @@ Define(
           cursor: "pointer",
           userSelect: "none",
           border: "none",
+          position: "relative",
 
           backgroundColor: this.props.outline ? "transparent" : colour.Hex,
           boxShadow: !this.props.outline
-            ? "none"
+            ? CT.border.standard_box_shadow
             : `0 0 0 transparent, inset 0 0 0 ${CT.border.width} ${colour.Hex}`,
           color: this.props.outline ? colour.Hex : FromText(colour.Text),
           boxSizing: "border-box",

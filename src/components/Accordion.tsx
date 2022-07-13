@@ -82,6 +82,9 @@ Define(
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
+          border: CT.border.standard_borders,
+          boxShadow: CT.border.standard_box_shadow,
+          position: "relative",
         },
         ".item-heading:hover": {
           background: CT.colours.bg_surface.Hex,

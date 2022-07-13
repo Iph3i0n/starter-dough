@@ -27,12 +27,12 @@ const Result = {
         tag,
         props: Object.FilterKeys(props, (k) => !k.startsWith("on_")),
         handlers: Object.FilterKeys(props, (k) => k.startsWith("on_")),
-        children: children.flat(2),
+        children: children.flat(2).filter((c) => c),
       },
     ];
   },
   Fragment(_: any, ...children: NodeModel[][]) {
-    return children.flat(2);
+    return children.flat(2).filter((c) => c);
   },
 };
 
