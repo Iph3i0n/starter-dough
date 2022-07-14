@@ -62,6 +62,10 @@ export default class Colour {
       this.b * (amount / 100),
     ]);
   }
+
+  public toString() {
+    return this.Hex;
+  }
 }
 
 export function IsColour(arg: any): arg is Colour {

@@ -87,18 +87,30 @@ export default function Define<TProps extends Props, TState extends object>(
       }
 
       private get Context(): ComponentContext<TProps, TState> {
+        const _this = this;
         return {
-          props: Object.AsReadonly(this.Attributes),
-          root: this.shadow,
-          state: Object.AsReadonly(this.state),
+          get props() {
+            return Object.AsReadonly(_this.Attributes);
+          },
+          get root() {
+            return _this.shadow;
+          },
+          get state() {
+            return Object.AsReadonly(_this.state);
+          },
           set_state: (new_state) => {
             this.state = new_state;
             this.PerformRender();
           },
-          children: this.shadow.querySelector("slot")?.assignedNodes() ?? [],
-          child_elements:
-            this.shadow.querySelector("slot")?.assignedElements() ?? [],
-          ele: this,
+          get children() {
+            return _this.shadow.querySelector("slot")?.assignedNodes() ?? [];
+          },
+          get child_elements() {
+            return _this.shadow.querySelector("slot")?.assignedElements() ?? [];
+          },
+          get ele() {
+            return _this;
+          },
           listen: (event, handler) => {
             this.handlers[event] = handler;
           },
