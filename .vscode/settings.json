@@ -11,7 +11,7 @@
     ".vscode": true,
     "webpack.config.js": true,
     "package-lock.json": true,
-    //"**/.gitignore": true
+    "**/.gitignore": true
   },
   "workbench.editor.languageDetection": true
 }
