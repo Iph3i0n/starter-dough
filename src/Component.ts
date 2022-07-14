@@ -28,9 +28,11 @@ type ComponentContext<TProps extends Props, TState> = {
   use_context<T>(context: Context<T>): T;
 };
 
+type CSS = any;
+
 type ComponentSpec<TProps extends Props, TState> = {
   render: (this: ComponentContext<TProps, TState>) => NodeModel[];
-  css?: (this: ComponentContext<TProps, TState>) => any;
+  css?: (this: ComponentContext<TProps, TState>) => CSS;
   additional_css?: string;
 };
 

@@ -45,7 +45,7 @@ export default {
     for (const key of keys) result = { ...result, [key]: mapper(key) };
     return result;
   },
-  Range<TMax extends number>(max: TMax): Range<0, TMax>[] {
+  Range(max: number): number[] {
     const result = [];
     for (let i = 1; i <= max; i++) result.push(i);
 
