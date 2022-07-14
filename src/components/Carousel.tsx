@@ -137,18 +137,18 @@ Define(
       const { current, total } = this.use_context(Context);
       const index = GetIndexOfParent(this.ele);
       const is_current = index === current;
-      const is_next = index === Circularise(current - 1, total);
       return {
         div: {
           display: "flex",
           position: "absolute",
           top: "0",
-          left: is_current ? "0" : is_next ? "-100%" : "100%",
-          transition: `left ${CT.animation.time_fast}`,
+          left: is_current ? "0" : "100%",
           width: "100%",
           height: "100%",
           alignItems: "center",
           justifyContent: "center",
+          animationDuration: CT.animation.time_slow,
+          animationName: is_current ? "entry" : "exit",
         },
         img: {
           width: "100%",
@@ -158,6 +158,22 @@ Define(
           top: "0",
           left: "0",
           zIndex: "-1",
+        },
+        "@keyframes entry": {
+          from: {
+            left: "-100%",
+          },
+          to: {
+            left: "0",
+          },
+        },
+        "@keyframes exit": {
+          from: {
+            left: "0",
+          },
+          to: {
+            left: "100%",
+          },
         },
       };
     },
