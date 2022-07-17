@@ -6,7 +6,6 @@ import { CT, GetColour } from "Src/Theme";
 Define(
   "p-card",
   {
-    title: Optional(IsString),
     img: Optional(IsString),
     "img-alt": Optional(IsString),
   },
@@ -23,7 +22,9 @@ Define(
             />
           )}
           <div class="card-body">
-            {this.props.title && <h5 class="card-title">{this.props.title}</h5>}
+            <h5 class="card-title">
+              <slot name="title" />
+            </h5>
             <slot />
           </div>
         </div>

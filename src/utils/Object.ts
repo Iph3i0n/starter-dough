@@ -1,22 +1,3 @@
-import { Range } from "./Type";
-
-function AsReadonly<T>(input: T): Readonly<T> {
-  if (Array.isArray(input) || typeof input !== "object") return input;
-
-  const subject = input as any;
-  let result = {} as any;
-  for (const key in subject)
-    if (!subject.hasOwnProperty(key)) continue;
-    else
-      result = Object.assign(result, {
-        get [key]() {
-          return AsReadonly(subject[key]);
-        },
-      });
-
-  return result;
-}
-
 export default {
   Keys<T extends object>(subject: T): (keyof T)[] {
     return Object.keys(subject) as any;
@@ -51,7 +32,23 @@ export default {
 
     return result as any;
   },
-  AsReadonly: AsReadonly,
+  AsReadonly<T>(input: T): Readonly<T> {
+    const _this = this;
+    if (Array.isArray(input) || typeof input !== "object") return input;
+
+    const subject = input as any;
+    let result = {} as any;
+    for (const key in subject)
+      if (!subject.hasOwnProperty(key)) continue;
+      else
+        result = Object.assign(result, {
+          get [key]() {
+            return _this.AsReadonly(subject[key]);
+          },
+        });
+
+    return result;
+  },
   FilterKeys<T extends object>(
     subject: T,
     predicate: (key: keyof T) => boolean
@@ -83,5 +80,12 @@ export default {
         else result[key] = item[key];
 
     return main;
+  },
+  Access(item: any, key: string): any {
+    const target = key.split(".");
+    const result = item[target[0]];
+    if (target.length > 1)
+      return this.Access(result, target.slice(1).join("."));
+    return result;
   },
 };
