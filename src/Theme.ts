@@ -112,5 +112,5 @@ export function GetColour(name: ColourName): Colour {
 export function FromText(item: Colour) {
   const target = CT.colour_store[item.Text];
   if (!IsColour(target)) return "";
-  return target.Hex;
+  return target;
 }

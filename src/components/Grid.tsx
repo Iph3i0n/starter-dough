@@ -2,12 +2,12 @@ import Jsx from "Src/Jsx";
 import Define from "Src/Component";
 import { Columns, Sizes, CT, GetColour } from "Src/Theme";
 import C from "Src/utils/Class";
-import { IsLiteral, IsString, Optional } from "@paulpopat/safe-type";
+import { IsLiteral, IsString, IsUnion, Optional } from "@paulpopat/safe-type";
 import Object from "Src/utils/Object";
 
 Define(
   "p-container",
-  { "full-width": Optional(IsLiteral(true)) },
+  { "full-width": Optional(IsLiteral(true)), flush: Optional(IsLiteral(true)) },
   {},
   {
     render() {
@@ -22,7 +22,7 @@ Define(
         section: {
           margin: "auto",
           maxWidth: "100%",
-          padding: CT.padding.block,
+          padding: this.props.flush ? "0" : CT.padding.block,
         },
         "section.full-width": {
           maxWidth: "100%",
@@ -41,7 +41,7 @@ Define(
 
 Define(
   "p-row",
-  {},
+  { flush: Optional(IsLiteral(true)) },
   {},
   {
     render() {
@@ -53,7 +53,7 @@ Define(
           display: "grid",
           gap: CT.padding.block,
           gridTemplateColumns: `repeat(${Columns}, minmax(0, 1fr))`,
-          margin: `${CT.padding.block} 0`,
+          margin: this.props.flush ? "0" : `${CT.padding.block} 0`,
         },
       };
     },
@@ -62,20 +62,44 @@ Define(
 
 Define(
   "p-col",
-  Object.MapArrayAsKeys(Sizes, (k) => Optional(IsString)),
+  {
+    ...Object.MapArrayAsKeys(Sizes, (k) => Optional(IsString)),
+    center: Optional(IsLiteral(true)),
+    align: Optional(
+      IsUnion(IsLiteral("left"), IsLiteral("center"), IsLiteral("right"))
+    ),
+  },
   {},
   {
     render() {
       return <slot />;
     },
     css() {
-      return Object.MapArray(Object.Keys(this.props), (size) => ({
-        [`@media screen and (min-width: ${CT.screen[size].breakpoint})`]: {
-          ":host": {
-            gridColumn: "auto / span " + this.props[size],
-          },
+      return {
+        ...Object.MapArray(Sizes, (size) =>
+          this.props[size]
+            ? {
+                [`@media screen and (min-width: ${CT.screen[size].breakpoint})`]:
+                  {
+                    ":host": {
+                      gridColumn: "auto / span " + this.props[size],
+                    },
+                  },
+              }
+            : {}
+        ),
+        ":host": {
+          display: "flex",
+          alignItems: this.props.center ? "center" : "flex-start",
+          justifyContent:
+            this.props.align === "center"
+              ? "center"
+              : this.props.align === "right"
+              ? "flex-end"
+              : "flex-start",
+          flexWrap: "wrap",
         },
-      }));
+      };
     },
   }
 );

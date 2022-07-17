@@ -22,7 +22,7 @@ export const FormContext = CreateContext({
 
 Define(
   "p-form",
-  { action: IsString, method: IsString },
+  { "on-submit": IsString },
   { value: {} as Record<string, string> },
   {
     render() {
@@ -31,7 +31,10 @@ Define(
         set: (key, value) =>
           this.set_state({ value: { ...this.state.value, [key]: value } }),
         submit: () => {
-          console.log(this.state.value);
+          const handle = this.props["on-submit"]
+            ? (window as any)[this.props["on-submit"]]
+            : () => {};
+          handle(this.state.value);
         },
       });
 
@@ -94,6 +97,7 @@ Define(
     type: Optional(IsString),
     disabled: Optional(IsLiteral(true)),
     default: Optional(IsString),
+    placeholder: Optional(IsString),
   },
   {},
   {
@@ -102,7 +106,7 @@ Define(
       const { get, set, submit } = this.use_context(FormContext);
       this.listen("load", () => set(this.props.name, this.props.default ?? ""));
       return (
-        <p-row>
+        <p-row flush>
           <p-col xs="12" md="3" lg="2">
             <label for={id}>
               <slot />
@@ -116,12 +120,14 @@ Define(
               class="input"
               disabled={this.props.disabled}
               value={get(this.props.name)}
+              placeholder={this.props.placeholder}
               on_change={(e: any) =>
                 set(this.props.name, e.currentTarget.value)
               }
               on_keypress={(e: KeyboardEvent) => {
                 if (e.key !== "Enter") return;
                 e.preventDefault();
+                set(this.props.name, (e.currentTarget as any)?.value ?? "");
                 submit();
               }}
             />
@@ -155,7 +161,7 @@ Define(
       const options = Object.Keys(this.props).filter((o) => o.startsWith("o-"));
       const value = get(this.props.name);
       return (
-        <p-row>
+        <p-row flush>
           <p-col xs="12" md="3" lg="2">
             <label for={id}>
               <slot />
@@ -210,6 +216,7 @@ Define(
     type: Optional(IsString),
     disabled: Optional(IsLiteral(true)),
     default: Optional(IsString),
+    placeholder: Optional(IsString),
   },
   {},
   {
@@ -218,7 +225,7 @@ Define(
       const { get, set } = this.use_context(FormContext);
       this.listen("load", () => set(this.props.name, this.props.default ?? ""));
       return (
-        <p-row>
+        <p-row flush>
           <p-col xs="12">
             <label for={id} class="for-textarea">
               <slot />
@@ -231,6 +238,7 @@ Define(
               name={this.props.name}
               class="input"
               disabled={this.props.disabled}
+              placeholder={this.props.placeholder}
               on_change={() =>
                 set(
                   this.props.name,
