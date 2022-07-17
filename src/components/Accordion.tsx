@@ -1,10 +1,8 @@
 import Jsx from "Src/Jsx";
 import Define from "Src/Component";
-import { IsLiteral, IsString, Optional } from "@paulpopat/safe-type";
-import EventManager from "Src/utils/EventManager";
+import { IsString } from "@paulpopat/safe-type";
 import CreateContext from "Src/utils/Context";
 import { GetIndexOfParent } from "Src/utils/Html";
-import C from "Src/utils/Class";
 import { CT, GetColour } from "Src/Theme";
 
 const AccordionContext = CreateContext({
