@@ -7,6 +7,7 @@ import Flex from "Src/styles/Flex";
 import Transition from "Src/styles/Transition";
 import { ColourNames, CT, GetColour } from "Src/Theme";
 import C from "Src/utils/Class";
+import Router from "Src/utils/Router";
 import { IsOneOf } from "Src/utils/Type";
 
 const SharedStyles = Css.Init()
@@ -61,27 +62,27 @@ const SharedStyles = Css.Init()
 
 Define(
   "p-modal",
-  { hash: IsString, large: Optional(IsLiteral(true)) },
-  { open: false },
+  { query: IsString, large: Optional(IsLiteral(true)) },
+  {},
   {
     render() {
-      this.listen("load", function () {
-        const is_open = () => window.location.hash === "#" + this.props.hash;
-        this.set_state({ open: is_open() });
-
-        window.addEventListener("hashchange", () =>
-          this.set_state({ open: is_open() })
-        );
-      });
-
       return (
-        <section class={C("container", ["open", this.state.open])}>
+        <section
+          class={C("container", [
+            "open",
+            Router.Query[this.props.query].includes("true"),
+          ])}
+        >
           <div class="backdrop" />
           <div class="modal">
             <slot />
-            <a class="close-button" href="#">
+            <p-link
+              class="close-button"
+              query-key={this.props.query}
+              query-value=""
+            >
               <p-icon name="close" size="2rem" colour="contrast" />
-            </a>
+            </p-link>
           </div>
         </section>
       );
@@ -112,38 +113,39 @@ Define(
         )
         .With(Rule.Init(".open .modal").With("transform", "translate(0, 0)"));
     },
+    render_on_loop: true,
   }
 );
 
 Define(
   "p-offcanvas",
   {
-    hash: IsString,
+    query: IsString,
     large: Optional(IsLiteral(true)),
     colour: Optional(IsOneOf(...ColourNames)),
   },
-  { open: false },
+  {},
   {
     render() {
-      this.listen("load", function () {
-        const is_open = () => window.location.hash === "#" + this.props.hash;
-        this.set_state({ open: is_open() });
-
-        window.addEventListener("hashchange", () =>
-          this.set_state({ open: is_open() })
-        );
-      });
-
       return (
-        <section class={C("container", ["open", this.state.open])}>
+        <section
+          class={C("container", [
+            "open",
+            Router.Query[this.props.query]?.includes("true"),
+          ])}
+        >
           <div class="backdrop" />
           <div class="offcanvas">
             <div class="content">
               <slot />
             </div>
-            <a class="close-button" href="#">
+            <p-link
+              class="close-button"
+              query-key={this.props.query}
+              query-value=""
+            >
               <p-icon name="close" size="2rem" colour="contrast" />
-            </a>
+            </p-link>
           </div>
         </section>
       );
@@ -182,5 +184,6 @@ Define(
           )
         );
     },
+    render_on_loop: true,
   }
 );

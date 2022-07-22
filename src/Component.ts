@@ -33,6 +33,7 @@ type ComponentSpec<TProps extends Props, TState> = {
   render: (this: ComponentContext<TProps, TState>) => NodeModel[];
   css?: (this: ComponentContext<TProps, TState>) => Css;
   additional_css?: string;
+  render_on_loop?: boolean;
 };
 
 function Register(tag: string, extension?: string) {
@@ -60,6 +61,8 @@ export default function Define<TProps extends Props, TState extends object>(
       constructor() {
         super();
         this.shadow = this.attachShadow({ mode: "open" });
+        if (spec.render_on_loop)
+          window.addEventListener("pushstate", () => this.PerformRender());
       }
 
       private get Attributes() {

@@ -91,4 +91,7 @@ export default {
   GetPrototypeOf<T>(target: T) {
     return Object.getPrototypeOf(target);
   },
+  Assign<T, TResult>(subject: T, add: TResult): T & TResult {
+    return Object.assign(subject, add);
+  },
 };

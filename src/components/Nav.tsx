@@ -13,12 +13,18 @@ import { CT } from "Src/Theme";
 import Css, { Rule } from "Src/CSS";
 import Flex from "Src/styles/Flex";
 import C from "Src/utils/Class";
+import Router from "Src/utils/Router";
 
-type Crumb = { name: string; url: string; id?: string | null };
+type Crumb = {
+  index: number;
+  name: string;
+  id?: string | null;
+  path: string | null | undefined;
+  query_key: string | null | undefined;
+  query_value: string | null | undefined;
+};
 
-const Context = CreateContext(
-  (index: number, name: string, url: string, id?: string | null) => {}
-);
+const Context = CreateContext((item: Crumb) => {});
 
 const NavStyles = Css.Init()
   .With(
@@ -28,15 +34,13 @@ const NavStyles = Css.Init()
       .With("width", "100%")
   )
   .With(
-    Rule.Init("a, span")
+    Rule.Init("p-link")
       .With("display", "inline-block")
       .With(CT.padding.input)
       .With("margin", "0")
   )
-  .With(Rule.Init("a:first-child, span:first-child").With("margin-left", "0"))
-  .With(Rule.Init("a:last-child, span:last-child").With("margin-right", "0"))
-  .With(Rule.Init("a").With(CT.colours.anchor).With("text-decoration", "none"))
-  .With(Rule.Init("span").With(CT.colours.faded_text));
+  .With(Rule.Init("p-link:first-child").With("margin-left", "0"))
+  .With(Rule.Init("p-link:last-child").With("margin-right", "0"));
 
 Define(
   "p-breadcrumbs",
@@ -44,25 +48,26 @@ Define(
   { links: [] as Crumb[] },
   {
     render() {
-      this.provide_context(Context, (index, name, url, id) => {
+      this.provide_context(Context, (crumb) => {
         const input = Array.isArray(this.state.links)
           ? [...this.state.links]
           : [];
-        input[index] = { name, url, id };
+        input[crumb.index] = crumb;
         this.set_state({ links: input });
       });
       return (
         <nav>
           {Array.isArray(this.state.links) &&
-            this.state.links.map(({ name, url, id }, i) => (
+            this.state.links.map((crumb, i) => (
               <>
-                {url ? (
-                  <a href={url} id={id}>
-                    {name}
-                  </a>
-                ) : (
-                  <span id={id}>{name}</span>
-                )}
+                <p-link
+                  id={crumb.id}
+                  path={crumb.path}
+                  query-key={crumb.query_key}
+                  query-value={crumb.query_value}
+                >
+                  {crumb.name}
+                </p-link>
                 {i !== this.state.links.length - 1 && <>/</>}
               </>
             ))}
@@ -92,43 +97,26 @@ Define(
   { links: [] as Crumb[] },
   {
     render() {
-      this.provide_context(Context, (index, name, url, id) => {
+      this.provide_context(Context, (crumb) => {
         const input = Array.isArray(this.state.links)
           ? [...this.state.links]
           : [];
-        input[index] = { name, url, id };
+        input[crumb.index] = crumb;
         this.set_state({ links: input });
       });
       return (
         <nav>
           {Array.isArray(this.state.links) &&
-            this.state.links.map(({ name, url, id }, i) => (
-              <>
-                {url ? (
-                  <a
-                    href={url}
-                    class={C([
-                      "active",
-                      url.toLowerCase() ===
-                        window.location.pathname.toLowerCase(),
-                    ])}
-                    id={id}
-                  >
-                    {name}
-                  </a>
-                ) : (
-                  <span
-                    class={C([
-                      "active",
-                      url.toLowerCase() ===
-                        window.location.pathname.toLowerCase(),
-                    ])}
-                    id={id}
-                  >
-                    {name}
-                  </span>
-                )}
-              </>
+            this.state.links.map((crumb, i) => (
+              <p-link
+                id={crumb.id}
+                path={crumb.path}
+                query-key={crumb.query_key}
+                query-value={crumb.query_value}
+                class={C(["active", Router.At(crumb.path ?? "")])}
+              >
+                {crumb.name}
+              </p-link>
             ))}
         </nav>
       );
@@ -156,7 +144,7 @@ Define(
 
       if (this.props.tabs)
         result = result.With(
-          Rule.Init("a, span")
+          Rule.Init("p-link")
             .With(CT.border.standard.WithRadius("0").WithDirection("bottom"))
             .With(
               "modifier",
@@ -169,7 +157,7 @@ Define(
         );
       else
         result = result.With(
-          Rule.Init("a.active, span.active")
+          Rule.Init("p-link.active")
             .With(CT.colours.active)
             .With(CT.border.standard)
         );
@@ -181,18 +169,24 @@ Define(
 
 Define(
   "p-nav-item",
-  { url: Optional(IsString), id: Optional(IsString) },
+  {
+    path: Optional(IsString),
+    "query-key": Optional(IsString),
+    "query-value": Optional(IsString),
+    id: Optional(IsString),
+  },
   {},
   {
     render() {
       const register = this.use_context(Context);
       this.listen("children", function () {
-        register(
-          GetIndexOfParent(this.ele),
-          this.children.map((c) => c.textContent).join(" "),
-          this.props.url ?? "",
-          this.props.id
-        );
+        register({
+          index: GetIndexOfParent(this.ele),
+          name: this.children.map((c) => c.textContent).join(" "),
+          path: this.props.path,
+          query_key: this.props["query-key"],
+          query_value: this.props["query-value"],
+        });
       });
       return <slot />;
     },
