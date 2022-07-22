@@ -169,9 +169,10 @@ Define(
             .With(CT.padding.block)
             .With("margin", "0")
             .With(colour)
-            .With(CT.border.standard.WithDirection("right"))
+            .With(CT.border.standard.WithDirection("right").WithRadius("0"))
             .With(CT.box_shadow.large)
             .With(new Transition("slow", "width"))
+            .With("box-sizing", "border-box")
         )
         .With(Rule.Init(".open .offcanvas").With("width", "100%"))
         .With(
