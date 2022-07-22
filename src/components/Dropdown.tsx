@@ -115,7 +115,7 @@ Define(
           .With("box-shadow", "none")
           .With("margin", "0")
           .With("width", "100%")
-          .With(CT.border.standard.WithDirection(["bottom"]).WithRadius("0"))
+          .With(CT.border.standard.WithDirection("bottom").WithRadius("0"))
       );
     },
   }

@@ -42,15 +42,29 @@ export class Rule {
     private readonly properties: CssProperty[]
   ) {}
 
+  private BuildSelector(base: string, add: string, mode: RuleMode) {
+    const base_parts = base.split(",").map((p) => p.trim());
+    const add_parts = add.split(",").map((p) => p.trim());
+    const result: string[] = [];
+    for (const base_part of base_parts) {
+      for (const add_part of add_parts) {
+        result.push(base_part + (mode === "child" ? " " : "") + add_part);
+      }
+    }
+
+    return result.join(",");
+  }
+
   public toString(): string {
     return (
       `${this.selector}{${this.properties.map((p) => p.toString()).join("")}}` +
       this.rules
         .map(([mode, rule]) =>
-          PatternMatch(IsLiteral("modifier"), IsLiteral("child"))(
-            () => this.selector + rule.toString(),
-            () => this.selector + " " + rule.toString()
-          )(mode)
+          new Rule(
+            this.BuildSelector(this.selector, rule.selector, mode),
+            rule.rules,
+            rule.properties
+          ).toString()
         )
         .join("")
     );

@@ -100,21 +100,22 @@ Define(
           );
       }
 
-      result = result.With(
-        Rule.Init(":host").With(
-          new Flex(
-            this.props.center ? "center" : "flex-start",
-            this.props.align === "center"
-              ? "center"
-              : this.props.align === "right"
-              ? "flex-end"
-              : this.props.align === "left"
-              ? "flex-start"
-              : "stretch",
-            true
+      if (this.props.center || this.props.align)
+        result = result.With(
+          Rule.Init(":host").With(
+            new Flex(
+              this.props.center ? "center" : "flex-start",
+              this.props.align === "center"
+                ? "center"
+                : this.props.align === "right"
+                ? "flex-end"
+                : this.props.align === "left"
+                ? "flex-start"
+                : "stretch",
+              { wrap: true }
+            )
           )
-        )
-      );
+        );
 
       return result;
     },

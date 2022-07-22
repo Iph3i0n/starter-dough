@@ -79,7 +79,7 @@ Define(
             .With(
               IsFirstChild(this.ele)
                 ? new Border({})
-                : CT.border.standard.WithDirection(["top"]).WithRadius("0")
+                : CT.border.standard.WithDirection("top").WithRadius("0")
             )
             .With(background)
             .With("opacity", this.props.disabled ? "0.5" : "1")

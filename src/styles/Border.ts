@@ -52,7 +52,7 @@ export default class Border extends CssProperty {
     return new Border({ ...this.schema, colour: colour });
   }
 
-  public WithDirection(direction: Direction[]) {
+  public WithDirection(...direction: Direction[]) {
     return new Border({ ...this.schema, at: direction });
   }
 

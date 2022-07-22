@@ -48,7 +48,7 @@ Define(
             .With("object-fit", "cover")
             .With(CT.colours.contrast)
             .With(CT.text.body.WithAlignment("center"))
-            .With(CT.border.standard.WithDirection(["bottom"]))
+            .With(CT.border.standard.WithDirection("bottom"))
         )
         .With(Rule.Init(".card .card-body").With(CT.padding.block))
         .With(
