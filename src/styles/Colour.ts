@@ -22,6 +22,17 @@ function ToString(colour: ColourObject) {
   return `rgba(${colour.r}, ${colour.g}, ${colour.b}, ${colour.a})`;
 }
 
+function ParseNumberString(data: string) {
+  const parse_char = (data: string) =>
+    data === "0" ? 0 : parseInt(data, 16) + 1;
+
+  let result = 0;
+  for (let i = 0; i < data.length; i++)
+    result += parse_char(data[i]) * Math.max(1, 16 * (data.length - i - 1));
+
+  return result;
+}
+
 export default class Colour extends CssProperty {
   private readonly colour: ColourObject;
   private readonly text: ColourObject | undefined;
@@ -37,13 +48,13 @@ export default class Colour extends CssProperty {
       if (colour.match(/^\#[0-9a-f][0-9a-f][0-9a-f]$/gm))
         return {
           get r() {
-            return parseInt(colour[1], 16) * 16;
+            return ParseNumberString(colour[1]) * 16;
           },
           get g() {
-            return parseInt(colour[2], 16) * 16;
+            return ParseNumberString(colour[2]) * 16;
           },
           get b() {
-            return parseInt(colour[3], 16) * 16;
+            return ParseNumberString(colour[3]) * 16;
           },
           get a() {
             return 1;
@@ -55,13 +66,13 @@ export default class Colour extends CssProperty {
       )
         return {
           get r() {
-            return parseInt(colour[1] + colour[2], 16);
+            return ParseNumberString(colour[1] + colour[2]);
           },
           get g() {
-            return parseInt(colour[3] + colour[4], 16);
+            return ParseNumberString(colour[3] + colour[4]);
           },
           get b() {
-            return parseInt(colour[5] + colour[6], 16);
+            return ParseNumberString(colour[5] + colour[6]);
           },
           get a() {
             return 1;

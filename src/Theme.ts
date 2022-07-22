@@ -161,7 +161,7 @@ const DefaultTheme = {
     contrast: new Colour("#666"),
     anchor: new Colour([0, 0, 0, 0], "#277da1"),
     faded_text: new Colour([0, 0, 0, 0], "#666"),
-    red: new Colour("#f33"),
+    red: new Colour("#f30"),
     green: new Colour("#3f3"),
   },
   screen: {
