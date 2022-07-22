@@ -88,4 +88,7 @@ export default {
       return this.Access(result, target.slice(1).join("."));
     return result;
   },
+  GetPrototypeOf<T>(target: T) {
+    return Object.getPrototypeOf(target);
+  },
 };

@@ -2,9 +2,11 @@ import Jsx from "Src/Jsx";
 import Define from "Src/Component";
 import { IsString, Optional } from "@paulpopat/safe-type";
 import { IsOneOf } from "Src/utils/Type";
-import { ColourNames, CT, FromText, GetColour } from "Src/Theme";
+import { ColourNames, CT, GetColour } from "Src/Theme";
 import CreateContext from "Src/utils/Context";
-import Colour from "Src/utils/Colour";
+import Colour from "Src/styles/Colour";
+import Css, { Rule } from "Src/CSS";
+import Flex from "Src/styles/Flex";
 
 const Context = CreateContext(new Colour("#000000"));
 
@@ -35,23 +37,18 @@ Define(
       );
     },
     css() {
-      const background = GetColour(this.props.bg ?? CT.colours.bg_surface);
-      this.provide_context(Context, FromText(background));
-      return {
-        nav: {
-          background: background,
-          padding: CT.padding.block,
-        },
-        ".icon-area": {
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        },
-        img: {
-          maxHeight: "3rem",
-          borderRadius: CT.border.radius_sm,
-        },
-      };
+      const colour = this.props.bg
+        ? GetColour(this.props.bg)
+        : CT.colours.surface;
+      this.provide_context(Context, colour);
+      return Css.Init()
+        .With(Rule.Init("nav").With(colour).With(CT.padding.block))
+        .With(Rule.Init(".icon-area").With(new Flex("center", "space-between")))
+        .With(
+          Rule.Init("img")
+            .With("max-height", "3rem")
+            .With("border-radius", CT.border.small.Radius)
+        );
     },
   }
 );
@@ -78,18 +75,14 @@ Define(
     },
     css() {
       const colour = this.use_context(Context);
-      return {
-        "a, span": {
-          fontFamily: CT.text.font_family,
-          fontSize: CT.text.size.h6,
-          fontWeight: CT.text.weight.display,
-          lineHeight: CT.text.line_height,
-          textDecoration: "none",
-          color: colour,
-          userSelect: "none",
-          cursor: "pointer",
-        },
-      };
+      return Css.Init().With(
+        Rule.Init("a, span")
+          .With(CT.text.h6)
+          .With("text-decoration", "none")
+          .With(new Colour([0, 0, 0, 0], colour.Text))
+          .With("cursor", "pointer")
+          .With("user-select", "none")
+      );
     },
   }
 );

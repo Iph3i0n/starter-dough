@@ -1,24 +1,150 @@
-import { IsString } from "@paulpopat/safe-type";
-import { IsColour } from "./utils/Colour";
+import {
+  PatternMatch,
+  IsString,
+  IsTuple,
+  IsUnion,
+  IsLiteral,
+  IsType,
+} from "@paulpopat/safe-type";
 
-function ToKebabCase(item: string) {
-  let result = "";
-  for (const char of item)
-    if (char.toUpperCase() === char) result += "-" + char.toLowerCase();
-    else result += char;
+export abstract class CssProperty {
+  public abstract get Properties(): { name: string; value: string }[];
 
-  return result;
+  public toString() {
+    return this.Properties.map((r) => `${r.name}:${r.value};`).join("");
+  }
 }
 
-export default function RenderCSS(css: any) {
-  let result = "";
-  for (const key in css)
-    if (!css.hasOwnProperty(key)) continue;
-    else if (IsColour(css[key]))
-      result += ToKebabCase(key) + ":" + css[key].Hex + ";";
-    else if (IsString(css[key]))
-      result += ToKebabCase(key) + ":" + css[key] + ";";
-    else result += key + "{" + RenderCSS(css[key]) + "}";
+function IsCssProperty(arg: any): arg is CssProperty {
+  return arg instanceof CssProperty;
+}
 
-  return result;
+class Property extends CssProperty {
+  public constructor(
+    private readonly name: string,
+    private readonly value: string
+  ) {
+    super();
+  }
+
+  public override get Properties() {
+    return [{ name: this.name, value: this.value }];
+  }
+}
+
+const IsRuleMode = IsUnion(IsLiteral("modifier"), IsLiteral("child"));
+type RuleMode = IsType<typeof IsRuleMode>;
+
+export class Rule {
+  private constructor(
+    private readonly selector: string,
+    private readonly rules: [RuleMode, Rule][],
+    private readonly properties: CssProperty[]
+  ) {}
+
+  public toString(): string {
+    return (
+      `${this.selector}{${this.properties.map((p) => p.toString()).join("")}}` +
+      this.rules
+        .map(([mode, rule]) =>
+          PatternMatch(IsLiteral("modifier"), IsLiteral("child"))(
+            () => this.selector + rule.toString(),
+            () => this.selector + " " + rule.toString()
+          )(mode)
+        )
+        .join("")
+    );
+  }
+
+  public static Init(selector: string) {
+    return new Rule(selector, [], []);
+  }
+
+  public With(name: string, value: string): Rule;
+  public With(property: CssProperty): Rule;
+  public With(mode: RuleMode, rule: Rule): Rule;
+  public With(...args: [RuleMode, Rule] | [string, string] | [CssProperty]) {
+    return PatternMatch(
+      IsTuple(IsString, IsString),
+      IsTuple(IsCssProperty),
+      IsTuple(IsRuleMode, IsRule)
+    )(
+      ([name, value]) =>
+        new Rule(this.selector, this.rules, [
+          ...this.properties,
+          new Property(name, value),
+        ]),
+      ([property]) =>
+        new Rule(this.selector, this.rules, [...this.properties, property]),
+      ([mode, rule]) =>
+        new Rule(this.selector, [...this.rules, [mode, rule]], this.properties)
+    )(args);
+  }
+}
+
+function IsRule(item: any): item is Rule {
+  return item instanceof Rule;
+}
+
+export class Media {
+  private readonly rules: Rule[];
+  private constructor(private readonly query: string, ...rules: Rule[]) {
+    this.rules = rules;
+  }
+
+  public toString() {
+    return `@media screen and (${this.query}){${this.rules
+      .map((r) => r.toString())
+      .join("")}}`;
+  }
+
+  public With(chunk: Rule) {
+    return new Media(this.query, ...[...this.rules, chunk]);
+  }
+
+  public static Init(query: string) {
+    return new Media(query);
+  }
+}
+
+export class Keyframes {
+  private readonly rules: Rule[];
+  private constructor(private readonly name: string, ...rules: Rule[]) {
+    this.rules = rules;
+  }
+
+  public toString() {
+    return `@keyframes (${this.name}){${this.rules
+      .map((r) => r.toString())
+      .join("")}}`;
+  }
+
+  public With(chunk: Rule) {
+    return new Keyframes(this.name, ...[...this.rules, chunk]);
+  }
+
+  public static Init(name: string) {
+    return new Keyframes(name);
+  }
+}
+
+type CssChunk = Rule | Media | Keyframes;
+
+export default class Css {
+  private readonly content: CssChunk[];
+  private constructor(...content: CssChunk[]) {
+    this.content = content;
+  }
+
+  public toString() {
+    return this.content.map((c) => c.toString()).join("");
+  }
+
+  public With(chunk: CssChunk) {
+    return new Css(...[...this.content, chunk]);
+  }
+
+  public static Init() {
+    return new Css();
+  }
 }

@@ -3,7 +3,10 @@ import Define from "Src/Component";
 import { IsString } from "@paulpopat/safe-type";
 import CreateContext from "Src/utils/Context";
 import { GetIndexOfParent } from "Src/utils/Html";
-import { CT, GetColour } from "Src/Theme";
+import { CT } from "Src/Theme";
+import Css, { Rule } from "Src/CSS";
+import Transition from "Src/styles/Transition";
+import Flex from "Src/styles/Flex";
 
 const AccordionContext = CreateContext({
   click: (index: number) => {},
@@ -47,7 +50,7 @@ Define(
             <p-heading level="6" no-margin>
               {this.props.title}
             </p-heading>
-            <p-icon name="arrow-down" size={CT.text.size.h6} colour="dark" />
+            <p-icon name="arrow-down" size={CT.text.h6.Size} colour="dark" />
           </div>
           <div class="container">
             <div class="content">
@@ -60,38 +63,34 @@ Define(
     css() {
       const { current } = this.use_context(AccordionContext);
       const open = current === GetIndexOfParent(this.ele);
-      return {
-        ".container": {
-          overflow: "hidden",
-          height: open ? this.state.height + "px" : "0",
-          transition: `height ${CT.animation.time_fast}`,
-        },
-        ".content": {
-          padding: CT.padding.block,
-        },
-        ".item-heading": {
-          padding: CT.padding.block,
-          background: open
-            ? GetColour(CT.colours.bg_surface)
-            : GetColour(CT.colours.bg_white),
-          cursor: "pointer",
-          borderRadius: CT.border.radius,
-          marginBottom: CT.padding.block,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          border: CT.border.standard_borders,
-          boxShadow: CT.border.standard_box_shadow,
-          position: "relative",
-        },
-        ".item-heading:hover": {
-          background: GetColour(CT.colours.bg_surface),
-        },
-        "p-icon": {
-          transition: `transform ${CT.animation.time_fast}`,
-          transform: open ? "rotate(180deg)" : "rotate(0deg)",
-        },
-      };
+      return Css.Init()
+        .With(
+          Rule.Init(".container")
+            .With("overflow", "hidden")
+            .With("height", open ? this.state.height + "px" : "0")
+            .With(new Transition("fast", "height"))
+        )
+        .With(Rule.Init(".content").With(CT.padding.block))
+        .With(
+          Rule.Init(".item-heading")
+            .With("cursor", "pointer")
+            .With("position", "relative")
+            .With(CT.padding.block)
+            .With(open ? CT.colours.surface : CT.colours.body)
+            .With(CT.border.standard)
+            .With(CT.padding.block.AsMargin().BottomOnly())
+            .With(CT.box_shadow.large)
+            .With(new Flex("center", "space-between"))
+            .With(new Transition("fast", "color", "background-color"))
+        )
+        .With(
+          Rule.Init(".item-heading:hover").With(CT.colours.surface)
+        )
+        .With(
+          Rule.Init("p-icon")
+            .With("transform", open ? "rotate(180deg)" : "rotate(0deg)")
+            .With(new Transition("fast", "transform"))
+        );
     },
   }
 );

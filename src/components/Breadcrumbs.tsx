@@ -3,7 +3,9 @@ import Define from "Src/Component";
 import CreateContext from "Src/utils/Context";
 import { IsString, Optional } from "@paulpopat/safe-type";
 import { GetIndexOfParent } from "Src/utils/Html";
-import { CT, GetColour } from "Src/Theme";
+import { CT } from "Src/Theme";
+import Css, { Rule } from "Src/CSS";
+import Flex from "Src/styles/Flex";
 
 type Crumb = { name: string; url: string };
 
@@ -35,36 +37,35 @@ Define(
       );
     },
     css() {
-      return {
-        nav: {
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "flex-start",
-          fontFamily: CT.text.font_family,
-          fontSize: CT.text.size.body_large,
-          fontWeight: CT.text.weight.display,
-          lineHeight: CT.text.line_height,
-          marginBottom: CT.padding.text_lg,
-        },
-        "a, span": {
-          display: "inline-block",
-          marginRight: CT.padding.block,
-          marginLeft: CT.padding.block,
-        },
-        "a:first-child, span:first-child": {
-          marginLeft: "0",
-        },
-        "a:last-child, span:last-child": {
-          marginRight: "0",
-        },
-        a: {
-          color: GetColour(CT.colours.anchor),
-          textDecoration: "none",
-        },
-        span: {
-          color: GetColour(CT.colours.body_fade),
-        },
-      };
+      return Css.Init()
+        .With(
+          Rule.Init("nav")
+            .With(new Flex("center", "flex-start"))
+            .With(CT.text.body_large)
+        )
+        .With(
+          Rule.Init("a, span")
+            .With("display", "inline-block")
+            .With(CT.padding.block.AsMargin().XOnly())
+        )
+        .With(
+          Rule.Init("a:first-child, span:first-child").With(
+            "margin-left",
+            "0"
+          )
+        )
+        .With(
+          Rule.Init("a:last-child, span:last-child").With(
+            "margin-right",
+            "0"
+          )
+        )
+        .With(
+          Rule.Init("a")
+            .With(CT.colours.anchor)
+            .With("text-decoration", "none")
+        )
+        .With(Rule.Init("span").With(CT.colours.faded_text));
     },
   }
 );

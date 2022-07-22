@@ -1,6 +1,10 @@
 import { IsLiteral, IsString, Optional } from "@paulpopat/safe-type";
 import Define from "Src/Component";
+import Css, { Rule } from "Src/CSS";
 import Jsx from "Src/Jsx";
+import Absolute from "Src/styles/Absolute";
+import Flex from "Src/styles/Flex";
+import Transition from "Src/styles/Transition";
 import { CT, GetColour } from "Src/Theme";
 import C from "Src/utils/Class";
 
@@ -31,66 +35,77 @@ Define(
       );
     },
     css() {
-      return {
-        ".modal-container": {
-          position: "fixed",
-          top: "0",
-          left: "0",
-          width: "100vw",
-          height: "100vh",
-          opacity: "0",
-          zIndex: "999",
-          transition: `opacity ${CT.animation.time_slow}`,
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          pointerEvents: "none",
-        },
-        ".modal-container.open": {
-          opacity: "1",
-          pointerEvents: "auto",
-        },
-        ".modal-backdrop": {
-          position: "absolute",
-          top: "0",
-          left: "0",
-          width: "100%",
-          height: "100%",
-          opacity: "0.7",
-          background: GetColour(CT.colours.bg_surface),
-        },
-        ".modal": {
-          position: "relative",
-          width: "100%",
-          height: "100%",
-          maxWidth: this.props.large ? "60rem" : "40rem",
-          maxHeight: this.props.large ? "40rem" : "30rem",
-          overflow: "auto",
-          margin: CT.padding.block,
-          padding: CT.padding.block,
-          background: GetColour(CT.colours.bg_white),
-          boxShadow: CT.border.standard_box_shadow,
-          border: CT.border.standard_borders,
-          borderRadius: CT.border.radius,
-          transition: `transform ${CT.animation.time_slow}`,
-          transform: "translate(0, -5rem)",
-        },
-        ".open .modal": {
-          transform: "translate(0, 0)",
-        },
-        ".close-button": {
-          position: "absolute",
-          top: CT.padding.block,
-          right: CT.padding.block,
-          cursor: "pointer",
-          transition: `opacity ${CT.animation.time_fast}`,
-          opacity: "1",
-          textDecoration: "none",
-        },
-        ".close-button:hover": {
-          opacity: "0.5",
-        },
-      };
+      return Css.Init()
+        .With(
+          Rule.Init(".modal-container")
+            .With(
+              new Absolute({
+                variant: "fixed",
+                top: "0",
+                left: "0",
+                width: "100%",
+                height: "100vh",
+                z_index: 999,
+              })
+            )
+            .With(new Flex("center", "center"))
+            .With(new Transition("slow", "opacity"))
+            .With("opacity", "0")
+            .With("pointer-events", "none")
+        )
+        .With(
+          Rule.Init(".modal-container.open")
+            .With("opacity", "1")
+            .With("pointer-events", "auto")
+        )
+        .With(
+          Rule.Init(".modal-backdrop")
+            .With(
+              new Absolute({
+                top: "0",
+                left: "0",
+                width: "100%",
+                height: "100%",
+              })
+            )
+            .With(CT.colours.surface)
+            .With("opacity", "0.7")
+        )
+        .With(
+          Rule.Init(".modal")
+            .With(
+              new Absolute({
+                variant: "relative",
+                width: "100%",
+                height: "100%",
+              })
+            )
+            .With("max-width", this.props.large ? "60rem" : "40rem")
+            .With("max-height", this.props.large ? "40rem" : "30rem")
+            .With("overflow", "auto")
+            .With(CT.padding.block)
+            .With(CT.padding.block.AsMargin())
+            .With(CT.colours.body)
+            .With(CT.border.standard)
+            .With(CT.box_shadow.large)
+            .With(new Transition("slow", "transform"))
+            .With("transform", "translate(0, -5rem)")
+        )
+        .With(Rule.Init(".open .modal").With("transform", "translate(0, 0)"))
+        .With(
+          Rule.Init(".close-button")
+            .With(
+              new Absolute({
+                top: CT.padding.block.Top,
+                right: CT.padding.block.Right,
+              })
+            )
+            .With("cursor", "pointer")
+            .With("opacity", "1")
+            .With("text-decoration", "none")
+            .With(new Transition("fast", "opacity"))
+        )
+        .With(Rule.Init(".close-button:hover").With("opacity", "0.5"));
     },
   }
 );

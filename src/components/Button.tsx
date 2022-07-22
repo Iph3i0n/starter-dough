@@ -2,10 +2,13 @@ import Jsx from "Src/Jsx";
 import { IsLiteral, Optional } from "@paulpopat/safe-type";
 import Define from "Src/Component";
 import { IsOneOf } from "Src/utils/Type";
-import { ColourNames, CT, FromText, GetColour } from "Src/Theme";
+import { ColourNames, CT, GetColour } from "Src/Theme";
 import { FormContext } from "./Form";
 import { GetIndexOfParent, IsChildOf } from "Src/utils/Html";
 import CreateContext from "Src/utils/Context";
+import Css, { Rule } from "Src/CSS";
+import Transition from "Src/styles/Transition";
+import Colour from "Src/styles/Colour";
 
 const ButtonGroupContext = CreateContext(-1);
 
@@ -44,8 +47,6 @@ Define(
       );
     },
     css() {
-      const colour = GetColour(this.props.colour);
-      if (!colour) throw new Error("Invalid colour");
       const [sharp_left, sharp_right] = (() => {
         const is_group = IsChildOf(this.ele, "p-button-group");
         if (!is_group) return [false, false];
@@ -53,45 +54,45 @@ Define(
         const index = GetIndexOfParent(this.ele);
         return [index !== 0, index < length - 1];
       })();
-      return {
-        ".button": {
-          fontSize: CT.text.size.body,
-          padding: `${CT.padding.text_sm} ${CT.padding.text_lg}`,
-          fontFamily: CT.text.font_family,
-          display: "inline-block",
-          borderRadius: CT.border.radius,
-          margin: "0",
-          transition: `background-color ${CT.animation.time_fast}, color ${CT.animation.time_fast}`,
-          cursor: "pointer",
-          userSelect: "none",
-          border: "none",
-          position: "relative",
 
-          backgroundColor: this.props.outline ? "transparent" : colour.Hex,
-          boxShadow: !this.props.outline
-            ? CT.border.standard_box_shadow
-            : `0 0 0 transparent, inset 0 0 0 ${CT.border.width} ${colour.Hex}`,
-          color: this.props.outline ? colour.Hex : FromText(colour),
-          boxSizing: "border-box",
+      let rule = Rule.Init(".button")
+        .With(CT.text.body.WithPadding(CT.padding.input))
+        .With("display", "inline-block")
+        .With(
+          this.props.outline
+            ? CT.border.standard.WithColour(GetColour(this.props.colour))
+            : CT.border.standard
+        )
+        .With("margin", "0")
+        .With("cursor", "pointer")
+        .With("user-select", "none")
+        .With("position", "relative")
+        .With(
+          new Transition("fast", "background-color", "color", "border-color")
+        )
+        .With(
+          this.props.outline
+            ? new Colour([0, 0, 0, 0], GetColour(this.props.colour))
+            : GetColour(this.props.colour)
+        )
+        .With(CT.box_shadow.large)
+        .With("box-sizing", "border-box");
 
-          ...(sharp_left
-            ? {
-                borderTopLeftRadius: "0",
-                borderBottomLeftRadius: "0",
-              }
-            : {}),
-          ...(sharp_right
-            ? {
-                borderTopRightRadius: "0",
-                borderBottomRightRadius: "0",
-              }
-            : {}),
-        },
-        ".button:hover": {
-          backgroundColor: colour.GreyscaleTransform(120).Hex,
-          color: FromText(colour.GreyscaleTransform(120)),
-        },
-      };
+      if (sharp_left)
+        rule = rule
+          .With("border-top-left-radius", "0")
+          .With("border-bottom-left-radius", "0");
+      if (sharp_right)
+        rule = rule
+          .With("border-top-right-radius", "0")
+          .With("border-bottom-right-radius", "0");
+      return Css.Init()
+        .With(rule)
+        .With(
+          Rule.Init(".button:hover").With(
+            GetColour(this.props.colour).GreyscaleTransform(120)
+          )
+        );
     },
   }
 );
@@ -109,11 +110,7 @@ Define(
       return <slot />;
     },
     css() {
-      return {
-        ":host": {
-          fontSize: "0",
-        },
-      };
+      return Css.Init().With(Rule.Init(":host").With("font-size", "0"));
     },
   }
 );

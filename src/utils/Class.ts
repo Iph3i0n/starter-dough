@@ -6,11 +6,3 @@ export default function C(...classes: (string | [string, boolean])[]) {
     .filter((c) => c)
     .join(" ");
 }
-
-export function Pad(...amounts: string[]) {
-  return amounts.join(" ");
-}
-
-export function Trans(speed: string, ...areas: string[]) {
-  return areas.map((a) => `${a} ${speed}`).join(", ");
-}

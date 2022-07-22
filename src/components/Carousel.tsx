@@ -7,6 +7,12 @@ import CreateContext from "Src/utils/Context";
 import { IsString } from "@paulpopat/safe-type";
 import { GetIndexOfParent } from "Src/utils/Html";
 import { IsOneOf } from "Src/utils/Type";
+import Css, { Keyframes, Rule } from "Src/CSS";
+import Absolute, { Cover } from "Src/styles/Absolute";
+import Flex from "Src/styles/Flex";
+import Grid from "Src/styles/Grid";
+import Transition from "Src/styles/Transition";
+import Animation from "Src/styles/Animation";
 
 const Context = CreateContext({ current: 0, total: 0 });
 
@@ -64,58 +70,48 @@ Define(
       );
     },
     css() {
-      return {
-        ":host": {
-          overflow: "hidden",
-          position: "relative",
-          display: "block",
-          height: this.props.height,
-          borderRadius: CT.border.radius,
-          border: CT.border.standard_borders,
-          boxShadow: CT.border.standard_box_shadow,
-          color: GetColour(this.props.colour),
-        },
-        ".controls-overlay": {
-          position: "absolute",
-          top: "0",
-          left: "0",
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        },
-        ".toggles": {
-          alignSelf: "flex-end",
-          display: "grid",
-          gridTemplateColumns: `repeat(${this.state.total}, minmax(0, 1fr))`,
-          gap: CT.padding.text_sm,
-          marginBottom: CT.padding.block,
-          width: "50%",
-        },
-        ".item-toggle": {
-          height: "0.2rem",
-          background: GetColour(this.props.colour),
-          opacity: "0.5",
-          transition: `height ${CT.animation.time_fast}, opacity ${CT.animation.time_fast}`,
-          cursor: "pointer",
-        },
-        ".toggles:hover .item-toggle": {
-          height: "0.3rem",
-        },
-        ".item-toggle.active": {
-          opacity: "1",
-        },
-        ".arrow-button": {
-          cursor: "pointer",
-          opacity: "1",
-          transition: `opacity ${CT.animation.time_fast}`,
-          border: "none",
-        },
-        ".arrow-button:hover": {
-          opacity: "0.5",
-        },
-      };
+      return Css.Init()
+        .With(
+          Rule.Init(":host")
+            .With("overflow", "hidden")
+            .With("position", "relative")
+            .With("display", "block")
+            .With("height", this.props.height)
+            .With(CT.border.standard)
+            .With(CT.box_shadow.large)
+            .With(GetColour(this.props.colour))
+        )
+        .With(
+          Rule.Init(".controls-overlay")
+            .With(Cover)
+            .With(new Flex("center", "space-between"))
+        )
+        .With(
+          Rule.Init(".toggles")
+            .With("align-self", "flex-end")
+            .With(new Grid(this.state.total, CT.padding.block.Y))
+            .With(CT.padding.block.AsMargin().BottomOnly())
+            .With("width", "50%")
+        )
+        .With(
+          Rule.Init(".item-toggle")
+            .With("height", "0.2rem")
+            .With(GetColour(this.props.colour))
+            .With("opacity", "0.5")
+            .With("cursor", "pointer")
+            .With(new Transition("fast", "height", "opacity"))
+        )
+        .With(Rule.Init(".toggles:hover .item-toggle").With("height", "0.3rem"))
+        .With(Rule.Init(".item-toggle.active").With("opacity", "1"))
+        .With(Rule.Init(".item-toggle.active").With("opacity", "1"))
+        .With(
+          Rule.Init(".arrow-button")
+            .With("cursor", "pointer")
+            .With("opacity", "1")
+            .With("border", "none")
+            .With(new Transition("fast", "opacity"))
+        )
+        .With(Rule.Init(".arrow-button:hover").With("opacity", "0.5"));
     },
   }
 );
@@ -134,48 +130,39 @@ Define(
       );
     },
     css() {
-      const { current, total } = this.use_context(Context);
+      const { current } = this.use_context(Context);
       const index = GetIndexOfParent(this.ele);
       const is_current = index === current;
-      return {
-        div: {
-          display: "flex",
-          position: "absolute",
-          top: "0",
-          left: is_current ? "0" : "100%",
-          width: "100%",
-          height: "100%",
-          alignItems: "center",
-          justifyContent: "center",
-          animationDuration: CT.animation.time_slow,
-          animationName: is_current ? "entry" : "exit",
-        },
-        img: {
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          position: "absolute",
-          top: "0",
-          left: "0",
-          zIndex: "-1",
-        },
-        "@keyframes entry": {
-          from: {
-            left: "-100%",
-          },
-          to: {
-            left: "0",
-          },
-        },
-        "@keyframes exit": {
-          from: {
-            left: "0",
-          },
-          to: {
-            left: "100%",
-          },
-        },
-      };
+      return Css.Init()
+        .With(
+          Keyframes.Init("entry")
+            .With(Rule.Init("from").With("left", "-100%"))
+            .With(Rule.Init("to").With("left", "0"))
+        )
+        .With(
+          Keyframes.Init("exit")
+            .With(Rule.Init("from").With("left", "0"))
+            .With(Rule.Init("to").With("left", "100%"))
+        )
+        .With(
+          Rule.Init("div")
+            .With(new Flex("center", "center"))
+            .With(
+              new Absolute({
+                top: "0",
+                left: is_current ? "0" : "100%",
+                width: "100%",
+                height: "100%",
+              })
+            )
+            .With(new Animation(is_current ? "entry" : "exit", "slow"))
+        )
+        .With(
+          Rule.Init("img")
+            .With(Cover)
+            .With("object-fit", "cover")
+            .With("z-index", "-1")
+        );
     },
   }
 );

@@ -6,8 +6,12 @@ import {
   Optional,
 } from "@paulpopat/safe-type";
 import Define from "Src/Component";
+import Css, { Media, Rule } from "Src/CSS";
 import Jsx from "Src/Jsx";
-import { ColourNames, CT, FromText, GetColour } from "Src/Theme";
+import Absolute from "Src/styles/Absolute";
+import Flex from "Src/styles/Flex";
+import Transition from "Src/styles/Transition";
+import { ColourNames, CT, GetColour } from "Src/Theme";
 import C from "Src/utils/Class";
 import CreateContext from "Src/utils/Context";
 import Object from "Src/utils/Object";
@@ -47,47 +51,44 @@ Define(
   }
 );
 
-const InputStyling = {
-  label: {
-    fontFamily: CT.text.font_family,
-    fontSize: CT.text.size.body,
-    display: "block",
-    lineHeight: CT.text.line_height,
-  },
-  [`@media screen and (min-width: ${CT.screen.md.breakpoint})`]: {
-    "label:not(.for-textarea)": {
-      textAlign: "right",
-      lineHeight: `calc((${CT.text.size.body} * ${CT.text.line_height}) + (${CT.padding.text_sm} * 2))`,
-    },
-  },
-  ".input": {
-    width: "100%",
-    boxSizing: "border-box",
-    fontFamily: CT.text.font_family,
-    fontSize: CT.text.size.body,
-    padding: CT.padding.text_sm,
-    background: GetColour(CT.colours.bg_surface),
-    borderRadius: CT.border.radius,
-    lineHeight: CT.text.line_height,
-    margin: "0",
-    appearance: "none",
-    transition: `background-color ${CT.animation.time_fast}`,
-    border: CT.border.standard_borders,
-    boxShadow: CT.border.standard_box_shadow,
-  },
-  ".input[disabled]": {
-    backgroundColor: GetColour(CT.colours.bg_white).GreyscaleTransform(99.9),
-  },
-  ".input:hover:not([disabled])": {
-    backgroundColor: GetColour(CT.colours.bg_surface).GreyscaleTransform(95),
-  },
-  ".help-text": {
-    fontSize: CT.text.size.small,
-    fontFamily: CT.text.font_family,
-    margin: `${CT.padding.text_sm} 0`,
-    color: GetColour(CT.colours.body_fade),
-  },
-};
+const InputRules = Css.Init()
+  .With(Rule.Init("label").With(CT.text.body).With("display", "block"))
+  .With(
+    Media.Init(`min-width: ${CT.screen.md.breakpoint}`).With(
+      Rule.Init("label:not(.for-textarea)")
+        .With("text-align", "right")
+        .With(
+          "line-height",
+          `calc((${CT.text.body.Size} * ${CT.text.body.LineHeight}) + (${CT.text.body.Padding.Y} * 2))`
+        )
+    )
+  )
+  .With(
+    Rule.Init(".input")
+      .With("width", "100%")
+      .With("box-sizing", "border-box")
+      .With(CT.text.body.WithPadding(CT.padding.input))
+      .With(CT.colours.surface)
+      .With("margin", "0")
+      .With("appearance", "none")
+      .With(new Transition("fast", "background-color"))
+      .With(CT.border.standard)
+      .With(CT.box_shadow.large)
+  )
+  .With(
+    Rule.Init(".input[disabled]").With(CT.colours.body.GreyscaleTransform(99.9))
+  )
+  .With(
+    Rule.Init(".input[disabled]").With(CT.colours.body.GreyscaleTransform(99.9))
+  )
+  .With(
+    Rule.Init(".input:hover:not([disabled])").With(
+      CT.colours.body.GreyscaleTransform(95)
+    )
+  )
+  .With(
+    Rule.Init(".help-text").With(CT.text.small).With(CT.colours.faded_text)
+  );
 
 Define(
   "p-input",
@@ -139,7 +140,7 @@ Define(
       );
     },
     css() {
-      return InputStyling;
+      return InputRules;
     },
   }
 );
@@ -195,15 +196,9 @@ Define(
       );
     },
     css() {
-      return {
-        ...InputStyling,
-        "p-col": { position: "relative" },
-        "p-icon": {
-          position: "absolute",
-          top: "0",
-          right: "0",
-        },
-      };
+      return InputRules.With(
+        Rule.Init("p-col").With("position", "relative")
+      ).With(Rule.Init("p-icon").With(new Absolute({ top: "0", right: "0" })));
     },
   }
 );
@@ -256,13 +251,9 @@ Define(
       );
     },
     css() {
-      return {
-        ...InputStyling,
-        textarea: {
-          height: "5rem",
-          resize: "none",
-        },
-      };
+      return InputRules.With(
+        Rule.Init("textarea").With("height", "5rem").With("resize", "none")
+      );
     },
   }
 );
@@ -322,67 +313,64 @@ Define(
       );
     },
     css() {
-      return {
-        label: {
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "flex-start",
-          fontFamily: CT.text.font_family,
-          fontSize: CT.text.size.body,
-          lineHeight: CT.text.line_height,
-          marginBottom: CT.padding.text_sm,
-          userSelect: "none",
-        },
-        ".disabled": {
-          opacity: "0.5",
-        },
-        ".radio, .checkbox, .switch": {
-          "-webkit-appearance": "none",
-          appearance: "none",
-          backgroundColor: "transparent",
-          backgroundClip: "content-box",
-          margin: "0",
-          marginRight: CT.padding.block,
-          transition: `border-color ${CT.animation.time_fast}, background-color ${CT.animation.time_fast}`,
-          height: CT.text.size.body,
-          border: `${CT.border.width} solid ${
-            GetColour(CT.colours.body_dark).Hex
-          }`,
-          padding: "0",
-          boxShadow: CT.border.standard_box_shadow,
-        },
-        ".radio, .checkbox": {
-          width: CT.text.size.body,
-          padding: CT.border.width,
-        },
-        ".switch": {
-          width: `calc(${CT.text.size.body} * 2)`,
-          borderRadius: CT.text.size.body,
-          position: "relative",
-        },
-        ".switch::after": {
-          content: "' '",
-          position: "absolute",
-          top: CT.border.width,
-          left: CT.border.width,
-          width: `calc(${CT.text.size.body} / 2)`,
-          height: `calc(${CT.text.size.body} / 2)`,
-          background: GetColour(CT.colours.body_dark),
-          transition: `left ${CT.animation.time_fast}, background-color ${CT.animation.time_fast}`,
-          borderRadius: CT.text.size.body,
-        },
-        ".radio": {
-          borderRadius: CT.text.size.body,
-        },
-        "input[checked]": {
-          borderColor: GetColour(this.props.colour),
-          backgroundColor: GetColour(this.props.colour),
-        },
-        ".switch[checked]::after": {
-          backgroundColor: FromText(GetColour(this.props.colour)),
-          left: `calc(100% - (${CT.border.width} * 5))`,
-        },
-      };
+      return Css.Init()
+        .With(
+          Rule.Init("label")
+            .With(new Flex("center", "flex-start"))
+            .With(CT.text.body)
+            .With("user-select", "none")
+        )
+        .With(Rule.Init(".disabled").With("opacity", "0.5"))
+        .With(
+          Rule.Init(".radio, .checkbox, .switch")
+            .With("-webkit-appearance", "none")
+            .With("appearance", "none")
+            .With("background-color", "transparent")
+            .With("margin", "0")
+            .With(CT.padding.block)
+            .With(new Transition("fast", "border-color", "background-color"))
+            .With("height", CT.text.body.Size)
+            .With(CT.border.check)
+            .With(CT.box_shadow.small)
+            .With("padding", "0")
+        )
+        .With(
+          Rule.Init(".radio, .checkbox")
+            .With("width", CT.text.body.Size)
+            .With("padding", CT.border.check.Width)
+        )
+        .With(
+          Rule.Init(".switch")
+            .With("width", `calc(${CT.text.body.Size} * 2)`)
+            .With("border-radius", CT.text.body.Size)
+            .With("postion", "relative")
+        )
+        .With(
+          Rule.Init(".switch::after")
+            .With("content", "' '")
+            .With(
+              new Absolute({
+                top: CT.border.check.Width,
+                left: CT.border.check.Width,
+                width: `calc(${CT.text.body.Size} / 2)`,
+                height: `calc(${CT.text.body.Size} / 2)`,
+              })
+            )
+            .With(CT.colours.contrast)
+            .With(new Transition("fast", "left", "background-color"))
+            .With("border-radius", CT.text.body.Size)
+        )
+        .With(Rule.Init(".radio").With("border-radius", CT.text.body.Size))
+        .With(
+          Rule.Init("input[checked]")
+            .With("border-color", GetColour(this.props.colour).Hex)
+            .With("background-color", GetColour(this.props.colour).Hex)
+        )
+        .With(
+          Rule.Init(".switch[checked]::after")
+            .With("border-color", GetColour(this.props.colour).Hex)
+            .With("left", `calc(100% - (${CT.border.check.Width} * 5))`)
+        );
     },
   }
 );

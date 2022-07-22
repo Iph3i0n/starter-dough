@@ -1,7 +1,8 @@
 import Jsx from "Src/Jsx";
 import { IsString, Optional } from "@paulpopat/safe-type";
 import Define from "Src/Component";
-import { CT, GetColour } from "Src/Theme";
+import { CT } from "Src/Theme";
+import Css, { Rule } from "Src/CSS";
 
 Define(
   "p-card",
@@ -31,36 +32,30 @@ Define(
       );
     },
     css() {
-      return {
-        ".card": {
-          background: GetColour(CT.colours.bg_surface),
-          borderRadius: CT.border.radius,
-          overflow: "hidden",
-          border: CT.border.standard_borders,
-          boxShadow: CT.border.standard_box_shadow,
-          position: "relative",
-        },
-        ".card .card-img-top": {
-          display: "block",
-          maxWidth: "100%",
-          width: "100%",
-          objectFit: "cover",
-          background: GetColour(CT.colours.bg_dark),
-          color: GetColour(CT.colours.body_white),
-          fontFamily: CT.text.font_family,
-          textAlign: "center",
-          border: "none",
-          borderBottom: CT.border.standard_borders,
-        },
-        ".card .card-body": {
-          padding: CT.padding.block,
-        },
-        ".card .card-title": {
-          fontSize: CT.text.size.body_large,
-          fontFamily: CT.text.font_family,
-          margin: `0 0 ${CT.padding.block}`,
-        },
-      };
+      return Css.Init()
+        .With(
+          Rule.Init(".card")
+            .With(CT.colours.surface)
+            .With(CT.border.standard)
+            .With(CT.box_shadow.large)
+            .With("overflow", "hidden")
+            .With("position", "relative")
+        )
+        .With(
+          Rule.Init(".card .card-img-top")
+            .With("display", "block")
+            .With("max-width", "100%")
+            .With("object-fit", "cover")
+            .With(CT.colours.contrast)
+            .With(CT.text.body.WithAlignment("center"))
+            .With(CT.border.standard.WithDirection(["bottom"]))
+        )
+        .With(Rule.Init(".card .card-body").With(CT.padding.block))
+        .With(
+          Rule.Init(".card .card-title")
+            .With(CT.text.body_large)
+            .With(CT.padding.block.AsMargin().BottomOnly())
+        );
     },
   }
 );

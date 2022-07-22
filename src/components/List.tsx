@@ -1,10 +1,15 @@
 import Jsx from "Src/Jsx";
 import Define from "Src/Component";
 import { IsLiteral, IsString, Optional } from "@paulpopat/safe-type";
-import { ColourNames, CT, FromText, GetColour } from "Src/Theme";
-import { Pad, Trans } from "Src/utils/Class";
-import { IsFirstChild } from "Src/utils/Html";
+import { ColourNames, CT, GetColour } from "Src/Theme";
 import { IsOneOf } from "Src/utils/Type";
+import Padding from "Src/styles/Padding";
+import Css, { Rule } from "Src/CSS";
+import Border from "Src/styles/Border";
+import BoxShadow from "Src/styles/BoxShadow";
+import Flex from "Src/styles/Flex";
+import Transition from "Src/styles/Transition";
+import { IsFirstChild } from "Src/utils/Html";
 
 Define(
   "p-list-group",
@@ -15,17 +20,20 @@ Define(
       return <slot />;
     },
     css() {
-      return {
-        ":host": {
-          display: "block",
-          padding: "0",
-          margin: "0",
-          border: this.props.flush ? "none" : CT.border.standard_borders,
-          boxShadow: this.props.flush ? "none" : CT.border.standard_box_shadow,
-          borderRadius: CT.border.radius,
-          overflow: "hidden",
-        },
-      };
+      return Css.Init().With(
+        Rule.Init(":host")
+          .With("display", "block")
+          .With("padding", "0")
+          .With("margin", "0")
+          .With(this.props.flush ? new Border({}) : CT.border.standard)
+          .With(
+            this.props.flush
+              ? new BoxShadow({ blur: "0" })
+              : CT.box_shadow.large
+          )
+          .With("overflow", "hidden")
+          .With("width", "100%")
+      );
     },
   }
 );
@@ -55,41 +63,36 @@ Define(
       );
     },
     css() {
-      const background = GetColour(this.props.colour ?? CT.colours.bg_white);
+      const background = this.props.colour
+        ? GetColour(this.props.colour)
+        : CT.colours.body;
       const hover_background = background.GreyscaleTransform(140);
-      return {
-        "span, a": {
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: Pad(CT.padding.text_sm, CT.padding.block),
-          margin: "0",
-          border: "none",
-          borderTop: !IsFirstChild(this.ele)
-            ? CT.border.standard_borders
-            : "none",
-          fontSize: CT.text.size.body,
-          fontFamily: CT.text.font_family,
-          fontWeight: CT.text.weight.body,
-          lineHeight: CT.text.line_height,
-          background: background,
-          color: FromText(background),
-          opacity: this.props.disabled ? "0.5" : "1",
-          transition: Trans(
-            CT.animation.time_fast,
-            "background-color",
-            "color"
-          ),
-        },
-        a: {
-          cursor: "pointer",
-          textDecoration: "none",
-        },
-        "a:hover": {
-          backgroundColor: hover_background,
-          color: FromText(hover_background),
-        },
-      };
+      return Css.Init()
+        .With(
+          Rule.Init("span, a")
+            .With(new Flex("center", "space-between"))
+            .With(
+              new Padding("padding", CT.text.body.Padding.Y, CT.padding.block.X)
+            )
+            .With(CT.text.body)
+            .With("margin", "0")
+            .With(
+              IsFirstChild(this.ele)
+                ? new Border({})
+                : CT.border.standard.WithDirection(["top"]).WithRadius("0")
+            )
+            .With(background)
+            .With("opacity", this.props.disabled ? "0.5" : "1")
+            .With(
+              new Transition("fast", "background-color", "color", "opacity")
+            )
+        )
+        .With(
+          Rule.Init("a")
+            .With("cursor", "pointer")
+            .With("text-decoration", "none")
+        )
+        .With(Rule.Init("a:hover").With(hover_background));
     },
   }
 );

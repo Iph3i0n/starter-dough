@@ -1,9 +1,13 @@
 import Jsx from "Src/Jsx";
 import Define from "Src/Component";
-import { Columns, Sizes, CT, GetColour } from "Src/Theme";
+import { Sizes, CT } from "Src/Theme";
 import C from "Src/utils/Class";
 import { IsLiteral, IsString, IsUnion, Optional } from "@paulpopat/safe-type";
 import Object from "Src/utils/Object";
+import Css, { Media, Rule } from "Src/CSS";
+import Padding from "Src/styles/Padding";
+import Grid from "Src/styles/Grid";
+import Flex from "Src/styles/Flex";
 
 Define(
   "p-container",
@@ -18,23 +22,29 @@ Define(
       );
     },
     css() {
-      return {
-        section: {
-          margin: "auto",
-          maxWidth: "100%",
-          padding: this.props.flush ? "0" : CT.padding.block,
-        },
-        "section.full-width": {
-          maxWidth: "100%",
-        },
-        ...Object.MapArray(Sizes, (size) => ({
-          [`@media screen and (min-width: ${CT.screen[size].breakpoint})`]: {
-            "section:not(.full-width)": {
-              maxWidth: CT.screen[size].width,
-            },
-          },
-        })),
-      };
+      let result: Css = Css.Init()
+        .With(
+          Rule.Init("section")
+            .With("margin", "auto")
+            .With("max-width", "100%")
+            .With(
+              this.props.flush ? new Padding("padding", "0") : CT.padding.block
+            )
+        )
+        .With(Rule.Init("section.full-width").With("max-width", "100%"));
+
+      for (const size of Sizes) {
+        result = result.With(
+          Media.Init(`min-width: ${CT.screen[size].breakpoint}`).With(
+            Rule.Init("section:not(.full-width)").With(
+              "max-width",
+              CT.screen[size].width
+            )
+          )
+        );
+      }
+
+      return result;
     },
   }
 );
@@ -48,14 +58,15 @@ Define(
       return <slot />;
     },
     css() {
-      return {
-        ":host": {
-          display: "grid",
-          gap: CT.padding.block,
-          gridTemplateColumns: `repeat(${Columns}, minmax(0, 1fr))`,
-          margin: this.props.flush ? "0" : `${CT.padding.block} 0`,
-        },
-      };
+      return Css.Init().With(
+        Rule.Init(":host")
+          .With(new Grid(12, CT.padding.block.X))
+          .With(
+            this.props.flush
+              ? new Padding("margin", "0")
+              : CT.padding.block.AsMargin().YOnly()
+          )
+      );
     },
   }
 );
@@ -75,31 +86,37 @@ Define(
       return <slot />;
     },
     css() {
-      return {
-        ...Object.MapArray(Sizes, (size) =>
-          this.props[size]
-            ? {
-                [`@media screen and (min-width: ${CT.screen[size].breakpoint})`]:
-                  {
-                    ":host": {
-                      gridColumn: "auto / span " + this.props[size],
-                    },
-                  },
-              }
-            : {}
-        ),
-        ":host": {
-          display: "flex",
-          alignItems: this.props.center ? "center" : "flex-start",
-          justifyContent:
+      let result = Css.Init();
+
+      for (const size of Sizes) {
+        if (this.props[size])
+          result = result.With(
+            Media.Init(`min-width: ${CT.screen[size].breakpoint}`).With(
+              Rule.Init(":host").With(
+                "grid-column",
+                "auto / span " + this.props[size]
+              )
+            )
+          );
+      }
+
+      result = result.With(
+        Rule.Init(":host").With(
+          new Flex(
+            this.props.center ? "center" : "flex-start",
             this.props.align === "center"
               ? "center"
               : this.props.align === "right"
               ? "flex-end"
-              : "flex-start",
-          flexWrap: "wrap",
-        },
-      };
+              : this.props.align === "left"
+              ? "flex-start"
+              : "stretch",
+            true
+          )
+        )
+      );
+
+      return result;
     },
   }
 );

@@ -1,8 +1,11 @@
 import { IsLiteral, IsUnion, Optional } from "@paulpopat/safe-type";
 import Define from "Src/Component";
+import Css, { Rule } from "Src/CSS";
 import Jsx from "Src/Jsx";
-import { CT } from "Src/Theme";
+import Padding from "Src/styles/Padding";
+import { CT, TextVariants } from "Src/Theme";
 import C from "Src/utils/Class";
+import { IsOneOf } from "Src/utils/Type";
 
 const IsTypographBase = {
   align: Optional(
@@ -12,76 +15,26 @@ const IsTypographBase = {
 };
 
 Define(
-  "p-heading",
+  "p-text",
   {
     ...IsTypographBase,
-    level: IsUnion(
-      IsLiteral("1"),
-      IsLiteral("2"),
-      IsLiteral("3"),
-      IsLiteral("4"),
-      IsLiteral("5"),
-      IsLiteral("6")
-    ),
-    display: Optional(IsLiteral(true)),
+    variant: IsOneOf(...TextVariants),
   },
   {},
   {
     render() {
       return Jsx.Element(
-        ("h" + this.props.level) as any,
-        { class: C("heading", ["display", !!this.props.display]) },
+        ("h" + CT.text[this.props.variant].Tag) as any,
+        { class: "text" },
         <slot />
       );
     },
     css() {
-      return {
-        ".heading": {
-          fontSize: (CT.text.size as any)["h" + this.props.level],
-          fontFamily: CT.text.font_family,
-          fontWeight: CT.text.weight.heading,
-          lineHeight: CT.text.line_height,
-          margin: this.props["no-margin"] ? "0" : `0 0 ${CT.padding.text_lg}`,
-          textAlign: this.props.align,
-        },
-        ".display": {
-          fontSize: (CT.text.size as any)["display_h" + this.props.level],
-          fontWeight: CT.text.weight.display,
-        },
-      };
-    },
-  }
-);
-
-Define(
-  "p-body",
-  {
-    ...IsTypographBase,
-    lead: Optional(IsLiteral(true)),
-  },
-  {},
-  {
-    render() {
-      return (
-        <p class={C("body", ["lead", !!this.props.lead])}>
-          <slot />
-        </p>
+      return Css.Init().With(
+        Rule.Init(".text")
+          .With(CT.text[this.props.variant])
+          .With("text-align", this.props.align ?? "left")
       );
-    },
-    css() {
-      return {
-        ".body": {
-          fontSize: CT.text.size.body,
-          fontFamily: CT.text.font_family,
-          fontWeight: CT.text.weight.body,
-          lineHeight: CT.text.line_height,
-          margin: this.props["no-margin"] ? "0" : `0 0 ${CT.padding.text_sm}`,
-          textAlign: this.props.align,
-        },
-        ".lead": {
-          fontSize: CT.text.size.body_large,
-        },
-      };
     },
   }
 );
@@ -106,20 +59,17 @@ Define(
       return Jsx.Element(tag, { class: "list" }, <slot />);
     },
     css() {
-      return {
-        ".list": {
-          fontSize: CT.text.size.body,
-          fontFamily: CT.text.font_family,
-          fontWeight: CT.text.weight.body,
-          lineHeight: CT.text.line_height,
-          paddingLeft: CT.padding.block,
-          marginBottom: this.props["no-margin"] ? "0" : CT.padding.text_sm,
-          textAlign: this.props.align,
-        },
-        ".list .list": {
-          marginBottom: "0",
-        },
-      };
+      return Css.Init().With(
+        Rule.Init(".list")
+          .With(CT.text.body.WithPadding(new Padding("margin", "0")))
+          .With(CT.padding.block.LeftOnly())
+          .With("text-align", this.props.align ?? "left")
+          .With(
+            "margin-bottom",
+            this.props["no-margin"] ? "0" : CT.text.body.Padding.Bottom
+          )
+          .With("child", Rule.Init(".list").With("margin-bottom", "0"))
+      );
     },
   }
 );

@@ -1,8 +1,10 @@
 import Jsx from "Src/Jsx";
 import Define from "Src/Component";
 import { IsOneOf } from "Src/utils/Type";
-import { ColourNames, CT, FromText, GetColour } from "Src/Theme";
+import { ColourNames, CT, GetColour } from "Src/Theme";
 import { IsLiteral, Optional } from "@paulpopat/safe-type";
+import Css, { CssProperty, Rule } from "Src/CSS";
+import Absolute from "Src/styles/Absolute";
 
 Define(
   "p-badge",
@@ -13,25 +15,19 @@ Define(
       return <slot />;
     },
     css() {
-      const colour = GetColour(this.props.colour);
-      return {
-        ":host": {
-          backgroundColor: colour,
-          color: FromText(colour),
-          padding: `${CT.padding.badge} ${CT.padding.text_sm}`,
-          display: "inline-block",
-          borderRadius: CT.border.radius,
-          ...(this.props["top-right"]
-            ? {
-                position: "absolute",
-                top: "0",
-                right: "0",
-                transform: `translate(50%, -50%)`,
-                boxShadow: CT.border.standard_box_shadow,
-              }
-            : {}),
-        },
-      };
+      let rule = Rule.Init(":host")
+        .With(GetColour(this.props.colour))
+        .With(CT.padding.badge)
+        .With("display", "inline-block")
+        .With(CT.border.small);
+      if (this.props["top-right"])
+        rule = rule
+          .With(
+            new Absolute({ top: "0", right: "0", translate: ["50%", "-50%"] })
+          )
+          .With(CT.box_shadow.small);
+
+      return Css.Init().With(rule);
     },
   }
 );

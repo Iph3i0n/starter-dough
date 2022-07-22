@@ -1,4 +1,5 @@
 import { Checker, IsObject } from "@paulpopat/safe-type";
+import Css from "./CSS";
 import RenderCSS from "./CSS";
 import { Context } from "./utils/Context";
 import { NodeModel, ReplaceHtml } from "./utils/Html";
@@ -28,11 +29,9 @@ type ComponentContext<TProps extends Props, TState> = {
   use_context<T>(context: Context<T>): T;
 };
 
-type CSS = any;
-
 type ComponentSpec<TProps extends Props, TState> = {
   render: (this: ComponentContext<TProps, TState>) => NodeModel[];
-  css?: (this: ComponentContext<TProps, TState>) => CSS;
+  css?: (this: ComponentContext<TProps, TState>) => Css;
   additional_css?: string;
 };
 
@@ -76,9 +75,9 @@ export default function Define<TProps extends Props, TState extends object>(
         return attributes;
       }
 
-      private set Styles(styles: any) {
+      private set Styles(styles: Css | undefined) {
         this.styles.textContent =
-          RenderCSS(styles) + (spec.additional_css ?? "");
+          styles?.toString() + (spec.additional_css ?? "");
         this.shadow.append(this.styles);
       }
 

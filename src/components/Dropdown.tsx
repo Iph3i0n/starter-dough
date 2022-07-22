@@ -3,7 +3,11 @@ import Define from "Src/Component";
 import { IsString } from "@paulpopat/safe-type";
 import { IsHtmlElement } from "Src/utils/Type";
 import { GetMousePosition } from "Src/utils/Mouse";
-import { CT, FromText, GetColour } from "Src/Theme";
+import { CT, GetColour } from "Src/Theme";
+import Css, { Keyframes, Rule } from "Src/CSS";
+import Absolute from "Src/styles/Absolute";
+import Animation from "Src/styles/Animation";
+import Transition from "Src/styles/Transition";
 
 Define(
   "p-dropdown",
@@ -33,31 +37,30 @@ Define(
       return <></>;
     },
     css() {
-      const [x, y] = this.state.position;
-      return {
-        div: {
-          position: "fixed",
-          top: y.toString() + "px",
-          left: x.toString() + "px",
-          background: GetColour(CT.colours.bg_surface),
-          borderRadius: CT.border.radius,
-          border: CT.border.standard_borders,
-          boxShadow: CT.border.standard_box_shadow,
-          animationDuration: CT.animation.time_fast,
-          animationName: "fade-in",
-          margin: "0",
-          overflow: "hidden",
-          minWidth: "10rem",
-        },
-        "@keyframes fade-in": {
-          from: {
-            opacity: "0",
-          },
-          to: {
-            opacity: "1",
-          },
-        },
-      };
+      const [x, y] = this.state.position as [number, number];
+      return Css.Init()
+        .With(
+          Keyframes.Init("fade-in")
+            .With(Rule.Init("from").With("opacity", "0"))
+            .With(Rule.Init("to").With("opacity", "1"))
+        )
+        .With(
+          Rule.Init("div")
+            .With(
+              new Absolute({
+                variant: "fixed",
+                top: y.toString() + "px",
+                left: x.toString() + "px",
+              })
+            )
+            .With(CT.colours.surface)
+            .With(CT.border.small)
+            .With(CT.box_shadow.large)
+            .With(new Animation("fade-in", "fast"))
+            .With("margin", "hidden")
+            .With("overflow", "hidden")
+            .With("min-width", "10rem")
+        );
     },
   }
 );
@@ -77,29 +80,21 @@ Define(
       );
     },
     css() {
-      return {
-        button: {
-          padding: CT.padding.block,
-          cursor: "pointer",
-          background: GetColour(CT.colours.bg_surface),
-          color: FromText(GetColour(CT.colours.bg_surface)),
-          fontFamily: CT.text.font_family,
-          fontSize: CT.text.size.body,
-          fontWeight: CT.text.weight.body,
-          lineHeight: CT.text.line_height,
-          transition: `background-color ${CT.animation.time_fast}, color ${CT.animation.time_fast}`,
-          display: "block",
-          border: "none",
-          boxShadow: "none",
-          margin: "0",
-          width: "100%",
-          textAlign: "left",
-        },
-        "button:hover": {
-          backgroundColor: GetColour(CT.colours.bg_dark),
-          color: FromText(GetColour(CT.colours.bg_dark)),
-        },
-      };
+      return Css.Init()
+        .With(
+          Rule.Init("button")
+            .With(CT.padding.block)
+            .With("cursor", "pointer")
+            .With(CT.colours.surface)
+            .With(CT.text.body)
+            .With(new Transition("fast", "background-color", "color"))
+            .With("display", "block")
+            .With("border", "none")
+            .With("box-shadow", "none")
+            .With("width", "100%")
+            .With("text-align", "left")
+        )
+        .With(Rule.Init("button:hover").With(CT.colours.contrast));
     },
   }
 );
@@ -113,18 +108,15 @@ Define(
       return <hr />;
     },
     css() {
-      return {
-        hr: {
-          display: "block",
-          border: "none",
-          boxShadow: "none",
-          margin: "0",
-          width: "100%",
-          borderBottom: `${CT.border.width} solid ${GetColour(
-            CT.colours.body_dark
-          )}`,
-        },
-      };
+      return Css.Init().With(
+        Rule.Init("hr")
+          .With("display", "block")
+          .With("border", "none")
+          .With("box-shadow", "none")
+          .With("margin", "0")
+          .With("width", "100%")
+          .With(CT.border.standard.WithDirection(["bottom"]).WithRadius("0"))
+      );
     },
   }
 );

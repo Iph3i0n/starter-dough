@@ -1,5 +1,9 @@
-import Colour, { IsColour } from "./utils/Colour";
+import Border from "./styles/Border";
+import BoxShadow from "./styles/BoxShadow";
+import Colour from "./styles/Colour";
+import Font from "./styles/Font";
 import Object from "./utils/Object";
+import Padding from "./styles/Padding";
 
 export const PreferDark = window.matchMedia(
   "(prefers-color-scheme: dark)"
@@ -10,73 +14,155 @@ export const PreferNoMotion = window.matchMedia(
 
 const DefaultTheme = {
   padding: {
-    text_sm: "0.5rem",
-    text_lg: "1rem",
-    block: "1rem",
-    badge: "0.2rem",
+    block: new Padding("padding", "1rem"),
+    badge: new Padding("padding", "0.2rem"),
+    input: new Padding("padding", "0.5rem", "0.75rem"),
   },
   border: {
-    radius: "0.5rem",
-    radius_sm: "0.25rem",
-    width: "2px",
-    standard_borders: "none",
-    standard_box_shadow: "0 0 10px rgba(0, 0, 0, 0.1)",
+    standard: new Border({
+      width: "1px",
+      style: "solid",
+      colour: new Colour("#666"),
+      radius: "0.5rem",
+    }),
+    small: new Border({
+      width: "1px",
+      style: "solid",
+      colour: new Colour("#666"),
+      radius: "0.25rem",
+    }),
+    check: new Border({
+      width: "2px",
+      style: "solid",
+      colour: new Colour("#222"),
+      radius: "1rem",
+    }),
+  },
+  box_shadow: {
+    large: new BoxShadow({
+      blur: "10px",
+      colour: new Colour(PreferDark ? [100, 100, 100, 0.1] : [0, 0, 0, 0.1]),
+    }),
+    small: new BoxShadow({
+      blur: "4px",
+      colour: new Colour(PreferDark ? [100, 100, 100, 0.5] : [0, 0, 0, 0.5]),
+    }),
   },
   text: {
-    font_family: '"Poppins", sans-serif',
-    line_height: "1.2",
-    size: {
-      display_h1: "5rem",
-      display_h2: "4.5rem",
-      display_h3: "4rem",
-      display_h4: "3.5rem",
-      display_h5: "3rem",
-      display_h6: "2.5rem",
-      h1: "3rem",
-      h2: "2.5rem",
-      h3: "2rem",
-      h4: "1.75rem",
-      h5: "1.5rem",
-      h6: "1.25rem",
-      body: "1rem",
-      body_large: "1.1rem",
-      small: "0.75rem",
-    },
-    weight: {
-      heading: "700",
-      display: "300",
-      body: "500",
-    },
-  },
-  colour_store: {
-    red: new Colour("#f94144"),
-    "dark-orange": new Colour("#f3722c"),
-    orange: new Colour("#f8961e"),
-    "light-orange": new Colour("#f9844a"),
-    yellow: new Colour("#f9c74f"),
-    green: new Colour("#90be6d"),
-    teal: new Colour("#43aa8b"),
-    "dark-teal": new Colour("#4d908e"),
-    "dark-blue": new Colour("#577590"),
-    blue: new Colour("#277da1"),
-    dark: new Colour(PreferDark ? "#f7f7f7" : "#222"),
-    light: new Colour("#fff"),
-    shadow: PreferDark
-      ? new Colour([174, 174, 174, 0.2])
-      : new Colour([34, 34, 34, 0.2]),
-    faded: new Colour("#666"),
-    background: new Colour(PreferDark ? "#242424" : "#ffffff"),
-    surface: new Colour(PreferDark ? "#2e2d2d" : "#f7f7f7"),
+    display_h1: new Font({
+      weight: "300",
+      size: "5rem",
+      family: '"Poppins", sans-serif',
+      padding: new Padding("margin", "1rem", "0"),
+      tag: "h1",
+    }),
+    display_h2: new Font({
+      weight: "300",
+      size: "4.5rem",
+      family: '"Poppins", sans-serif',
+      padding: new Padding("margin", "1rem", "0"),
+      tag: "h2",
+    }),
+    display_h3: new Font({
+      weight: "300",
+      size: "4rem",
+      family: '"Poppins", sans-serif',
+      padding: new Padding("margin", "1rem", "0"),
+      tag: "h3",
+    }),
+    display_h4: new Font({
+      weight: "300",
+      size: "3.5rem",
+      family: '"Poppins", sans-serif',
+      padding: new Padding("margin", "1rem", "0"),
+      tag: "h4",
+    }),
+    display_h5: new Font({
+      weight: "300",
+      size: "3rem",
+      family: '"Poppins", sans-serif',
+      padding: new Padding("margin", "1rem", "0"),
+      tag: "h5",
+    }),
+    display_h6: new Font({
+      weight: "300",
+      size: "4.5rem",
+      family: '"Poppins", sans-serif',
+      padding: new Padding("margin", "1rem", "0"),
+      tag: "h6",
+    }),
+    h1: new Font({
+      weight: "700",
+      size: "3rem",
+      family: '"Poppins", sans-serif',
+      padding: new Padding("margin", "1rem", "0"),
+      tag: "h1",
+    }),
+    h2: new Font({
+      weight: "700",
+      size: "2.5rem",
+      family: '"Poppins", sans-serif',
+      padding: new Padding("margin", "1rem", "0"),
+      tag: "h2",
+    }),
+    h3: new Font({
+      weight: "700",
+      size: "2rem",
+      family: '"Poppins", sans-serif',
+      padding: new Padding("margin", "1rem", "0"),
+      tag: "h3",
+    }),
+    h4: new Font({
+      weight: "700",
+      size: "1.75rem",
+      family: '"Poppins", sans-serif',
+      padding: new Padding("margin", "1rem", "0"),
+      tag: "h4",
+    }),
+    h5: new Font({
+      weight: "700",
+      size: "1.5rem",
+      family: '"Poppins", sans-serif',
+      padding: new Padding("margin", "1rem", "0"),
+      tag: "h5",
+    }),
+    h6: new Font({
+      weight: "700",
+      size: "1.25rem",
+      family: '"Poppins", sans-serif',
+      padding: new Padding("margin", "1rem", "0"),
+      tag: "h6",
+    }),
+    body: new Font({
+      weight: "500",
+      size: "1rem",
+      family: '"Poppins", sans-serif',
+      padding: new Padding("margin", "0.5rem", "0"),
+      tag: "p",
+    }),
+    body_large: new Font({
+      weight: "500",
+      size: "1.1rem",
+      family: '"Poppins", sans-serif',
+      padding: new Padding("margin", "0.5rem", "0"),
+      tag: "p",
+    }),
+    small: new Font({
+      weight: "500",
+      size: "0.75rem",
+      family: '"Poppins", sans-serif',
+      padding: new Padding("margin", "0.5rem", "0"),
+      tag: "small",
+    }),
   },
   colours: {
-    body_dark: "dark" as const,
-    body_white: "light" as const,
-    body_fade: "faded" as const,
-    bg_white: "background" as const,
-    bg_surface: "surface" as const,
-    bg_dark: "faded" as const,
-    anchor: "blue" as const,
-    box_shadow: "shadow" as const,
+    body: new Colour(PreferDark ? "#242424" : "#fff"),
+    surface: new Colour(PreferDark ? "#2e2d2d" : "#f7f7f7"),
+    contrast: new Colour("#666"),
+    anchor: new Colour([0, 0, 0, 0], "#277da1"),
+    faded_text: new Colour([0, 0, 0, 0], "#666"),
+    red: new Colour("#f33"),
+    green: new Colour("#3f3"),
   },
   screen: {
     xs: { breakpoint: "0px", width: "320px" },
@@ -86,8 +172,8 @@ const DefaultTheme = {
     xl: { breakpoint: "1440px", width: "1400px" },
   },
   animation: {
-    time_fast: PreferNoMotion ? "0ms" : "100ms",
-    time_slow: PreferNoMotion ? "0ms" : "500ms",
+    fast: PreferNoMotion ? "0ms" : "100ms",
+    slow: PreferNoMotion ? "0ms" : "500ms",
   },
 };
 
@@ -95,22 +181,20 @@ export const CT = Object.DeepMerge(DefaultTheme, (window as any).Theme ?? {});
 
 export const Columns = 12;
 
-export const Colours = Object.Keys(CT.colour_store).length;
+export const Colours = Object.Keys(CT.colours).length;
 
-type ColourName = keyof typeof CT["colour_store"];
+type ColourName = keyof typeof CT["colours"];
 
-export const ColourNames = Object.Keys(CT.colour_store);
+export const ColourNames = Object.Keys(CT.colours);
 
 export const Sizes = Object.Keys(CT.screen);
 
 export type Size = typeof Sizes[number];
 
-export function GetColour(name: ColourName): Colour {
-  return CT.colour_store[name];
-}
+export type Speed = keyof typeof CT["animation"];
 
-export function FromText(item: Colour) {
-  const target = CT.colour_store[item.Text];
-  if (!IsColour(target)) return "";
-  return target;
+export const TextVariants = Object.Keys(CT.text);
+
+export function GetColour(name: ColourName): Colour {
+  return CT.colours[name];
 }
