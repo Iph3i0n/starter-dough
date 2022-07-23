@@ -25,7 +25,12 @@ Define(
                   class="close-button"
                   on_click={() => this.set_state({ open: false })}
                 >
-                  <p-icon name="close" size="2rem" colour="light" />
+                  <p-icon
+                    name="close"
+                    size="2rem"
+                    colour={this.props.colour}
+                    text
+                  />
                 </div>
               )}
             </div>
@@ -50,9 +55,7 @@ Define(
             .With("opacity", "1")
             .With(new Transition("fast", "opacity"))
         )
-        .With(
-          Rule.Init(".close-button:hover").With("opacity", "0.5")
-        );
+        .With(Rule.Init(".close-button:hover").With("opacity", "0.5"));
     },
   }
 );

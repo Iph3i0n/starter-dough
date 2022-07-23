@@ -190,7 +190,7 @@ Define(
             {this.props.help && (
               <span class="help-text">{this.props.help}</span>
             )}
-            <p-icon name="arrow-down-s" size="35px" colour="dark" />
+            <p-icon name="arrow-down-s" size="35px" colour="body" text />
           </p-col>
         </p-row>
       );

@@ -1,10 +1,10 @@
-import { IsLiteral, IsUnion, Optional } from "@paulpopat/safe-type";
+import { IsLiteral, IsString, IsUnion, Optional } from "@paulpopat/safe-type";
 import Define from "Src/Component";
 import Css, { Rule } from "Src/CSS";
 import Jsx from "Src/Jsx";
 import Padding from "Src/styles/Padding";
+import Transition from "Src/styles/Transition";
 import { CT, TextVariants } from "Src/Theme";
-import C from "Src/utils/Class";
 import { IsOneOf } from "Src/utils/Type";
 
 const IsTypographBase = {
@@ -84,6 +84,41 @@ Define(
         <li>
           <slot />
         </li>
+      );
+    },
+  }
+);
+
+Define(
+  "p-link",
+  {
+    href: Optional(IsString),
+  },
+  {},
+  {
+    render() {
+      return (
+        <a {...this.props}>
+          <slot />
+        </a>
+      );
+    },
+    css() {
+      return Css.Init().With(
+        Rule.Init("a")
+          .With(
+            "disabled" in this.props ? CT.colours.anchor : CT.colours.faded_text
+          )
+          .With("opacity", "1")
+          .With(new Transition("fast", "opacity"))
+          .With(
+            "modifier",
+            Rule.Init(":hover")
+              .With("opacity", "0.7")
+              .With("text-deoration", "underline")
+          )
+          .With("text-decoration", "none")
+          .With("cursor", "pointer")
       );
     },
   }

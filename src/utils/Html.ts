@@ -99,3 +99,28 @@ export function IsLastChild(target: Element) {
 export function IsChildOf(target: Element, tag: string) {
   return target.parentElement?.tagName.toLowerCase() === tag;
 }
+
+export function On<K extends keyof DocumentEventMap>(
+  selector: string,
+  event: K,
+  listener: (this: Element, ev: DocumentEventMap[K]) => any,
+  options?: boolean | AddEventListenerOptions
+) {
+  const final = function (this: Document, e: DocumentEventMap[K]) {
+    if (
+      Array.prototype.indexOf.call(
+        document.querySelectorAll(selector),
+        e.target
+      ) !== -1
+    )
+      listener.bind(e.target as Element, e)();
+  };
+
+  document.addEventListener(event, final, options);
+
+  return {
+    Off() {
+      document.removeEventListener(event, final, options);
+    },
+  };
+}

@@ -7,7 +7,7 @@ import Flex from "Src/styles/Flex";
 import Transition from "Src/styles/Transition";
 import { ColourNames, CT, GetColour } from "Src/Theme";
 import C from "Src/utils/Class";
-import Router from "Src/utils/Router";
+import { On } from "Src/utils/Html";
 import { IsOneOf } from "Src/utils/Type";
 
 const SharedStyles = Css.Init()
@@ -62,27 +62,27 @@ const SharedStyles = Css.Init()
 
 Define(
   "p-modal",
-  { query: IsString, large: Optional(IsLiteral(true)) },
-  {},
+  { watch: IsString, large: Optional(IsLiteral(true)) },
+  { open: false },
   {
     render() {
+      this.listen("load", () =>
+        On(this.props.watch, "click", () => this.set_state({ open: true }))
+      );
       return (
-        <section
-          class={C("container", [
-            "open",
-            Router.Query[this.props.query].includes("true"),
-          ])}
-        >
-          <div class="backdrop" />
+        <section class={C("container", ["open", this.state.open])}>
+          <div
+            class="backdrop"
+            on_click={() => this.set_state({ open: false })}
+          />
           <div class="modal">
             <slot />
-            <p-link
+            <div
               class="close-button"
-              query-key={this.props.query}
-              query-value=""
+              on_click={() => this.set_state({ open: false })}
             >
-              <p-icon name="close" size="2rem" colour="contrast" />
-            </p-link>
+              <p-icon name="close" size="2rem" colour="body" text />
+            </div>
           </div>
         </section>
       );
@@ -120,32 +120,33 @@ Define(
 Define(
   "p-offcanvas",
   {
-    query: IsString,
+    watch: IsString,
     large: Optional(IsLiteral(true)),
     colour: Optional(IsOneOf(...ColourNames)),
   },
-  {},
+  { open: false },
   {
     render() {
+      this.listen("load", () => {
+        On(this.props.watch, "click", () => this.set_state({ open: true }));
+      });
+
       return (
-        <section
-          class={C("container", [
-            "open",
-            Router.Query[this.props.query]?.includes("true"),
-          ])}
-        >
-          <div class="backdrop" />
+        <section class={C("container", ["open", this.state.open])}>
+          <div
+            class="backdrop"
+            on_click={() => this.set_state({ open: false })}
+          />
           <div class="offcanvas">
             <div class="content">
               <slot />
             </div>
-            <p-link
+            <div
               class="close-button"
-              query-key={this.props.query}
-              query-value=""
+              on_click={() => this.set_state({ open: false })}
             >
-              <p-icon name="close" size="2rem" colour="contrast" />
-            </p-link>
+              <p-icon name="close" size="2rem" colour="body" text />
+            </div>
           </div>
         </section>
       );

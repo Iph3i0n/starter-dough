@@ -150,6 +150,14 @@ export default class Colour extends CssProperty {
     ]);
   }
 
+  public OnlyText() {
+    return new Colour([0, 0, 0, 0], this.Text);
+  }
+
+  public AsText() {
+    return new Colour([0, 0, 0, 0], this.colour);
+  }
+
   public override get Properties() {
     return [
       { name: "color", value: ToString(this.Text) },
