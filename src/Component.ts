@@ -9,7 +9,13 @@ type PropsChecker<TProps extends Props> = {
   [TKey in keyof TProps]: Checker<TProps[TKey]>;
 };
 
-type ComponentEvent = "render" | "load" | "unload" | "moved" | "children";
+type ComponentEvent =
+  | "render"
+  | "load"
+  | "unload"
+  | "moved"
+  | "children"
+  | "props";
 
 function Register(tag: string, extension?: string) {
   return (target: new (...params: any[]) => HTMLElement) => {
@@ -128,6 +134,7 @@ abstract class Component<TProps extends Props, TState> extends HTMLElement {
   public connectedCallback() {
     this.PerformRender();
     this.Trigger("load");
+    this.Trigger("props");
     this.initialised = true;
   }
 
@@ -144,6 +151,7 @@ abstract class Component<TProps extends Props, TState> extends HTMLElement {
     if (!this.initialised) return;
 
     this.PerformRender();
+    this.Trigger("props");
   }
 }
 

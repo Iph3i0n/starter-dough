@@ -186,7 +186,7 @@ export const Columns = 12;
 
 export const Colours = Object.Keys(CT.colours).length;
 
-type ColourName = keyof typeof CT["colours"];
+export type ColourName = keyof typeof CT["colours"];
 
 export const ColourNames = Object.Keys(CT.colours);
 

@@ -7,6 +7,7 @@ export default class Flex extends CssProperty {
     private readonly schema?: {
       wrap?: boolean;
       direction?: "row" | "row-reverse" | "column" | "column-reverse";
+      inline?: boolean;
     }
   ) {
     super();
@@ -14,7 +15,7 @@ export default class Flex extends CssProperty {
 
   public override get Properties() {
     const result = [
-      { name: "display", value: "flex" },
+      { name: "display", value: this.schema?.inline ? "inline-flex" : "flex" },
       { name: "align-items", value: this.align },
       { name: "justify-content", value: this.justify },
     ];
