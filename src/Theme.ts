@@ -176,6 +176,8 @@ const DefaultTheme = {
     fast: PreferNoMotion ? "0ms" : "100ms",
     slow: PreferNoMotion ? "0ms" : "500ms",
   },
+  font_url:
+    "https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;500&family=Raleway:wght@300;500;700&display=swap",
 };
 
 export const CT = Object.DeepMerge(DefaultTheme, (window as any).Theme ?? {});

@@ -1,7 +1,19 @@
+import Css, { Rule } from "Src/CSS";
+import Padding from "Src/styles/Padding";
 import { CT } from "Src/Theme";
-import "../../resources/app.css";
 
 document.addEventListener("DOMContentLoaded", function () {
-  document.body.style.backgroundColor = CT.colours.body.Hex;
-  document.body.style.margin = "0";
+  const style = document.createElement("style");
+  style.textContent =
+    Css.Init()
+      .With(
+        Rule.Init("body")
+          .With(CT.colours.body)
+          .With(CT.text.body.WithPadding(new Padding("margin", "0")))
+      )
+      .toString() +
+    `@import url("${CT.font_url}");
+  `;
+
+  document.head.append(style);
 });
