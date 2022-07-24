@@ -24,7 +24,7 @@ Define(
       const props = this.Props as any;
       if ("href" in props)
         return (
-          <a {...props} class="button">
+          <a href={props.href} class="button">
             <slot />
           </a>
         );
@@ -38,10 +38,8 @@ Define(
         );
       }
 
-      const handler = props["on-click"];
-      const on_click = handler ? (window as any)[handler] : () => {};
       return (
-        <button {...props} class="button" on_click={(e: any) => on_click(e)}>
+        <button type={props.type} class="button">
           <slot />
         </button>
       );
@@ -92,7 +90,8 @@ Define(
           Rule.Init(".button:hover").With(
             GetColour(this.Props.colour).GreyscaleTransform(120)
           )
-        );
+        )
+        .With(Rule.Init(":host").With("display", "inline-block"));
     },
   }
 );

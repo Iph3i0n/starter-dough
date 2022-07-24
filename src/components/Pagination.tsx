@@ -29,7 +29,7 @@ Define(
       const click =
         (skip: number, take: number, total: number) => (e: MouseEvent) => {
           e.preventDefault();
-          this.dispatchEvent(new PageEvent(Math.max(skip, 0), take, total));
+          this.dispatchEvent(new PageEvent(Math.max(skip, 0), Math.min(skip, total - take), total));
         };
 
       return (

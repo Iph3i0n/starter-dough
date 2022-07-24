@@ -1,6 +1,6 @@
 import Jsx from "Src/Jsx";
 import Define from "Src/Component";
-import { Sizes, CT } from "Src/Theme";
+import { Sizes, CT, ColourNames, GetColour } from "Src/Theme";
 import C from "Src/utils/Class";
 import { IsLiteral, IsString, IsUnion, Optional } from "@paulpopat/safe-type";
 import Object from "Src/utils/Object";
@@ -8,10 +8,15 @@ import Css, { Media, Rule } from "Src/CSS";
 import Padding from "Src/styles/Padding";
 import Grid from "Src/styles/Grid";
 import Flex from "Src/styles/Flex";
+import { IsOneOf } from "Src/utils/Type";
 
 Define(
   "p-container",
-  { "full-width": Optional(IsLiteral(true)), flush: Optional(IsLiteral(true)) },
+  {
+    "full-width": Optional(IsLiteral(true)),
+    flush: Optional(IsLiteral(true)),
+    colour: Optional(IsOneOf(...ColourNames)),
+  },
   {},
   {
     render() {
@@ -22,15 +27,16 @@ Define(
       );
     },
     css() {
-      let result: Css = Css.Init()
+      let section = Rule.Init("section")
+        .With("margin", "auto")
+        .With("max-width", "100%")
         .With(
-          Rule.Init("section")
-            .With("margin", "auto")
-            .With("max-width", "100%")
-            .With(
-              this.Props.flush ? new Padding("padding", "0") : CT.padding.block
-            )
-        )
+          this.Props.flush ? new Padding("padding", "0") : CT.padding.block
+        );
+      if (this.Props.colour)
+        section = section.With(GetColour(this.Props.colour));
+      let result: Css = Css.Init()
+        .With(section)
         .With(Rule.Init("section.full-width").With("max-width", "100%"));
 
       for (const size of Sizes) {
@@ -75,9 +81,9 @@ Define(
   "p-col",
   {
     ...Object.MapArrayAsKeys(Sizes, (k) => Optional(IsString)),
-    center: Optional(IsLiteral(true)),
+    centre: Optional(IsLiteral(true)),
     align: Optional(
-      IsUnion(IsLiteral("left"), IsLiteral("center"), IsLiteral("right"))
+      IsUnion(IsLiteral("left"), IsLiteral("centre"), IsLiteral("right"))
     ),
   },
   {},
@@ -100,12 +106,12 @@ Define(
           );
       }
 
-      if (this.Props.center || this.Props.align)
+      if (this.Props.centre || this.Props.align)
         result = result.With(
           Rule.Init(":host").With(
             new Flex(
-              this.Props.center ? "center" : "flex-start",
-              this.Props.align === "center"
+              this.Props.centre ? "center" : "flex-start",
+              this.Props.align === "centre"
                 ? "center"
                 : this.Props.align === "right"
                 ? "flex-end"
