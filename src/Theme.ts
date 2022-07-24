@@ -176,6 +176,7 @@ const DefaultTheme = {
     fast: PreferNoMotion ? "0ms" : "100ms",
     slow: PreferNoMotion ? "0ms" : "500ms",
   },
+  animation_curve: "linear",
   font_url:
     "https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;500&family=Raleway:wght@300;500;700&display=swap",
 };

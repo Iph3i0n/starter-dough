@@ -14,7 +14,7 @@ export default class Transition extends CssProperty {
       {
         name: "transition",
         value: this.targets
-          .map((t) => `${t} ${CT.animation[this.speed]}`)
+          .map((t) => `${t} ${CT.animation[this.speed]} ${CT.animation_curve}`)
           .join(", "),
       },
     ];

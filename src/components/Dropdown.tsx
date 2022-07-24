@@ -23,8 +23,8 @@ Define(
             !IsHtmlElement(target) ||
             target.id !== this.Props.target
           )
-            this.State = ({ ...this.State, open: false });
-          else this.State = ({ open: true, position: GetMousePosition() });
+            this.State = { ...this.State, open: false };
+          else this.State = { open: true, position: GetMousePosition() };
         })
       );
 
@@ -67,14 +67,12 @@ Define(
 
 Define(
   "p-dropdown-item",
-  { "on-click": IsString },
+  {},
   {},
   {
     render() {
-      const on_click = (window as any)[this.Props["on-click"]] ?? (() => {});
-
       return (
-        <button type="button" on_click={(e: any) => on_click(e)}>
+        <button type="button">
           <slot />
         </button>
       );

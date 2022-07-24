@@ -1,8 +1,9 @@
 import { IsLiteral, IsString, Optional } from "@paulpopat/safe-type";
 import Define from "Src/Component";
-import Css, { Rule } from "Src/CSS";
+import Css, { Keyframes, Rule } from "Src/CSS";
 import Jsx from "Src/Jsx";
 import Absolute from "Src/styles/Absolute";
+import Animation from "Src/styles/Animation";
 import Colour from "Src/styles/Colour";
 import Flex from "Src/styles/Flex";
 import Padding from "Src/styles/Padding";
@@ -12,7 +13,12 @@ import { IsOneOf } from "Src/utils/Type";
 
 Define(
   "p-progress",
-  { value: IsString, colour: IsString, labels: Optional(IsLiteral(true)) },
+  {
+    value: IsString,
+    colour: IsString,
+    labels: Optional(IsLiteral(true)),
+    striped: Optional(IsLiteral(true)),
+  },
   { values: [] as (readonly [number, Colour])[] },
   {
     render() {
@@ -42,6 +48,8 @@ Define(
               {this.Props.labels && <>{value.toString() + "%"}</>}
             </div>
           ))}
+
+          {this.Props.striped && <div class="striped" />}
         </div>
       );
     },
@@ -77,6 +85,40 @@ Define(
             .With("width", final + "%")
         );
       });
+
+      if (this.Props.striped)
+        result = result
+          .With(
+            Keyframes.Init("stripes")
+              .With(Rule.Init("from").With("background-position-x", "0"))
+              .With(
+                Rule.Init("to").With(
+                  "background-position-x",
+                  CT.padding.block.X
+                )
+              )
+          )
+          .With(
+            Rule.Init(".striped")
+              .With(
+                "background-image",
+                "linear-gradient(45deg,rgba(255,255,255,.15) 25%,transparent 25%,transparent 50%,rgba(255,255,255,.15) 50%,rgba(255,255,255,.15) 75%,transparent 75%,transparent)"
+              )
+              .With(
+                new Absolute({
+                  top: "0",
+                  left: "0",
+                  width: used + "%",
+                  height: "100%",
+                })
+              )
+              .With(
+                "background-size",
+                CT.padding.block.X + " " + CT.padding.block.X
+              )
+              .With(new Animation("stripes", "slow", "infinite"))
+              .With("animation-iteration-count", "linear")
+          );
 
       return result;
     },

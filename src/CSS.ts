@@ -128,7 +128,7 @@ export class Keyframes {
   }
 
   public toString() {
-    return `@keyframes (${this.name}){${this.rules
+    return `@keyframes ${this.name}{${this.rules
       .map((r) => r.toString())
       .join("")}}`;
   }
