@@ -100,29 +100,24 @@ export function IsChildOf(target: Element, tag: string) {
   return target.parentElement?.tagName.toLowerCase() === tag;
 }
 
-export function On<K extends keyof DocumentEventMap>(
+export function On<K extends keyof HTMLElementEventMap>(
   selector: string,
   event: K,
-  listener: (this: Element, ev: DocumentEventMap[K]) => any,
+  listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any,
   options?: boolean | AddEventListenerOptions
 ) {
-  const final = function (this: Document, e: DocumentEventMap[K]) {
-    const targets = e.composedPath().filter(IsHtmlElement);
-    for (const target of targets)
-      if (
-        Array.prototype.indexOf.call(
-          (target.getRootNode() as HTMLElement).querySelectorAll(selector),
-          target
-        ) !== -1
-      )
-        listener.bind(target as Element, e)();
-  };
-
-  document.addEventListener(event, final, options);
+  const registered: HTMLElement[] = [];
+  document.querySelectorAll(selector);
+  for (const target of document.querySelectorAll(selector)) {
+    const t: HTMLElement = target as any;
+    registered.push(t);
+    t.addEventListener(event, listener, options);
+  }
 
   return {
     Off() {
-      document.removeEventListener(event, final, options);
+      for (const target of registered)
+        target.removeEventListener(event, listener, options);
     },
   };
 }

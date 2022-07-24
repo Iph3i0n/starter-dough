@@ -1,4 +1,4 @@
-import { IsString } from "@paulpopat/safe-type";
+import { IsString, Optional } from "@paulpopat/safe-type";
 import Define from "Src/Component";
 import Css, { Rule } from "Src/CSS";
 import Jsx from "Src/Jsx";
@@ -13,7 +13,8 @@ Define(
   {
     target: IsString,
     trigger: IsString,
-    position: IsOneOf("top", "bottom", "left", "right"),
+    position: Optional(IsOneOf("top", "bottom", "left", "right")),
+    on: Optional(IsOneOf("click", "hover")),
   },
   {
     open: false,
@@ -41,11 +42,28 @@ Define(
           current_width: current_bounds.width,
           current_height: current_bounds.height,
         };
-        On(
-          this.Props.trigger,
-          "click",
-          () => (this.State = { ...this.State, open: !this.State.open })
-        );
+
+        switch (this.Props.on) {
+          case "hover":
+            On(
+              this.Props.trigger,
+              "mouseenter",
+              () => (this.State = { ...this.State, open: true })
+            );
+            On(
+              this.Props.trigger,
+              "mouseleave",
+              () => (this.State = { ...this.State, open: false })
+            );
+            break;
+          case "click":
+          default:
+            On(
+              this.Props.trigger,
+              "click",
+              () => (this.State = { ...this.State, open: !this.State.open })
+            );
+        }
       });
 
       return <slot />;
@@ -53,15 +71,6 @@ Define(
     css() {
       const [translate_start, translate_end, position] = (() => {
         switch (this.Props.position) {
-          case "top":
-            return [
-              "translate(-50%, -5rem)",
-              `translate(-50%, -${CT.padding.block.Top})`,
-              {
-                top: this.State.top - this.State.current_height + "px",
-                left: this.State.left + this.State.width / 2 + "px",
-              },
-            ] as const;
           case "left":
             return [
               "translate(-5rem, -50%)",
@@ -89,6 +98,16 @@ Define(
                 left: this.State.left + this.State.width / 2 + "px",
               },
             ] as const;
+          case "top":
+          default:
+            return [
+              "translate(-50%, -5rem)",
+              `translate(-50%, -${CT.padding.block.Top})`,
+              {
+                top: this.State.top - this.State.current_height + "px",
+                left: this.State.left + this.State.width / 2 + "px",
+              },
+            ] as const;
         }
       })();
       return Css.Init().With(
@@ -103,12 +122,12 @@ Define(
           .With(CT.colours.surface)
           .With(CT.border.standard)
           .With(CT.box_shadow.large)
-          .With(CT.padding.block)
+          .With(CT.padding.small_block)
           .With("margin", "auto")
           .With("opacity", this.State.open ? "1" : "0")
           .With("transform", this.State.open ? translate_end : translate_start)
           .With("pointer-events", this.State.open ? "auto" : "none")
-          .With(new Transition("slow", "opacity", "transform"))
+          .With(new Transition("fast", "opacity", "transform"))
       );
     },
   }

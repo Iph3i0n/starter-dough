@@ -25,10 +25,10 @@ Define(
                   <img src={this.Props.icon} alt="" />
                 </div>
               </p-col>
-              <p-col xs="12" md="6" center>
+              <p-col xs="12" md="6" centre>
                 <slot />
               </p-col>
-              <p-col xs="12" md="4" lg="5" align="right" center>
+              <p-col xs="12" md="4" lg="5" align="right" centre>
                 <slot name="right" />
               </p-col>
             </p-row>

@@ -15,6 +15,7 @@ export const PreferNoMotion = window.matchMedia(
 const DefaultTheme = {
   padding: {
     block: new Padding("padding", "1rem"),
+    small_block: new Padding("padding", "0.5rem"),
     badge: new Padding("padding", "0.2rem"),
     input: new Padding("padding", "0.5rem", "0.75rem"),
   },
