@@ -66,20 +66,20 @@ Define(
   { open: false },
   {
     render() {
-      this.listen("load", () =>
-        On(this.props.watch, "click", () => this.set_state({ open: true }))
+      this.On("load", () =>
+        On(this.Props.watch, "click", () => (this.State = { open: true }))
       );
       return (
-        <section class={C("container", ["open", this.state.open])}>
+        <section class={C("container", ["open", this.State.open])}>
           <div
             class="backdrop"
-            on_click={() => this.set_state({ open: false })}
+            on_click={() => (this.State = { open: false })}
           />
           <div class="modal">
             <slot />
             <div
               class="close-button"
-              on_click={() => this.set_state({ open: false })}
+              on_click={() => (this.State = { open: false })}
             >
               <p-icon name="close" size="2rem" colour="body" text />
             </div>
@@ -100,8 +100,8 @@ Define(
                 height: "100%",
               })
             )
-            .With("max-width", this.props.large ? "60rem" : "40rem")
-            .With("max-height", this.props.large ? "40rem" : "30rem")
+            .With("max-width", this.Props.large ? "60rem" : "40rem")
+            .With("max-height", this.Props.large ? "40rem" : "30rem")
             .With("overflow", "auto")
             .With(CT.padding.block)
             .With(CT.padding.block.AsMargin())
@@ -113,7 +113,6 @@ Define(
         )
         .With(Rule.Init(".open .modal").With("transform", "translate(0, 0)"));
     },
-    render_on_loop: true,
   }
 );
 
@@ -127,15 +126,15 @@ Define(
   { open: false },
   {
     render() {
-      this.listen("load", () => {
-        On(this.props.watch, "click", () => this.set_state({ open: true }));
+      this.On("load", () => {
+        On(this.Props.watch, "click", () => (this.State = { open: true }));
       });
 
       return (
-        <section class={C("container", ["open", this.state.open])}>
+        <section class={C("container", ["open", this.State.open])}>
           <div
             class="backdrop"
-            on_click={() => this.set_state({ open: false })}
+            on_click={() => (this.State = { open: false })}
           />
           <div class="offcanvas">
             <div class="content">
@@ -143,7 +142,7 @@ Define(
             </div>
             <div
               class="close-button"
-              on_click={() => this.set_state({ open: false })}
+              on_click={() => (this.State = { open: false })}
             >
               <p-icon name="close" size="2rem" colour="body" text />
             </div>
@@ -152,8 +151,8 @@ Define(
       );
     },
     css() {
-      const colour = this.props.colour
-        ? GetColour(this.props.colour)
+      const colour = this.Props.colour
+        ? GetColour(this.Props.colour)
         : CT.colours.body;
       return SharedStyles.With(
         Rule.Init(".container").With(new Flex("center", "flex-start"))
@@ -167,7 +166,7 @@ Define(
                 height: "100%",
               })
             )
-            .With("max-width", this.props.large ? "60rem" : "40rem")
+            .With("max-width", this.Props.large ? "60rem" : "40rem")
             .With("overflow", "auto")
             .With(CT.padding.block)
             .With("margin", "0")
@@ -181,10 +180,9 @@ Define(
         .With(
           Rule.Init(".content").With(
             "width",
-            this.props.large ? "60rem" : "40rem"
+            this.Props.large ? "60rem" : "40rem"
           )
         );
     },
-    render_on_loop: true,
   }
 );

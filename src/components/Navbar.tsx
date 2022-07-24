@@ -22,7 +22,7 @@ Define(
             <p-row flush>
               <p-col xs="12" md="2" lg="1">
                 <div class="icon-area">
-                  <img src={this.props.icon} alt="" />
+                  <img src={this.Props.icon} alt="" />
                 </div>
               </p-col>
               <p-col xs="12" md="6" center>
@@ -37,10 +37,10 @@ Define(
       );
     },
     css() {
-      const colour = this.props.bg
-        ? GetColour(this.props.bg)
+      const colour = this.Props.bg
+        ? GetColour(this.Props.bg)
         : CT.colours.surface;
-      this.provide_context(Context, colour);
+      this.Provide(Context, colour);
       return Css.Init()
         .With(Rule.Init("nav").With(colour).With(CT.padding.block))
         .With(Rule.Init(".icon-area").With(new Flex("center", "space-between")))
@@ -59,22 +59,22 @@ Define(
   {},
   {
     render() {
-      if (this.props.href) {
+      if (this.Props.href) {
         return (
-          <a href={this.props.href} id={this.props.id}>
+          <a href={this.Props.href} id={this.Props.id}>
             <slot />
           </a>
         );
       }
 
       return (
-        <span id={this.props.id}>
+        <span id={this.Props.id}>
           <slot />
         </span>
       );
     },
     css() {
-      const colour = this.use_context(Context);
+      const colour = this.Use(Context);
       return Css.Init().With(
         Rule.Init("a, span")
           .With(CT.text.h6)

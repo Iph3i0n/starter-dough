@@ -15,20 +15,20 @@ Define(
   { open: false, position: [-1, -1] as readonly [number, number] },
   {
     render() {
-      this.listen("load", () =>
+      this.On("load", () =>
         document.addEventListener("click", (e) => {
           const target: Node | null = e.target as any;
           if (
             !target ||
             !IsHtmlElement(target) ||
-            target.id !== this.props.target
+            target.id !== this.Props.target
           )
-            this.set_state({ ...this.state, open: false });
-          else this.set_state({ open: true, position: GetMousePosition() });
+            this.State = ({ ...this.State, open: false });
+          else this.State = ({ open: true, position: GetMousePosition() });
         })
       );
 
-      if (this.state.open)
+      if (this.State.open)
         return (
           <div>
             <slot />
@@ -37,7 +37,7 @@ Define(
       return <></>;
     },
     css() {
-      const [x, y] = this.state.position as [number, number];
+      const [x, y] = this.State.position as [number, number];
       return Css.Init()
         .With(
           Keyframes.Init("fade-in")
@@ -71,7 +71,7 @@ Define(
   {},
   {
     render() {
-      const on_click = (window as any)[this.props["on-click"]] ?? (() => {});
+      const on_click = (window as any)[this.Props["on-click"]] ?? (() => {});
 
       return (
         <button type="button" on_click={(e: any) => on_click(e)}>

@@ -37,6 +37,6 @@ export function IsUnionWithBase<TBase, TOptions extends readonly any[]>(
   >;
 }
 
-export function IsHtmlElement(node: Node): node is HTMLElement {
-  return node && node.nodeType === node.ELEMENT_NODE;
+export function IsHtmlElement(node: any): node is HTMLElement {
+  return node && node.nodeType && node.nodeType === node.ELEMENT_NODE;
 }

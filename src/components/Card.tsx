@@ -15,10 +15,10 @@ Define(
     render() {
       return (
         <div class="card">
-          {"img" in this.props && (
+          {"img" in this.Props && (
             <img
-              src={this.props.img}
-              alt={this.props["img-alt"]}
+              src={this.Props.img}
+              alt={this.Props["img-alt"]}
               class="card-img-top"
             />
           )}

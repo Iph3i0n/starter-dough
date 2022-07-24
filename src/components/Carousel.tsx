@@ -28,15 +28,15 @@ Define(
   { current: 0, total: 0 },
   {
     render() {
-      this.provide_context(Context, this.state);
-      this.listen("children", function () {
-        if (this.child_elements.length !== this.state.total)
-          this.set_state({ ...this.state, total: this.child_elements.length });
+      this.Provide(Context, this.State);
+      this.On("children", () => {
+        if (this.ChildElements.length !== this.State.total)
+          this.State = { ...this.State, total: this.ChildElements.length };
       });
       const modify_index = (modifier: number) =>
-        this.set_state({
-          ...this.state,
-          current: Circularise(this.state.current + modifier, this.state.total),
+        (this.State = {
+          ...this.State,
+          current: Circularise(this.State.current + modifier, this.State.total),
         });
 
       return (
@@ -46,22 +46,22 @@ Define(
             <div class="arrow-button" on_click={() => modify_index(-1)}>
               <p-icon
                 name="arrow-left-s"
-                colour={this.props.colour}
+                colour={this.Props.colour}
                 size="4rem"
               />
             </div>
             <div class="toggles">
-              {Object.Range(this.state.total).map((_, i) => (
+              {Object.Range(this.State.total).map((_, i) => (
                 <div
-                  class={C("item-toggle", ["active", this.state.current === i])}
-                  on_click={() => this.set_state({ ...this.state, current: i })}
+                  class={C("item-toggle", ["active", this.State.current === i])}
+                  on_click={() => (this.State = { ...this.State, current: i })}
                 />
               ))}
             </div>
             <div class="arrow-button" on_click={() => modify_index(1)}>
               <p-icon
                 name="arrow-right-s"
-                colour={this.props.colour}
+                colour={this.Props.colour}
                 size="4rem"
               />
             </div>
@@ -76,10 +76,10 @@ Define(
             .With("overflow", "hidden")
             .With("position", "relative")
             .With("display", "block")
-            .With("height", this.props.height)
+            .With("height", this.Props.height)
             .With(CT.border.standard)
             .With(CT.box_shadow.large)
-            .With(GetColour(this.props.colour))
+            .With(GetColour(this.Props.colour))
         )
         .With(
           Rule.Init(".controls-overlay")
@@ -89,14 +89,14 @@ Define(
         .With(
           Rule.Init(".toggles")
             .With("align-self", "flex-end")
-            .With(new Grid(this.state.total, CT.padding.block.Y))
+            .With(new Grid(this.State.total, CT.padding.block.Y))
             .With(CT.padding.block.AsMargin().BottomOnly())
             .With("width", "50%")
         )
         .With(
           Rule.Init(".item-toggle")
             .With("height", "0.2rem")
-            .With(GetColour(this.props.colour))
+            .With(GetColour(this.Props.colour))
             .With("opacity", "0.5")
             .With("cursor", "pointer")
             .With(new Transition("fast", "height", "opacity"))
@@ -124,14 +124,14 @@ Define(
     render() {
       return (
         <div>
-          <img src={this.props.img} alt="" />
+          <img src={this.Props.img} alt="" />
           <slot />
         </div>
       );
     },
     css() {
-      const { current } = this.use_context(Context);
-      const index = GetIndexOfParent(this.ele);
+      const { current } = this.Use(Context);
+      const index = GetIndexOfParent(this);
       const is_current = index === current;
       return Css.Init()
         .With(

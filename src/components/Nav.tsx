@@ -44,17 +44,17 @@ Define(
   { links: [] as Crumb[] },
   {
     render() {
-      this.provide_context(Context, (index, name, url, id) => {
-        const input = Array.isArray(this.state.links)
-          ? [...this.state.links]
+      this.Provide(Context, (index, name, url, id) => {
+        const input = Array.isArray(this.State.links)
+          ? [...this.State.links]
           : [];
         input[index] = { name, url, id };
-        this.set_state({ links: input });
+        this.State = { links: input };
       });
       return (
         <nav>
-          {Array.isArray(this.state.links) &&
-            this.state.links.map(({ name, url, id }, i) => (
+          {Array.isArray(this.State.links) &&
+            this.State.links.map(({ name, url, id }, i) => (
               <>
                 {url ? (
                   <a href={url} id={id}>
@@ -63,7 +63,7 @@ Define(
                 ) : (
                   <span id={id}>{name}</span>
                 )}
-                {i !== this.state.links.length - 1 && <>/</>}
+                {i !== this.State.links.length - 1 && <>/</>}
               </>
             ))}
         </nav>
@@ -92,17 +92,17 @@ Define(
   { links: [] as Crumb[] },
   {
     render() {
-      this.provide_context(Context, (index, name, url, id) => {
-        const input = Array.isArray(this.state.links)
-          ? [...this.state.links]
+      this.Provide(Context, (index, name, url, id) => {
+        const input = Array.isArray(this.State.links)
+          ? [...this.State.links]
           : [];
         input[index] = { name, url, id };
-        this.set_state({ links: input });
+        this.State = { links: input };
       });
       return (
         <nav>
-          {Array.isArray(this.state.links) &&
-            this.state.links.map(({ name, url, id }, i) => (
+          {Array.isArray(this.State.links) &&
+            this.State.links.map(({ name, url, id }, i) => (
               <>
                 {url ? (
                   <a
@@ -148,13 +148,13 @@ Define(
               () => "center",
               () => "flex-end",
               () => "space-evenly"
-            )(this.props.align ?? "left"),
-            { direction: this.props.column ? "column" : "row" }
+            )(this.Props.align ?? "left"),
+            { direction: this.Props.column ? "column" : "row" }
           )
         )
       );
 
-      if (this.props.tabs)
+      if (this.Props.tabs)
         result = result.With(
           Rule.Init("a, span")
             .With(CT.border.standard.WithRadius("0").WithDirection("bottom"))
@@ -185,13 +185,13 @@ Define(
   {},
   {
     render() {
-      const register = this.use_context(Context);
-      this.listen("children", function () {
+      const register = this.Use(Context);
+      this.On("children", () => {
         register(
-          GetIndexOfParent(this.ele),
-          this.children.map((c) => c.textContent).join(" "),
-          this.props.href ?? "",
-          this.props.id
+          GetIndexOfParent(this),
+          this.textContent ?? "",
+          this.Props.href ?? "",
+          this.Props.id
         );
       });
       return <slot />;

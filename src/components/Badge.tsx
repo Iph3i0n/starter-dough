@@ -16,11 +16,11 @@ Define(
     },
     css() {
       let rule = Rule.Init(":host")
-        .With(GetColour(this.props.colour))
+        .With(GetColour(this.Props.colour))
         .With(CT.padding.badge)
         .With("display", "inline-block")
         .With(CT.border.small);
-      if (this.props["top-right"])
+      if (this.Props["top-right"])
         rule = rule
           .With(
             new Absolute({ top: "0", right: "0", translate: ["50%", "-50%"] })

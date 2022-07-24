@@ -19,9 +19,9 @@ Define(
   { open: -1 },
   {
     render() {
-      this.provide_context(AccordionContext, {
-        click: (index) => this.set_state({ open: index }),
-        current: this.state.open,
+      this.Provide(AccordionContext, {
+        click: (index) => (this.State = { open: index }),
+        current: this.State.open,
       });
       return <slot />;
     },
@@ -34,21 +34,21 @@ Define(
   { height: 0 },
   {
     render() {
-      const { click, current } = this.use_context(AccordionContext);
-      const open = current === GetIndexOfParent(this.ele);
-      this.listen("render", function () {
-        const height = this.root.querySelector(".content")?.clientHeight ?? -1;
-        if (height !== this.state.height) this.set_state({ height });
+      const { click, current } = this.Use(AccordionContext);
+      const open = current === GetIndexOfParent(this);
+      this.On("render", () => {
+        const height = this.Root.querySelector(".content")?.clientHeight ?? -1;
+        if (height !== this.State.height) this.State = { height };
       });
 
       return (
         <>
           <div
             class="item-heading"
-            on_click={() => click(open ? -1 : GetIndexOfParent(this.ele))}
+            on_click={() => click(open ? -1 : GetIndexOfParent(this))}
           >
             <p-heading level="6" no-margin>
-              {this.props.title}
+              {this.Props.title}
             </p-heading>
             <p-icon name="arrow-down" size={CT.text.h6.Size} colour="dark" />
           </div>
@@ -61,13 +61,13 @@ Define(
       );
     },
     css() {
-      const { current } = this.use_context(AccordionContext);
-      const open = current === GetIndexOfParent(this.ele);
+      const { current } = this.Use(AccordionContext);
+      const open = current === GetIndexOfParent(this);
       return Css.Init()
         .With(
           Rule.Init(".container")
             .With("overflow", "hidden")
-            .With("height", open ? this.state.height + "px" : "0")
+            .With("height", open ? this.State.height + "px" : "0")
             .With(new Transition("fast", "height"))
         )
         .With(Rule.Init(".content").With(CT.padding.block))
@@ -83,9 +83,7 @@ Define(
             .With(new Flex("center", "space-between"))
             .With(new Transition("fast", "color", "background-color"))
         )
-        .With(
-          Rule.Init(".item-heading:hover").With(CT.colours.surface)
-        )
+        .With(Rule.Init(".item-heading:hover").With(CT.colours.surface))
         .With(
           Rule.Init("p-icon")
             .With("transform", open ? "rotate(180deg)" : "rotate(0deg)")

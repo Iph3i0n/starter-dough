@@ -5,7 +5,7 @@ import { CT } from "Src/Theme";
 
 Define(
   "p-paginator",
-  { total: IsString },
+  { total: IsString, skip: IsString, take: IsString },
   {},
   {
     render() {

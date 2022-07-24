@@ -1,25 +1,29 @@
 import { v4 as Guid } from "uuid";
 
 export default function CreateContext<T>(default_value: T) {
-  const id = "context" + Guid().replace(/-/gm, '');
-
-  const store = {} as Record<string, T>;
+  const id = Guid();
   let listeners: (() => void)[] = [];
 
   return {
     Attach(target: HTMLElement, value: T) {
-      const current = target.dataset[id]
-      if (current) delete store[current];
-
-      const instance = Guid();
-      target.dataset[id] = instance;
-      store[instance] = value;
+      const subject: any = target;
+      const store = subject.P_BLOCKS_CONTEXTS ?? {};
+      subject.P_BLOCKS_CONTEXTS = { ...store, [id]: value };
+      
       for (const listener of listeners) listener();
     },
     Retrieve(target: HTMLElement): T {
-      const current = target.dataset[id];
-      if (current) return store[current];
-      if (target.parentElement) return this.Retrieve(target.parentElement);
+      const internal = (target: any): T => {
+        if (typeof target.P_BLOCKS_CONTEXTS === "object" && id in target.P_BLOCKS_CONTEXTS) 
+          return target.P_BLOCKS_CONTEXTS[id];
+        
+
+        if (target.parentElement) return internal(target.parentElement);
+
+        return default_value;
+      }
+
+      if (target.parentElement) return internal(target.parentElement);
       return default_value;
     },
     AddOnChange(handler: () => void) {

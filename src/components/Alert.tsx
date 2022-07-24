@@ -15,20 +15,20 @@ Define(
     render() {
       return (
         <>
-          {this.state.open && (
+          {this.State.open && (
             <div class="alert">
               <div>
                 <slot />
               </div>
-              {this.props.dismissable && (
+              {this.Props.dismissable && (
                 <div
                   class="close-button"
-                  on_click={() => this.set_state({ open: false })}
+                  on_click={() => this.State = ({ open: false })}
                 >
                   <p-icon
                     name="close"
                     size="2rem"
-                    colour={this.props.colour}
+                    colour={this.Props.colour}
                     text
                   />
                 </div>
@@ -42,7 +42,7 @@ Define(
       return Css.Init()
         .With(
           Rule.Init(".alert")
-            .With(GetColour(this.props.colour))
+            .With(GetColour(this.Props.colour))
             .With(CT.padding.block)
             .With(CT.text.body_large)
             .With(new Flex("center", "space-between"))

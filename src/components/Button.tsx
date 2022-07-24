@@ -21,7 +21,7 @@ Define(
   {},
   {
     render() {
-      const props = this.props as any;
+      const props = this.Props as any;
       if ("href" in props)
         return (
           <a {...props} class="button">
@@ -30,7 +30,7 @@ Define(
         );
 
       if (props.type === "submit") {
-        const { submit } = this.use_context(FormContext);
+        const { submit } = this.Use(FormContext);
         return (
           <button {...props} class="button" on_click={(e: any) => submit()}>
             <slot />
@@ -48,10 +48,10 @@ Define(
     },
     css() {
       const [sharp_left, sharp_right] = (() => {
-        const is_group = IsChildOf(this.ele, "p-button-group");
+        const is_group = IsChildOf(this, "p-button-group");
         if (!is_group) return [false, false];
-        const length = this.use_context(ButtonGroupContext);
-        const index = GetIndexOfParent(this.ele);
+        const length = this.Use(ButtonGroupContext);
+        const index = GetIndexOfParent(this);
         return [index !== 0, index < length - 1];
       })();
 
@@ -59,8 +59,8 @@ Define(
         .With(CT.text.body.WithPadding(CT.padding.input))
         .With("display", "inline-block")
         .With(
-          this.props.outline
-            ? CT.border.standard.WithColour(GetColour(this.props.colour))
+          this.Props.outline
+            ? CT.border.standard.WithColour(GetColour(this.Props.colour))
             : CT.border.standard
         )
         .With("margin", "0")
@@ -71,9 +71,9 @@ Define(
           new Transition("fast", "background-color", "color", "border-color")
         )
         .With(
-          this.props.outline
-            ? new Colour([0, 0, 0, 0], GetColour(this.props.colour))
-            : GetColour(this.props.colour)
+          this.Props.outline
+            ? new Colour([0, 0, 0, 0], GetColour(this.Props.colour))
+            : GetColour(this.Props.colour)
         )
         .With(CT.box_shadow.large)
         .With("box-sizing", "border-box");
@@ -90,7 +90,7 @@ Define(
         .With(rule)
         .With(
           Rule.Init(".button:hover").With(
-            GetColour(this.props.colour).GreyscaleTransform(120)
+            GetColour(this.Props.colour).GreyscaleTransform(120)
           )
         );
     },
@@ -103,9 +103,9 @@ Define(
   { children: -1 },
   {
     render() {
-      this.provide_context(ButtonGroupContext, this.state.children);
-      this.listen("children", function () {
-        this.set_state({ children: this.child_elements.length });
+      this.Provide(ButtonGroupContext, this.State.children);
+      this.On("children", () => {
+        this.State = { children: this.ChildElements.length };
       });
       return <slot />;
     },

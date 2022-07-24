@@ -18,14 +18,14 @@ Define(
   {},
   {
     render() {
-      return <span class={`ri-${this.props.name}-line`} />;
+      return <span class={`ri-${this.Props.name}-line`} />;
     },
     css() {
-      const colour = GetColour(this.props.colour);
+      const colour = GetColour(this.Props.colour);
       return Css.Init().With(
         Rule.Init("span")
-          .With("font-size", this.props.size)
-          .With(this.props.text ? colour.OnlyText() : colour.AsText())
+          .With("font-size", this.Props.size)
+          .With(this.Props.text ? colour.OnlyText() : colour.AsText())
       );
     },
     additional_css: style,

@@ -94,4 +94,11 @@ export default {
   Assign<T, TResult>(subject: T, add: TResult): T & TResult {
     return Object.assign(subject, add);
   },
+  DefineProperty<T, TKey extends string, TValue>(
+    subject: T,
+    key: TKey,
+    value: { writable: boolean; value: TValue }
+  ) {
+    return Object.defineProperty(subject, key, value);
+  },
 };

@@ -16,7 +16,7 @@ Define(
   {
     render() {
       return (
-        <section class={C(["full-width", "full-width" in this.props])}>
+        <section class={C(["full-width", "full-width" in this.Props])}>
           <slot />
         </section>
       );
@@ -28,7 +28,7 @@ Define(
             .With("margin", "auto")
             .With("max-width", "100%")
             .With(
-              this.props.flush ? new Padding("padding", "0") : CT.padding.block
+              this.Props.flush ? new Padding("padding", "0") : CT.padding.block
             )
         )
         .With(Rule.Init("section.full-width").With("max-width", "100%"));
@@ -62,7 +62,7 @@ Define(
         Rule.Init(":host")
           .With(new Grid(12, CT.padding.block.X))
           .With(
-            this.props.flush
+            this.Props.flush
               ? new Padding("margin", "0")
               : CT.padding.block.AsMargin().YOnly()
           )
@@ -89,27 +89,27 @@ Define(
       let result = Css.Init();
 
       for (const size of Sizes) {
-        if (this.props[size])
+        if (this.Props[size])
           result = result.With(
             Media.Init(`min-width: ${CT.screen[size].breakpoint}`).With(
               Rule.Init(":host").With(
                 "grid-column",
-                "auto / span " + this.props[size]
+                "auto / span " + this.Props[size]
               )
             )
           );
       }
 
-      if (this.props.center || this.props.align)
+      if (this.Props.center || this.Props.align)
         result = result.With(
           Rule.Init(":host").With(
             new Flex(
-              this.props.center ? "center" : "flex-start",
-              this.props.align === "center"
+              this.Props.center ? "center" : "flex-start",
+              this.Props.align === "center"
                 ? "center"
-                : this.props.align === "right"
+                : this.Props.align === "right"
                 ? "flex-end"
-                : this.props.align === "left"
+                : this.Props.align === "left"
                 ? "flex-start"
                 : "stretch",
               { wrap: true }

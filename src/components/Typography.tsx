@@ -24,7 +24,7 @@ Define(
   {
     render() {
       return Jsx.Element(
-        ("h" + CT.text[this.props.variant].Tag) as any,
+        ("h" + CT.text[this.Props.variant].Tag) as any,
         { class: "text" },
         <slot />
       );
@@ -32,8 +32,8 @@ Define(
     css() {
       return Css.Init().With(
         Rule.Init(".text")
-          .With(CT.text[this.props.variant])
-          .With("text-align", this.props.align ?? "left")
+          .With(CT.text[this.Props.variant])
+          .With("text-align", this.Props.align ?? "left")
       );
     },
   }
@@ -49,7 +49,7 @@ Define(
   {
     render() {
       const tag = (() => {
-        switch (this.props.variant) {
+        switch (this.Props.variant) {
           case "ordered":
             return "ol" as const;
           case "unordered":
@@ -63,10 +63,10 @@ Define(
         Rule.Init(".list")
           .With(CT.text.body.WithPadding(new Padding("margin", "0")))
           .With(CT.padding.block.LeftOnly())
-          .With("text-align", this.props.align ?? "left")
+          .With("text-align", this.Props.align ?? "left")
           .With(
             "margin-bottom",
-            this.props["no-margin"] ? "0" : CT.text.body.Padding.Bottom
+            this.Props["no-margin"] ? "0" : CT.text.body.Padding.Bottom
           )
           .With("child", Rule.Init(".list").With("margin-bottom", "0"))
       );
@@ -98,7 +98,7 @@ Define(
   {
     render() {
       return (
-        <a {...this.props}>
+        <a {...this.Props}>
           <slot />
         </a>
       );
@@ -107,7 +107,7 @@ Define(
       return Css.Init().With(
         Rule.Init("a")
           .With(
-            "disabled" in this.props ? CT.colours.anchor : CT.colours.faded_text
+            "disabled" in this.Props ? CT.colours.anchor : CT.colours.faded_text
           )
           .With("opacity", "1")
           .With(new Transition("fast", "opacity"))

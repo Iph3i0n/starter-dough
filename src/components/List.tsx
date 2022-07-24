@@ -25,9 +25,9 @@ Define(
           .With("display", "block")
           .With("padding", "0")
           .With("margin", "0")
-          .With(this.props.flush ? new Border({}) : CT.border.standard)
+          .With(this.Props.flush ? new Border({}) : CT.border.standard)
           .With(
-            this.props.flush
+            this.Props.flush
               ? new BoxShadow({ blur: "0" })
               : CT.box_shadow.large
           )
@@ -49,9 +49,9 @@ Define(
   {},
   {
     render() {
-      if (this.props.href)
+      if (this.Props.href)
         return (
-          <a href={this.props.href} target={this.props.target}>
+          <a href={this.Props.href} target={this.Props.target}>
             <slot />
           </a>
         );
@@ -63,8 +63,8 @@ Define(
       );
     },
     css() {
-      const background = this.props.colour
-        ? GetColour(this.props.colour)
+      const background = this.Props.colour
+        ? GetColour(this.Props.colour)
         : CT.colours.body;
       const hover_background = background.GreyscaleTransform(140);
       return Css.Init()
@@ -77,12 +77,12 @@ Define(
             .With(CT.text.body)
             .With("margin", "0")
             .With(
-              IsFirstChild(this.ele)
+              IsFirstChild(this)
                 ? new Border({})
                 : CT.border.standard.WithDirection("top").WithRadius("0")
             )
             .With(background)
-            .With("opacity", this.props.disabled ? "0.5" : "1")
+            .With("opacity", this.Props.disabled ? "0.5" : "1")
             .With(
               new Transition("fast", "background-color", "color", "opacity")
             )

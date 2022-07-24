@@ -107,13 +107,15 @@ export function On<K extends keyof DocumentEventMap>(
   options?: boolean | AddEventListenerOptions
 ) {
   const final = function (this: Document, e: DocumentEventMap[K]) {
-    if (
-      Array.prototype.indexOf.call(
-        document.querySelectorAll(selector),
-        e.target
-      ) !== -1
-    )
-      listener.bind(e.target as Element, e)();
+    const targets = e.composedPath().filter(IsHtmlElement);
+    for (const target of targets)
+      if (
+        Array.prototype.indexOf.call(
+          (target.getRootNode() as HTMLElement).querySelectorAll(selector),
+          target
+        ) !== -1
+      )
+        listener.bind(target as Element, e)();
   };
 
   document.addEventListener(event, final, options);

@@ -30,15 +30,15 @@ Define(
   { value: {} as Record<string, string> },
   {
     render() {
-      this.provide_context(FormContext, {
-        get: (key) => this.state.value[key] ?? "",
+      this.Provide(FormContext, {
+        get: (key) => this.State.value[key] ?? "",
         set: (key, value) =>
-          this.set_state({ value: { ...this.state.value, [key]: value } }),
+          (this.State = { value: { ...this.State.value, [key]: value } }),
         submit: () => {
-          const handle = this.props["on-submit"]
-            ? (window as any)[this.props["on-submit"]]
+          const handle = this.Props["on-submit"]
+            ? (window as any)[this.Props["on-submit"]]
             : () => {};
-          handle(this.state.value);
+          handle(this.State.value);
         },
       });
 
@@ -104,8 +104,8 @@ Define(
   {
     render() {
       const id = Guid();
-      const { get, set, submit } = this.use_context(FormContext);
-      this.listen("load", () => set(this.props.name, this.props.default ?? ""));
+      const { get, set, submit } = this.Use(FormContext);
+      this.On("load", () => set(this.Props.name, this.Props.default ?? ""));
       return (
         <p-row flush>
           <p-col xs="12" md="3" lg="2">
@@ -116,24 +116,24 @@ Define(
           <p-col xs="12" md="9" lg="10">
             <input
               id={id}
-              type={this.props.type ?? "text"}
-              name={this.props.name}
+              type={this.Props.type ?? "text"}
+              name={this.Props.name}
               class="input"
-              disabled={this.props.disabled}
-              value={get(this.props.name)}
-              placeholder={this.props.placeholder}
+              disabled={this.Props.disabled}
+              value={get(this.Props.name)}
+              placeholder={this.Props.placeholder}
               on_change={(e: any) =>
-                set(this.props.name, e.currentTarget.value)
+                set(this.Props.name, e.currentTarget.value)
               }
               on_keypress={(e: KeyboardEvent) => {
                 if (e.key !== "Enter") return;
                 e.preventDefault();
-                set(this.props.name, (e.currentTarget as any)?.value ?? "");
+                set(this.Props.name, (e.currentTarget as any)?.value ?? "");
                 submit();
               }}
             />
-            {this.props.help && (
-              <span class="help-text">{this.props.help}</span>
+            {this.Props.help && (
+              <span class="help-text">{this.Props.help}</span>
             )}
           </p-col>
         </p-row>
@@ -157,10 +157,10 @@ Define(
   {
     render() {
       const id = Guid();
-      const { get, set } = this.use_context(FormContext);
-      this.listen("load", () => set(this.props.name, this.props.default));
-      const options = Object.Keys(this.props).filter((o) => o.startsWith("o-"));
-      const value = get(this.props.name);
+      const { get, set } = this.Use(FormContext);
+      this.On("load", () => set(this.Props.name, this.Props.default));
+      const options = Object.Keys(this.Props).filter((o) => o.startsWith("o-"));
+      const value = get(this.Props.name);
       return (
         <p-row flush>
           <p-col xs="12" md="3" lg="2">
@@ -171,11 +171,11 @@ Define(
           <p-col xs="12" md="9" lg="10">
             <select
               id={id}
-              name={this.props.name}
+              name={this.Props.name}
               class="input"
-              disabled={this.props.disabled}
+              disabled={this.Props.disabled}
               on_change={(e: any) =>
-                set(this.props.name, e.currentTarget.value)
+                set(this.Props.name, e.currentTarget.value)
               }
             >
               {options.map((o) => (
@@ -183,12 +183,12 @@ Define(
                   value={o.replace("o-", "")}
                   selected={value == o.replace("o-", "")}
                 >
-                  {this.props[o]}
+                  {this.Props[o]}
                 </option>
               ))}
             </select>
-            {this.props.help && (
-              <span class="help-text">{this.props.help}</span>
+            {this.Props.help && (
+              <span class="help-text">{this.Props.help}</span>
             )}
             <p-icon name="arrow-down-s" size="35px" colour="body" text />
           </p-col>
@@ -217,8 +217,8 @@ Define(
   {
     render() {
       const id = Guid();
-      const { get, set } = this.use_context(FormContext);
-      this.listen("load", () => set(this.props.name, this.props.default ?? ""));
+      const { get, set } = this.Use(FormContext);
+      this.On("load", () => set(this.Props.name, this.Props.default ?? ""));
       return (
         <p-row flush>
           <p-col xs="12">
@@ -229,22 +229,22 @@ Define(
           <p-col xs="12">
             <textarea
               id={id}
-              type={this.props.type ?? "text"}
-              name={this.props.name}
+              type={this.Props.type ?? "text"}
+              name={this.Props.name}
               class="input"
-              disabled={this.props.disabled}
-              placeholder={this.props.placeholder}
+              disabled={this.Props.disabled}
+              placeholder={this.Props.placeholder}
               on_change={() =>
                 set(
-                  this.props.name,
-                  this.root.querySelector("textarea")?.value ?? ""
+                  this.Props.name,
+                  this.Root.querySelector("textarea")?.value ?? ""
                 )
               }
             >
-              {get(this.props.name)}
+              {get(this.Props.name)}
             </textarea>
-            {this.props.help && (
-              <span class="help-text">{this.props.help}</span>
+            {this.Props.help && (
+              <span class="help-text">{this.Props.help}</span>
             )}
           </p-col>
         </p-row>
@@ -275,36 +275,36 @@ Define(
   {},
   {
     render() {
-      const { get, set } = this.use_context(FormContext);
-      const value = get(this.props.name);
-      const type = this.props.type === "radio" ? "radio" : "checkbox";
+      const { get, set } = this.Use(FormContext);
+      const value = get(this.Props.name);
+      const type = this.Props.type === "radio" ? "radio" : "checkbox";
       const checked = type
-        ? value.includes(this.props.value)
-        : value === this.props.value;
+        ? value.includes(this.Props.value)
+        : value === this.Props.value;
       return (
-        <label class={C(["disabled", !!this.props.disabled])}>
+        <label class={C(["disabled", !!this.Props.disabled])}>
           <input
-            class={this.props.type}
+            class={this.Props.type}
             type={type}
-            name={this.props.name}
-            disabled={this.props.disabled}
+            name={this.Props.name}
+            disabled={this.Props.disabled}
             checked={checked}
             on_click={(e: any) => {
               e.preventDefault();
-              if (this.props.type === "radio")
-                set(this.props.name, this.props.value);
+              if (this.Props.type === "radio")
+                set(this.Props.name, this.Props.value);
               else if (checked)
                 set(
-                  this.props.name,
+                  this.Props.name,
                   value
                     .split(",")
-                    .filter((v) => v !== this.props.value)
+                    .filter((v) => v !== this.Props.value)
                     .join(",")
                 );
               else
                 set(
-                  this.props.name,
-                  value.split(",").concat(this.props.value).join(",")
+                  this.Props.name,
+                  value.split(",").concat(this.Props.value).join(",")
                 );
             }}
           />
@@ -363,12 +363,12 @@ Define(
         .With(Rule.Init(".radio").With("border-radius", CT.text.body.Size))
         .With(
           Rule.Init("input[checked]")
-            .With("border-color", GetColour(this.props.colour).Hex)
-            .With("background-color", GetColour(this.props.colour).Hex)
+            .With("border-color", GetColour(this.Props.colour).Hex)
+            .With("background-color", GetColour(this.Props.colour).Hex)
         )
         .With(
           Rule.Init(".switch[checked]::after")
-            .With("border-color", GetColour(this.props.colour).Hex)
+            .With("border-color", GetColour(this.Props.colour).Hex)
             .With("left", `calc(100% - (${CT.border.check.Width} * 5))`)
         );
     },
