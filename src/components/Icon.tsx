@@ -24,6 +24,7 @@ Define(
       const colour = GetColour(this.Props.colour);
       return Css.Init().With(
         Rule.Init("span")
+          .With("line-height", "1.2")
           .With("font-size", this.Props.size)
           .With(this.Props.text ? colour.OnlyText() : colour.AsText())
       );
