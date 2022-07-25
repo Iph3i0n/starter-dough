@@ -1,5 +1,6 @@
 import { CssProperty } from "Src/CSS";
 import { CT, Speed } from "Src/Theme";
+import { AddToGlobalScope } from "Src/utils/Interface";
 
 export default class Animation extends CssProperty {
   public constructor(
@@ -23,3 +24,5 @@ export default class Animation extends CssProperty {
     return result;
   }
 }
+
+AddToGlobalScope("Animation", Animation);

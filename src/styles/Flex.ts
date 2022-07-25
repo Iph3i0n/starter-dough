@@ -1,4 +1,5 @@
 import { CssProperty } from "Src/CSS";
+import { AddToGlobalScope } from "Src/utils/Interface";
 
 export default class Flex extends CssProperty {
   public constructor(
@@ -27,3 +28,5 @@ export default class Flex extends CssProperty {
     return result;
   }
 }
+
+AddToGlobalScope("Flex", Flex);

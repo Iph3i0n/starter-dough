@@ -1,5 +1,6 @@
 import { CssProperty } from "Src/CSS";
 import { CT, Speed } from "Src/Theme";
+import { AddToGlobalScope } from "Src/utils/Interface";
 
 export default class Transition extends CssProperty {
   private readonly targets: string[];
@@ -20,3 +21,5 @@ export default class Transition extends CssProperty {
     ];
   }
 }
+
+AddToGlobalScope("Transition", Transition);

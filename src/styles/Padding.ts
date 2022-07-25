@@ -1,4 +1,5 @@
 import { CssProperty } from "Src/CSS";
+import { AddToGlobalScope } from "Src/utils/Interface";
 
 export default class Padding extends CssProperty {
   private readonly dimensions: string[];
@@ -127,3 +128,5 @@ export default class Padding extends CssProperty {
     );
   }
 }
+
+AddToGlobalScope("Padding", Padding);

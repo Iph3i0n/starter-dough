@@ -1,5 +1,6 @@
 import { IsNumber, IsString, IsTuple } from "@paulpopat/safe-type";
 import { CssProperty } from "Src/CSS";
+import { AddToGlobalScope } from "Src/utils/Interface";
 
 const IsRgb = IsTuple(IsNumber, IsNumber, IsNumber);
 const IsRgba = IsTuple(IsNumber, IsNumber, IsNumber, IsNumber);
@@ -161,3 +162,5 @@ export default class Colour extends CssProperty {
   public static TextDark = { r: 0, g: 0, b: 0, a: 1 };
   public static TextLight = { r: 255, g: 255, b: 255, a: 1 };
 }
+
+AddToGlobalScope("Colour", Colour);

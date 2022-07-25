@@ -1,4 +1,5 @@
 import { CssProperty } from "Src/CSS";
+import { AddToGlobalScope } from "Src/utils/Interface";
 import Colour from "./Colour";
 
 export default class BoxShadow extends CssProperty {
@@ -35,3 +36,5 @@ export default class BoxShadow extends CssProperty {
     return result;
   }
 }
+
+AddToGlobalScope("BoxShadow", BoxShadow);

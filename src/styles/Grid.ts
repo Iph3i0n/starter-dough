@@ -1,4 +1,5 @@
 import { CssProperty } from "Src/CSS";
+import { AddToGlobalScope } from "Src/utils/Interface";
 
 export default class Grid extends CssProperty {
   public constructor(
@@ -19,3 +20,5 @@ export default class Grid extends CssProperty {
     ];
   }
 }
+
+AddToGlobalScope("Grid", Grid);

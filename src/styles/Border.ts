@@ -1,4 +1,5 @@
 import { CssProperty } from "Src/CSS";
+import { AddToGlobalScope } from "Src/utils/Interface";
 import Colour from "./Colour";
 
 const Directions = ["top", "bottom", "left", "right"] as const;
@@ -60,3 +61,5 @@ export default class Border extends CssProperty {
     return new Border({ ...this.schema, radius });
   }
 }
+
+AddToGlobalScope("Border", Border);

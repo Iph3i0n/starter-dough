@@ -182,7 +182,10 @@ const DefaultTheme = {
     "https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;500&family=Raleway:wght@300;500;700&display=swap",
 };
 
-export const CT = Object.DeepMerge(DefaultTheme, (window as any).Theme ?? {});
+export const CT = Object.DeepMerge(
+  DefaultTheme,
+  (window as any).Theme?.bind()() ?? {}
+);
 
 export const Columns = 12;
 

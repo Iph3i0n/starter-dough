@@ -59,27 +59,17 @@ export default {
       else if (predicate(key)) result[key] = subject[key];
     return result;
   },
-  DeepMerge<T>(item1: T, ...items: Partial<T>[]): T {
-    if (Array.isArray(item1) || typeof item1 !== "object")
-      return (items[items.length - 1] || item1) as any;
-
-    const main = item1 as any;
+  DeepMerge<T extends object>(item1: T, item2: any): T {
     const result = {} as any;
-    for (const key in main)
-      if (!main.hasOwnProperty(key)) continue;
-      else
-        result[key] = this.DeepMerge(
-          main[key],
-          ...(items as any[]).map((i) => i[key]).filter((i) => i)
-        );
+    for (const key in item1)
+      if (!item1.hasOwnProperty(key)) continue;
+      else if (typeof item1[key] !== "object")
+        if (item2[key]) result[key] = item2[key];
+        else result[key] = item1[key];
+      else if (item2[key]) result[key] = { ...item1[key], ...item2[key] };
+      else result[key] = item1[key];
 
-    for (const item of items)
-      for (const key in item)
-        if (!item.hasOwnProperty(key)) continue;
-        else if (result.hasOwnProperty(key)) continue;
-        else result[key] = item[key];
-
-    return main;
+    return result;
   },
   Access(item: any, key: string): any {
     const target = key.split(".");

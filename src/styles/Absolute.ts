@@ -1,4 +1,5 @@
 import { CssProperty } from "Src/CSS";
+import { AddToGlobalScope } from "Src/utils/Interface";
 
 export default class Absolute extends CssProperty {
   public constructor(
@@ -53,3 +54,5 @@ export const Cover = new Absolute({
   width: "100%",
   height: "100%",
 });
+
+AddToGlobalScope("Absolute", Absolute);

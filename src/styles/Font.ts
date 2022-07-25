@@ -1,4 +1,5 @@
 import { CssProperty } from "Src/CSS";
+import { AddToGlobalScope } from "Src/utils/Interface";
 import Padding from "./Padding";
 
 export default class Font extends CssProperty {
@@ -69,3 +70,5 @@ export default class Font extends CssProperty {
     });
   }
 }
+
+AddToGlobalScope("Font", Font);
