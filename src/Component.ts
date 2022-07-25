@@ -1,7 +1,7 @@
 import { Checker, IsObject } from "@paulpopat/safe-type";
 import Css from "./CSS";
 import { Context } from "./utils/Context";
-import { NodeModel, ReplaceHtml } from "./utils/Html";
+import { NodeModel, ReplaceHtml } from "./utils/Render";
 import Object from "./utils/Object";
 
 type Props = Record<string, string | boolean | null | undefined>;

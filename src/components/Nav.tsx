@@ -8,17 +8,20 @@ import {
   Optional,
   PatternMatch,
 } from "@paulpopat/safe-type";
-import { GetIndexOfParent } from "Src/utils/Html";
+import { GetIndexOfParent, IsVisible } from "Src/utils/Html";
 import { CT } from "Src/Theme";
 import Css, { Rule } from "Src/CSS";
 import Flex from "Src/styles/Flex";
 import C from "Src/utils/Class";
 
-type Crumb = { name: string; url: string; id?: string | null };
+type Crumb = {
+  name: string;
+  url: string;
+  id?: string | null;
+  spy?: string | null;
+};
 
-const Context = CreateContext(
-  (index: number, name: string, url: string, id?: string | null) => {}
-);
+const Context = CreateContext((index: number, data: Crumb) => {});
 
 const NavStyles = Css.Init()
   .With(
@@ -44,7 +47,7 @@ Define(
   { links: [] as Crumb[] },
   {
     render() {
-      this.Provide(Context, (index, name, url, id) => {
+      this.Provide(Context, (index, { name, url, id }) => {
         const input = Array.isArray(this.State.links)
           ? [...this.State.links]
           : [];
@@ -89,47 +92,60 @@ Define(
     column: Optional(IsLiteral(true)),
     tabs: Optional(IsLiteral(true)),
   },
-  { links: [] as Crumb[] },
+  { links: [] as Crumb[], visible: "" },
   {
     render() {
-      this.Provide(Context, (index, name, url, id) => {
+      this.Provide(Context, (index, { name, url, id, spy }) => {
         const input = Array.isArray(this.State.links)
           ? [...this.State.links]
           : [];
-        input[index] = { name, url, id };
-        this.State = { links: input };
+        input[index] = { name, url, id, spy };
+        this.State = { ...this.State, links: input };
       });
+
+      const is_active = (url: string, spy: string | null | undefined) => {
+        if (spy && this.State.visible === spy) return true;
+        if (url.toLowerCase() === window.location.pathname.toLowerCase())
+          return true;
+        return false;
+      };
+
+      this.On("load", () => {
+        const handler = () => {
+          for (const { spy } of this.State.links)
+            if (!spy) continue;
+            else if (IsVisible(document.querySelector(spy))) {
+              if (this.State.visible !== spy)
+                this.State = { ...this.State, visible: spy };
+              return;
+            }
+        };
+
+        document.addEventListener("scroll", handler);
+        handler();
+      });
+
       return (
         <nav>
           {Array.isArray(this.State.links) &&
-            this.State.links.map(({ name, url, id }, i) => (
+            this.State.links.map(({ name, url, id, spy }) => (
               <>
                 {url ? (
                   <a
                     href={url}
-                    class={C([
-                      "active",
-                      url.toLowerCase() ===
-                        window.location.pathname.toLowerCase(),
-                    ])}
+                    class={C(["active", is_active(url, spy)])}
                     id={id}
                   >
                     {name}
                   </a>
                 ) : (
-                  <span
-                    class={C([
-                      "active",
-                      url.toLowerCase() ===
-                        window.location.pathname.toLowerCase(),
-                    ])}
-                    id={id}
-                  >
+                  <span class={C(["active", is_active(url, spy)])} id={id}>
                     {name}
                   </span>
                 )}
               </>
             ))}
+          <span class="spacer" />
         </nav>
       );
     },
@@ -152,7 +168,7 @@ Define(
             { direction: this.Props.column ? "column" : "row" }
           )
         )
-      );
+      ).With(Rule.Init(".spacer").With("align-self", "flex-end"));
 
       if (this.Props.tabs)
         result = result.With(
@@ -181,18 +197,18 @@ Define(
 
 Define(
   "p-nav-item",
-  { href: Optional(IsString), id: Optional(IsString) },
+  { href: Optional(IsString), id: Optional(IsString), spy: Optional(IsString) },
   {},
   {
     render() {
       const register = this.Use(Context);
       this.On("children", () => {
-        register(
-          GetIndexOfParent(this),
-          this.textContent ?? "",
-          this.Props.href ?? "",
-          this.Props.id
-        );
+        register(GetIndexOfParent(this), {
+          name: this.textContent ?? "",
+          url: this.Props.href ?? "",
+          id: this.Props.id,
+          spy: this.Props.spy,
+        });
       });
       return <slot />;
     },
