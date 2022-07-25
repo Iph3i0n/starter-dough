@@ -113,6 +113,10 @@ export default class Padding extends CssProperty {
     return new Padding(this.Variant, "0", "0", "0", this.Left);
   }
 
+  public RightOnly() {
+    return new Padding(this.Variant, "0", this.Right, "0", "0");
+  }
+
   public WithX(target: Padding) {
     return new Padding(
       this.Variant,
