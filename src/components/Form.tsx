@@ -24,9 +24,18 @@ export const FormContext = CreateContext({
   submit: () => {},
 });
 
+class FormSubmitEvent<T> extends Event {
+  public readonly Value: Readonly<T>;
+
+  public constructor(value: T) {
+    super("submit");
+    this.Value = Object.AsReadonly(value);
+  }
+}
+
 Define(
   "p-form",
-  { "on-submit": IsString },
+  {},
   { value: {} as Record<string, string> },
   {
     render() {
@@ -35,10 +44,7 @@ Define(
         set: (key, value) =>
           (this.State = { value: { ...this.State.value, [key]: value } }),
         submit: () => {
-          const handle = this.Props["on-submit"]
-            ? (window as any)[this.Props["on-submit"]]
-            : () => {};
-          handle(this.State.value);
+          this.dispatchEvent(new FormSubmitEvent(this.State.value));
         },
       });
 
