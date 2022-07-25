@@ -24,9 +24,10 @@ function ApplyProps(result: HTMLElement, props: Props) {
 }
 
 function ApplyHandlers(result: HTMLElement, props: Handlers) {
+  EventManager.RemoveAll(result);
   for (const key in props ?? {})
     if (!props.hasOwnProperty(key) || !props[key]) continue;
-    else EventManager.Once(result, key.replace("on_", ""), props[key] as any);
+    else EventManager.AddListener(result, key.replace("on_", ""), props[key]);
 }
 
 function Render(element: HTMLElement, model: ElementModel) {

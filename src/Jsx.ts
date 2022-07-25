@@ -1,5 +1,5 @@
 import { IsString } from "@paulpopat/safe-type";
-import { NodeModel } from "./utils/Html";
+import { NodeModel } from "./utils/Render";
 import Object from "./utils/Object";
 
 declare global {

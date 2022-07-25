@@ -8,14 +8,12 @@ import Css, { Media, Rule } from "Src/CSS";
 import Padding from "Src/styles/Padding";
 import Grid from "Src/styles/Grid";
 import Flex from "Src/styles/Flex";
-import { IsOneOf } from "Src/utils/Type";
 
 Define(
   "p-container",
   {
     "full-width": Optional(IsLiteral(true)),
     flush: Optional(IsLiteral(true)),
-    colour: Optional(IsOneOf(...ColourNames)),
   },
   {},
   {
@@ -33,8 +31,6 @@ Define(
         .With(
           this.Props.flush ? new Padding("padding", "0") : CT.padding.block
         );
-      if (this.Props.colour)
-        section = section.With(GetColour(this.Props.colour));
       let result: Css = Css.Init()
         .With(section)
         .With(Rule.Init("section.full-width").With("max-width", "100%"));
