@@ -4,7 +4,8 @@
   "description": "Another component library for web components",
   "main": "index.js",
   "scripts": {
-    "pack": "webpack"
+    "pack": "NODE_ENV='production' webpack",
+    "dev": "webpack"
   },
   "repository": {
     "type": "git",

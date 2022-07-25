@@ -1,5 +1,7 @@
 const Path = require("path");
 
+const is_dev = process.env.NODE_ENV !== "production";
+
 module.exports = {
   entry: require("glob").sync("./src/components/*.tsx"),
   module: {
@@ -33,6 +35,6 @@ module.exports = {
     filename: "bundle.js",
     path: Path.resolve(__dirname, "dist"),
   },
-  mode: "development",
-  watch: true,
+  mode: is_dev ? "development" : "production",
+  watch: is_dev,
 };
