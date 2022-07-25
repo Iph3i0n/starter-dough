@@ -65,8 +65,8 @@ Define(
     css() {
       const background = this.Props.colour
         ? GetColour(this.Props.colour)
-        : CT.colours.body;
-      const hover_background = background.GreyscaleTransform(140);
+        : CT.colours.surface;
+      const hover_background = background.GreyscaleTransform(140, true);
       return Css.Init()
         .With(
           Rule.Init("span, a")

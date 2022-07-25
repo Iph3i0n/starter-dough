@@ -82,6 +82,7 @@ Define(
           .With(new Colour([0, 0, 0, 0], colour.Text))
           .With("cursor", "pointer")
           .With("user-select", "none")
+          .With(CT.padding.input)
       );
     },
   }

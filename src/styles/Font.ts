@@ -69,6 +69,10 @@ export default class Font extends CssProperty {
       padding,
     });
   }
+
+  public WithoutPadding() {
+    return new Font({ ...this.schema, padding: new Padding("margin", "0") });
+  }
 }
 
 AddToGlobalScope("Font", Font);

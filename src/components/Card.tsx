@@ -1,14 +1,16 @@
 import Jsx from "Src/Jsx";
 import { IsString, Optional } from "@paulpopat/safe-type";
 import Define from "Src/Component";
-import { CT } from "Src/Theme";
+import { ColourNames, CT, GetColour } from "Src/Theme";
 import Css, { Rule } from "Src/CSS";
+import { IsOneOf } from "Src/utils/Type";
 
 Define(
   "p-card",
   {
     img: Optional(IsString),
     "img-alt": Optional(IsString),
+    colour: Optional(IsOneOf(...ColourNames)),
   },
   {},
   {
@@ -35,7 +37,7 @@ Define(
       return Css.Init()
         .With(
           Rule.Init(".card")
-            .With(CT.colours.surface)
+            .With(GetColour(this.Props.colour ?? "surface"))
             .With(CT.border.standard)
             .With(CT.box_shadow.large)
             .With("overflow", "hidden")
@@ -47,8 +49,10 @@ Define(
             .With("max-width", "100%")
             .With("object-fit", "cover")
             .With(CT.colours.contrast)
-            .With(CT.text.body.WithAlignment("center"))
+            .With(CT.text.body.WithAlignment("center").WithoutPadding())
             .With(CT.border.standard.WithDirection("bottom"))
+            .With("border-bottom-left-radius", "0")
+            .With("border-bottom-right-radius", "0")
         )
         .With(Rule.Init(".card .card-body").With(CT.padding.block))
         .With(

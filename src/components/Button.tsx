@@ -88,7 +88,7 @@ Define(
         .With(rule)
         .With(
           Rule.Init(".button:hover").With(
-            GetColour(this.Props.colour).GreyscaleTransform(120)
+            GetColour(this.Props.colour).GreyscaleTransform(120, true)
           )
         )
         .With(Rule.Init(":host").With("display", "inline-block"));

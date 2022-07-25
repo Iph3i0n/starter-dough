@@ -35,7 +35,7 @@ export default class Colour extends CssProperty {
 
   ParseColour(colour: ColourArg): ColourObject {
     if (IsString(colour)) {
-      if (colour.match(/^\#[0-9a-f][0-9a-f][0-9a-f]$/gm))
+      if (colour.match(/^\#[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F]$/gm))
         return {
           get r() {
             return parseInt(colour[1] + colour[1], 16);
@@ -52,7 +52,9 @@ export default class Colour extends CssProperty {
         };
 
       if (
-        colour.match(/^\#[0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f][0-9a-f]$/gm)
+        colour.match(
+          /^\#[0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F][0-9a-fA-F]$/gm
+        )
       )
         return {
           get r() {
@@ -132,12 +134,15 @@ export default class Colour extends CssProperty {
     return brightness > 125 ? Colour.TextDark : Colour.TextLight;
   }
 
-  public GreyscaleTransform(amount: number) {
-    return new Colour([
-      this.colour.r * (amount / 100),
-      this.colour.g * (amount / 100),
-      this.colour.b * (amount / 100),
-    ]);
+  public GreyscaleTransform(amount: number, preserve_text?: boolean) {
+    return new Colour(
+      [
+        this.colour.r * (amount / 100),
+        this.colour.g * (amount / 100),
+        this.colour.b * (amount / 100),
+      ],
+      preserve_text ? this.Text : undefined
+    );
   }
 
   public OnlyText() {

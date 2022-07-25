@@ -29,7 +29,13 @@ Define(
       const click =
         (skip: number, take: number, total: number) => (e: MouseEvent) => {
           e.preventDefault();
-          this.dispatchEvent(new PageEvent(Math.max(skip, 0), Math.min(skip, total - take), total));
+          this.dispatchEvent(
+            new PageEvent(
+              Math.max(skip, 0),
+              Math.min(skip, total - take),
+              total
+            )
+          );
         };
 
       return (
@@ -38,16 +44,14 @@ Define(
             <p-icon
               name="arrow-left-s"
               size={CT.text.body_large.Size}
-              colour="anchor"
-              text
+              colour="primary"
             />
           </a>
           <a href="#" on_click={click(skip - take, take, total)}>
             <p-icon
               name="arrow-drop-left"
               size={CT.text.body_large.Size}
-              colour="anchor"
-              text
+              colour="primary"
             />
           </a>
 
@@ -73,16 +77,14 @@ Define(
             <p-icon
               name="arrow-drop-right"
               size={CT.text.body_large.Size}
-              colour="anchor"
-              text
+              colour="primary"
             />
           </a>
           <a href="#" on_click={click(total - take, take, total)}>
             <p-icon
               name="arrow-right-s"
               size={CT.text.body_large.Size}
-              colour="anchor"
-              text
+              colour="primary"
             />
           </a>
         </nav>
@@ -102,7 +104,7 @@ Define(
         )
         .With(
           Rule.Init("a")
-            .With(CT.colours.anchor)
+            .With(CT.colours.primary.AsText())
             .With(new Transition("fast", "opacity"))
             .With("modifier", Rule.Init(":hover").With("opacity", "0.5"))
         )

@@ -30,9 +30,13 @@ Define(
       );
     },
     css() {
+      let target = CT.text[this.Props.variant];
+      if (this.Props["no-margin"])
+        target = target.WithPadding(new Padding("margin", "0"));
+
       return Css.Init().With(
         Rule.Init(".text")
-          .With(CT.text[this.Props.variant])
+          .With(target)
           .With("text-align", this.Props.align ?? "left")
       );
     },
@@ -107,7 +111,9 @@ Define(
       return Css.Init().With(
         Rule.Init("a")
           .With(
-            "disabled" in this.Props ? CT.colours.anchor : CT.colours.faded_text
+            "disabled" in this.Props
+              ? CT.colours.primary.AsText()
+              : CT.colours.faded_text
           )
           .With("opacity", "1")
           .With(new Transition("fast", "opacity"))

@@ -4,6 +4,7 @@ import Colour from "./styles/Colour";
 import Font from "./styles/Font";
 import Object from "./utils/Object";
 import Padding from "./styles/Padding";
+import { AddToGlobalScope } from "./utils/Interface";
 
 export const PreferDark = window.matchMedia(
   "(prefers-color-scheme: dark)"
@@ -11,6 +12,9 @@ export const PreferDark = window.matchMedia(
 export const PreferNoMotion = window.matchMedia(
   "(prefers-reduced-motion)"
 ).matches;
+
+AddToGlobalScope("PreferDark", PreferDark);
+AddToGlobalScope("PreferNoMotion", PreferNoMotion);
 
 const DefaultTheme = {
   padding: {
@@ -21,15 +25,9 @@ const DefaultTheme = {
   },
   border: {
     standard: new Border({
-      width: "1px",
-      style: "solid",
-      colour: new Colour("#666"),
-      radius: "0.5rem",
+      radius: "0.25rem",
     }),
     small: new Border({
-      width: "1px",
-      style: "solid",
-      colour: new Colour("#666"),
       radius: "0.25rem",
     }),
     check: new Border({
@@ -157,21 +155,24 @@ const DefaultTheme = {
     }),
   },
   colours: {
-    body: new Colour(PreferDark ? "#242424" : "#fff"),
-    surface: new Colour(PreferDark ? "#2e2d2d" : "#f7f7f7"),
-    contrast: new Colour("#666"),
-    anchor: new Colour([0, 0, 0, 0], "#277da1"),
-    faded_text: new Colour([0, 0, 0, 0], "#666"),
-    active: new Colour("#33f"),
-    error: new Colour("#f33"),
-    success: new Colour("#3f3"),
+    body: new Colour("#f7f3f1"),
+    surface: new Colour("#fff"),
+    contrast: new Colour("#322"),
+
+    faded_text: new Colour([0, 0, 0, 0], "#999"),
+
+    primary: new Colour("#9889bb").GreyscaleTransform(50),
+    info: new Colour("#0087cb"),
+    success: new Colour("#3fc9a2").GreyscaleTransform(80),
+    warning: new Colour("#ff9600"),
+    danger: new Colour("#f3000c"),
   },
   screen: {
     xs: { breakpoint: "0px", width: "320px" },
     sm: { breakpoint: "500px", width: "410px" },
     md: { breakpoint: "750px", width: "700px" },
     lg: { breakpoint: "1200px", width: "1150px" },
-    xl: { breakpoint: "1440px", width: "1400px" },
+    xl: { breakpoint: "1440px", width: "1250px" },
   },
   animation: {
     fast: PreferNoMotion ? "0ms" : "100ms",

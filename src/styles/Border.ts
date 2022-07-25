@@ -33,7 +33,7 @@ export default class Border extends CssProperty {
           )
         );
       else result.push({ name: "border", value: border_string });
-    }
+    } else result.push({ name: "border", value: "none" });
 
     if (this.schema.radius)
       result.push({ name: "border-radius", value: this.schema.radius });

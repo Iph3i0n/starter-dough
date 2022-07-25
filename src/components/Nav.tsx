@@ -38,7 +38,11 @@ const NavStyles = Css.Init()
   )
   .With(Rule.Init("a:first-child, span:first-child").With("margin-left", "0"))
   .With(Rule.Init("a:last-child, span:last-child").With("margin-right", "0"))
-  .With(Rule.Init("a").With(CT.colours.anchor).With("text-decoration", "none"))
+  .With(
+    Rule.Init("a")
+      .With(CT.colours.primary.AsText())
+      .With("text-decoration", "none")
+  )
   .With(Rule.Init("span").With(CT.colours.faded_text));
 
 Define(
@@ -186,7 +190,7 @@ Define(
       else
         result = result.With(
           Rule.Init("a.active, span.active")
-            .With(CT.colours.active)
+            .With(CT.colours.primary)
             .With(CT.border.standard)
         );
 

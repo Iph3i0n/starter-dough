@@ -85,7 +85,7 @@ Define(
         )
         .With(
           Rule.Init(".title")
-            .With(CT.colours.contrast)
+            .With(CT.colours.primary)
             .With(CT.border.standard.WithRadius("0").WithDirection("bottom"))
             .With(new Flex("center", "flex-start"))
         )
