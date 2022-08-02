@@ -4,7 +4,7 @@
   "description": "Another component library for web components",
   "main": "bundle.js",
   "scripts": {
-    "prepublish": "./publish.sh",
+    "release": "./publish.sh",
     "dev": "webpack"
   },
   "repository": {
