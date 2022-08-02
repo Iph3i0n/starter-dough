@@ -87,8 +87,13 @@ export default {
   DefineProperty<T, TKey extends string, TValue>(
     subject: T,
     key: TKey,
-    value: { writable: boolean; value: TValue }
+    value:
+      | { writable: boolean; value: TValue }
+      | { get(): TValue; set(value: TValue): void }
   ) {
     return Object.defineProperty(subject, key, value);
+  },
+  Create(subject: any) {
+    return Object.create(subject);
   },
 };

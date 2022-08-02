@@ -1,10 +1,13 @@
-import Jsx from "Src/Jsx";
-import Define from "Src/Component";
+import Register from "Src/Register";
+import { h, Fragment, JSX } from "preact";
+import { CustomElement } from "Src/utils/Type";
+import WithStyles from "Src/utils/Styles";
 import { IsString } from "@paulpopat/safe-type";
 import { CT } from "Src/Theme";
 import Css, { Rule } from "Src/CSS";
 import Flex from "Src/styles/Flex";
 import Transition from "Src/styles/Transition";
+import "./Icon";
 
 class PageEvent extends Event {
   public constructor(
@@ -16,82 +19,78 @@ class PageEvent extends Event {
   }
 }
 
-Define(
+Register(
   "p-paginator",
   { total: IsString, skip: IsString, take: IsString },
-  {},
-  {
-    render() {
-      const total = parseInt(this.Props.total);
-      const skip = parseInt(this.Props.skip);
-      const take = parseInt(this.Props.take);
-      const page = Math.floor(skip / take);
-      const click =
-        (skip: number, take: number, total: number) => (e: MouseEvent) => {
-          e.preventDefault();
-          this.dispatchEvent(
-            new PageEvent(
-              Math.max(skip, 0),
-              Math.min(skip, total - take),
-              total
-            )
-          );
-        };
+  (props) => {
+    const total = parseInt(props.total);
+    const skip = parseInt(props.skip);
+    const take = parseInt(props.take);
+    const page = Math.floor(skip / take);
+    const click =
+      (
+        skip: number,
+        take: number,
+        total: number
+      ): JSX.MouseEventHandler<HTMLAnchorElement> =>
+      (e) => {
+        e.preventDefault();
+        props.ref?.current?.dispatchEvent(
+          new PageEvent(Math.max(skip, 0), Math.min(skip, total - take), total)
+        );
+      };
 
-      return (
-        <nav>
-          <a href="#" on_click={click(0, take, total)}>
-            <p-icon
-              name="arrow-left-s"
-              size={CT.text.body_large.Size}
-              colour="primary"
-            />
-          </a>
-          <a href="#" on_click={click(skip - take, take, total)}>
-            <p-icon
-              name="arrow-drop-left"
-              size={CT.text.body_large.Size}
-              colour="primary"
-            />
-          </a>
+    return WithStyles(
+      <nav>
+        <a href="#" onClick={click(0, take, total)}>
+          <p-icon
+            name="arrow-left-s"
+            size={CT.text.body_large.Size}
+            colour="primary"
+          />
+        </a>
+        <a href="#" onClick={click(skip - take, take, total)}>
+          <p-icon
+            name="arrow-drop-left"
+            size={CT.text.body_large.Size}
+            colour="primary"
+          />
+        </a>
 
-          <a href="#" on_click={click(skip - take * 2, take, total)}>
-            {Math.max(page - 2, 1).toString()}
-          </a>
+        <a href="#" onClick={click(skip - take * 2, take, total)}>
+          {Math.max(page - 2, 1).toString()}
+        </a>
 
-          <a href="#" on_click={click(skip - take, take, total)}>
-            {Math.max(page - 1, 1).toString()}
-          </a>
+        <a href="#" onClick={click(skip - take, take, total)}>
+          {Math.max(page - 1, 1).toString()}
+        </a>
 
-          <span>{page.toString()}</span>
+        <span>{page.toString()}</span>
 
-          <a href="#" on_click={click(skip + take, take, total)}>
-            {Math.min(page + 1, Math.floor(total / take)).toString()}
-          </a>
+        <a href="#" onClick={click(skip + take, take, total)}>
+          {Math.min(page + 1, Math.floor(total / take)).toString()}
+        </a>
 
-          <a href="#" on_click={click(skip + take * 2, take, total)}>
-            {Math.min(page + 2, Math.floor(total / take)).toString()}
-          </a>
+        <a href="#" onClick={click(skip + take * 2, take, total)}>
+          {Math.min(page + 2, Math.floor(total / take)).toString()}
+        </a>
 
-          <a href="#" on_click={click(skip + take, take, total)}>
-            <p-icon
-              name="arrow-drop-right"
-              size={CT.text.body_large.Size}
-              colour="primary"
-            />
-          </a>
-          <a href="#" on_click={click(total - take, take, total)}>
-            <p-icon
-              name="arrow-right-s"
-              size={CT.text.body_large.Size}
-              colour="primary"
-            />
-          </a>
-        </nav>
-      );
-    },
-    css() {
-      return Css.Init()
+        <a href="#" onClick={click(skip + take, take, total)}>
+          <p-icon
+            name="arrow-drop-right"
+            size={CT.text.body_large.Size}
+            colour="primary"
+          />
+        </a>
+        <a href="#" onClick={click(total - take, take, total)}>
+          <p-icon
+            name="arrow-right-s"
+            size={CT.text.body_large.Size}
+            colour="primary"
+          />
+        </a>
+      </nav>,
+      Css.Init()
         .With(
           Rule.Init("a, span")
             .With(
@@ -115,7 +114,7 @@ Define(
             .With(CT.border.standard)
             .With(CT.box_shadow.large)
             .With(CT.colours.surface)
-        );
-    },
+        )
+    );
   }
 );

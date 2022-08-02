@@ -1,117 +1,114 @@
+import Register from "Src/Register";
+import { h } from "preact";
 import { IsLiteral, IsString, IsUnion, Optional } from "@paulpopat/safe-type";
-import Define from "Src/Component";
 import Css, { Rule } from "Src/CSS";
-import Jsx from "Src/Jsx";
 import Padding from "Src/styles/Padding";
 import Transition from "Src/styles/Transition";
-import { CT, TextVariants } from "Src/Theme";
-import { IsOneOf } from "Src/utils/Type";
+import { CT, TextVariant, TextVariants } from "Src/Theme";
+import { CustomElement, IsOneOf } from "Src/utils/Type";
+import WithStyles from "Src/utils/Styles";
 
-const IsTypographBase = {
-  align: Optional(
-    IsUnion(IsLiteral("left"), IsLiteral("center"), IsLiteral("right"))
-  ),
-  "no-margin": Optional(IsLiteral(true)),
-};
+declare global {
+  type TypographyBase = {
+    align?: "left" | "center" | "right";
+    "no-margin"?: true;
+  };
+  namespace preact.createElement.JSX {
+    interface IntrinsicElements {
+      ["p-text"]: CustomElement<TypographyBase & { variant: TextVariant }>;
+      ["p-list"]: CustomElement<
+        TypographyBase & {
+          variant: "ordered" | "unordered";
+          data: (string | string[])[];
+        }
+      >;
+      ["p-item"]: CustomElement<{}>;
+      ["p-link"]: CustomElement<{ href: string }>;
+    }
+  }
+}
 
-Define(
+Register(
   "p-text",
   {
-    ...IsTypographBase,
+    align: Optional(IsOneOf("left", "right", "center")),
+    "no-margin": Optional(IsLiteral(true)),
     variant: IsOneOf(...TextVariants),
   },
-  {},
-  {
-    render() {
-      return Jsx.Element(
-        ("h" + CT.text[this.Props.variant].Tag) as any,
-        { class: "text" },
-        <slot />
-      );
-    },
-    css() {
-      let target = CT.text[this.Props.variant];
-      if (this.Props["no-margin"])
-        target = target.WithPadding(new Padding("margin", "0"));
+  (props) => {
+    let target = CT.text[props.variant];
+    if (props["no-margin"])
+      target = target.WithPadding(new Padding("margin", "0"));
 
-      return Css.Init().With(
+    return WithStyles(
+      h(target.Tag, { class: "text" }, props.children),
+      Css.Init().With(
         Rule.Init(".text")
           .With(target)
-          .With("text-align", this.Props.align ?? "left")
-      );
-    },
+          .With("text-align", props.align ?? "left")
+      )
+    );
   }
 );
 
-Define(
+Register(
   "p-list",
   {
-    ...IsTypographBase,
-    variant: IsUnion(IsLiteral("unordered"), IsLiteral("ordered")),
+    data: IsString,
+    variant: IsOneOf("ordered", "unordered"),
+    align: Optional(IsOneOf("left", "right", "center")),
+    "no-margin": Optional(IsLiteral(true)),
   },
-  {},
-  {
-    render() {
-      const tag = (() => {
-        switch (this.Props.variant) {
-          case "ordered":
-            return "ol" as const;
-          case "unordered":
-            return "ul" as const;
-        }
-      })();
-      return Jsx.Element(tag, { class: "list" }, <slot />);
-    },
-    css() {
-      return Css.Init().With(
+  (props) => {
+    const tag = (() => {
+      switch (props.variant) {
+        case "ordered":
+          return "ol" as const;
+        case "unordered":
+        default:
+          return "ul" as const;
+      }
+    })();
+
+    return WithStyles(
+      h(
+        tag,
+        { class: "list" },
+        ...props.data
+          .split(",")
+          .map((item: string, index: number) => <li key={index}>{item}</li>)
+      ),
+      Css.Init().With(
         Rule.Init(".list")
           .With(CT.text.body.WithPadding(new Padding("margin", "0")))
           .With(CT.padding.block.LeftOnly())
-          .With("text-align", this.Props.align ?? "left")
+          .With("text-align", props.align ?? "left")
           .With(
             "margin-bottom",
-            this.Props["no-margin"] ? "0" : CT.text.body.Padding.Bottom
+            props["no-margin"] ? "0" : CT.text.body.Padding.Bottom
           )
           .With("child", Rule.Init(".list").With("margin-bottom", "0"))
-      );
-    },
+      )
+    );
   }
 );
 
-Define(
-  "p-item",
-  {},
-  {},
-  {
-    render() {
-      return (
-        <li>
-          <slot />
-        </li>
-      );
-    },
-  }
-);
-
-Define(
+Register(
   "p-link",
   {
-    href: Optional(IsString),
+    href: IsString,
+    target: Optional(IsString),
+    disabled: Optional(IsLiteral(true)),
   },
-  {},
-  {
-    render() {
-      return (
-        <a {...this.Props}>
-          <slot />
-        </a>
-      );
-    },
-    css() {
-      return Css.Init().With(
+  (props) =>
+    WithStyles(
+      <a href={props.href} target={props.target ?? undefined}>
+        {props.children}
+      </a>,
+      Css.Init().With(
         Rule.Init("a")
           .With(
-            "disabled" in this.Props
+            "disabled" in props
               ? CT.colours.primary.AsText()
               : CT.colours.faded_text
           )
@@ -125,7 +122,6 @@ Define(
           )
           .With("text-decoration", "none")
           .With("cursor", "pointer")
-      );
-    },
-  }
+      )
+    )
 );

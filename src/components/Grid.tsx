@@ -1,125 +1,112 @@
-import Jsx from "Src/Jsx";
-import Define from "Src/Component";
-import { Sizes, CT, ColourNames, GetColour } from "Src/Theme";
-import C from "Src/utils/Class";
-import { IsLiteral, IsString, IsUnion, Optional } from "@paulpopat/safe-type";
-import Object from "Src/utils/Object";
+import Register from "Src/Register";
+import { Fragment } from "preact";
+import { Sizes, CT, Size } from "Src/Theme";
 import Css, { Media, Rule } from "Src/CSS";
 import Padding from "Src/styles/Padding";
 import Grid from "Src/styles/Grid";
 import Flex from "Src/styles/Flex";
+import { CustomElement, IsOneOf } from "Src/utils/Type";
+import WithStyles from "Src/utils/Styles";
+import { IsLiteral, IsString, Optional } from "@paulpopat/safe-type";
+import Object from "Src/utils/Object";
 
-Define(
+declare global {
+  namespace preact.createElement.JSX {
+    interface IntrinsicElements {
+      "p-container": CustomElement<{ "full-width"?: true; flush?: true }>;
+      "p-row": CustomElement<{ cols?: string; flush?: true }>;
+      "p-col": CustomElement<
+        Partial<Record<Size, string>> & {
+          centre?: true;
+          align?: "left" | "centre" | "right";
+        }
+      >;
+    }
+  }
+}
+
+Register(
   "p-container",
-  {
-    "full-width": Optional(IsLiteral(true)),
-    flush: Optional(IsLiteral(true)),
-  },
-  {},
-  {
-    render() {
-      return (
-        <section class={C(["full-width", "full-width" in this.Props])}>
-          <slot />
-        </section>
-      );
-    },
-    css() {
-      let section = Rule.Init("section")
-        .With("margin", "auto")
-        .With("max-width", "100%")
-        .With(
-          this.Props.flush ? new Padding("padding", "0") : CT.padding.block
-        );
-      let result: Css = Css.Init()
-        .With(section)
-        .With(Rule.Init("section.full-width").With("max-width", "100%"));
+  { "full-width": Optional(IsLiteral(true)), flush: Optional(IsLiteral(true)) },
+  (props) => {
+    let section = Rule.Init(":host")
+      .With("display", "block")
+      .With("margin", "auto")
+      .With("max-width", "100%")
+      .With(props.flush ? new Padding("padding", "0") : CT.padding.block);
+    let css: Css = Css.Init()
+      .With(section)
+      .With(Rule.Init(":host(.full-width)").With("max-width", "100%"));
 
-      for (const size of Sizes) {
-        result = result.With(
-          Media.Init(`min-width: ${CT.screen[size].breakpoint}`).With(
-            Rule.Init("section:not(.full-width)").With(
-              "max-width",
-              CT.screen[size].width
-            )
+    for (const size of Sizes) {
+      css = css.With(
+        Media.Init(`min-width: ${CT.screen[size].breakpoint}`).With(
+          Rule.Init(":host(:not(.full-width))").With(
+            "max-width",
+            CT.screen[size].width
           )
-        );
-      }
+        )
+      );
+    }
 
-      return result;
-    },
+    return WithStyles(<>{props.children}</>, css);
   }
 );
 
-Define(
+Register(
   "p-row",
-  { flush: Optional(IsLiteral(true)) },
-  {},
-  {
-    render() {
-      return <slot />;
-    },
-    css() {
-      return Css.Init().With(
+  { cols: Optional(IsString), flush: Optional(IsLiteral(true)) },
+  (props) =>
+    WithStyles(
+      <>{props.children}</>,
+      Css.Init().With(
         Rule.Init(":host")
-          .With(new Grid(12, CT.padding.block.X))
+          .With(new Grid(parseInt(props.cols ?? "12"), CT.padding.block.X))
           .With(
-            this.Props.flush
+            props.flush
               ? new Padding("margin", "0")
               : CT.padding.block.AsMargin().YOnly()
           )
-      );
-    },
-  }
+      )
+    )
 );
 
-Define(
+Register(
   "p-col",
   {
-    ...Object.MapArrayAsKeys(Sizes, (k) => Optional(IsString)),
+    ...Object.MapArrayAsKeys(Sizes, () => Optional(IsString)),
     centre: Optional(IsLiteral(true)),
-    align: Optional(
-      IsUnion(IsLiteral("left"), IsLiteral("centre"), IsLiteral("right"))
-    ),
+    align: Optional(IsOneOf("centre", "right", "left")),
   },
-  {},
-  {
-    render() {
-      return <slot />;
-    },
-    css() {
-      let result = Css.Init();
+  (props) => {
+    let css = Css.Init();
 
-      for (const size of Sizes) {
-        if (this.Props[size])
-          result = result.With(
-            Media.Init(`min-width: ${CT.screen[size].breakpoint}`).With(
-              Rule.Init(":host").With(
-                "grid-column",
-                "auto / span " + this.Props[size]
-              )
-            )
-          );
-      }
-
-      if (this.Props.centre || this.Props.align)
-        result = result.With(
-          Rule.Init(":host").With(
-            new Flex(
-              this.Props.centre ? "center" : "flex-start",
-              this.Props.align === "centre"
-                ? "center"
-                : this.Props.align === "right"
-                ? "flex-end"
-                : this.Props.align === "left"
-                ? "flex-start"
-                : "stretch",
-              { wrap: true }
-            )
+    for (const size of Sizes) {
+      if (props[size])
+        css = css.With(
+          Media.Init(`min-width: ${CT.screen[size].breakpoint}`).With(
+            Rule.Init(":host").With("grid-column", "auto / span " + props[size])
           )
         );
+    }
 
-      return result;
-    },
+    if (props.centre || props.align)
+      css = css.With(
+        Rule.Init(":host").With(
+          new Flex(
+            props.centre ? "center" : "flex-start",
+            props.align === "centre"
+              ? "center"
+              : props.align === "right"
+              ? "flex-end"
+              : props.align === "left"
+              ? "flex-start"
+              : "stretch",
+            { wrap: true }
+          )
+        )
+      );
+
+    return WithStyles(<>{props.children}</>, css);
   }
 );

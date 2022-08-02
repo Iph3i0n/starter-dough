@@ -1,43 +1,51 @@
-import Jsx from "Src/Jsx";
-import { IsString, Optional } from "@paulpopat/safe-type";
-import Define from "Src/Component";
-import { ColourNames, CT, GetColour } from "Src/Theme";
+import Register from "Src/Register";
+import { h } from "preact";
+import { CustomElement, IsOneOf } from "Src/utils/Type";
+import WithStyles from "Src/utils/Styles";
+import { ColourName, ColourNames, CT, GetColour } from "Src/Theme";
 import Css, { Rule } from "Src/CSS";
-import { IsOneOf } from "Src/utils/Type";
+import { IsString, Optional } from "@paulpopat/safe-type";
 
-Define(
+declare global {
+  namespace preact.createElement.JSX {
+    interface IntrinsicElements {
+      "p-card": CustomElement<{
+        img?: string;
+        "img-alt"?: string;
+        colour?: ColourName;
+      }>;
+    }
+  }
+}
+
+Register(
   "p-card",
   {
     img: Optional(IsString),
     "img-alt": Optional(IsString),
     colour: Optional(IsOneOf(...ColourNames)),
   },
-  {},
-  {
-    render() {
-      return (
-        <div class="card">
-          {"img" in this.Props && (
-            <img
-              src={this.Props.img}
-              alt={this.Props["img-alt"]}
-              class="card-img-top"
-            />
-          )}
-          <div class="card-body">
-            <h5 class="card-title">
-              <slot name="title" />
-            </h5>
-            <slot />
-          </div>
+  (props) =>
+    WithStyles(
+      <div class="card">
+        {props.img && (
+          <img
+            src={props.img}
+            alt={props["img-alt"] ?? ""}
+            class="card-img-top"
+          />
+        )}
+        <div class="card-body">
+          <h5 class="card-title">
+            <slot name="title" />
+          </h5>
+          {props.children}
         </div>
-      );
-    },
-    css() {
-      return Css.Init()
+      </div>,
+      Css.Init()
         .With(
           Rule.Init(".card")
-            .With(GetColour(this.Props.colour ?? "surface"))
+            .With(GetColour(props.colour ?? "surface"))
             .With(CT.border.standard)
             .With(CT.box_shadow.large)
             .With("overflow", "hidden")
@@ -59,7 +67,6 @@ Define(
           Rule.Init(".card .card-title")
             .With(CT.text.body_large)
             .With(CT.padding.block.AsMargin().BottomOnly())
-        );
-    },
-  }
+        )
+    )
 );

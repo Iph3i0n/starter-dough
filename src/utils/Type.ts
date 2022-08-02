@@ -1,4 +1,5 @@
 import { Checker, IsIntersection, IsUnion } from "@paulpopat/safe-type";
+import { Attributes, ComponentChildren, RefObject, VNode } from "preact";
 
 type PrependNextNum<A extends Array<unknown>> = A["length"] extends infer T
   ? ((t: T, ...a: A) => void) extends (...x: infer X) => void
@@ -40,3 +41,24 @@ export function IsUnionWithBase<TBase, TOptions extends readonly any[]>(
 export function IsHtmlElement(node: any): node is HTMLElement {
   return node && node.nodeType && node.nodeType === node.ELEMENT_NODE;
 }
+
+export function IsTextNode(node: any): node is Text {
+  return node && node.nodeType && node.nodeType === node.TEXT_NODE;
+}
+
+export type CustomEvents<K extends string> = {
+  [key in K]: (event: CustomEvent) => void;
+};
+
+export type CustomElement<T, K extends string = ""> = Partial<
+  T & { children: any } & CustomEvents<`on${K}`>
+>;
+
+export type FC<TProps = {}> = (
+  props: Readonly<
+    Attributes & {
+      children?: ComponentChildren;
+      ref?: RefObject<HTMLElement>;
+    } & TProps
+  >
+) => VNode<any> | null;

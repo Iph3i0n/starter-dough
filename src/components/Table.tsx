@@ -1,150 +1,95 @@
-import Jsx from "Src/Jsx";
+import Register from "Src/Register";
+import { createContext } from "preact";
+import WithStyles from "Src/utils/Styles";
 import { IsString, Optional } from "@paulpopat/safe-type";
-import Define from "Src/Component";
-import CreateContext from "Src/utils/Context";
 import Css, { Rule } from "Src/CSS";
 import { ColourNames, CT, GetColour, PreferDark } from "Src/Theme";
 import Grid from "Src/styles/Grid";
 import { IsOneOf } from "Src/utils/Type";
+import { useContext } from "preact/hooks";
+import { UseIndex, WithIndex } from "Src/utils/Index";
+import WithChild from "./Child";
 
-const Context = CreateContext([] as any[]);
-
-Define(
+Register(
   "p-table",
-  {
-    data: IsString,
-    colour: Optional(IsOneOf(...ColourNames)),
-  },
-  {},
-  {
-    render() {
-      this.Provide(Context, (window as any)[this.Props.data]);
+  { colour: Optional(IsOneOf(...ColourNames)) },
+  WithChild(
+    WithIndex((props) => {
+      let rule = Rule.Init(".table").With(CT.border.standard);
 
-      return (
+      if (props.colour) rule = rule.With(GetColour(props.colour));
+      return WithStyles(
         <div class="table">
           <div class="thead">
             <slot name="head" />
           </div>
-          <div class="tbody">
-            <slot />
-          </div>
-        </div>
+          <div class="tbody">{props.children}</div>
+        </div>,
+        Css.Init().With(rule)
       );
-    },
-    css() {
-      let rule = Rule.Init(".table").With(CT.border.standard);
-
-      if (this.Props.colour) rule = rule.With(GetColour(this.Props.colour));
-      return Css.Init().With(rule);
-    },
-  }
-);
-
-const RowContext = CreateContext((key: string) => {});
-
-Define(
-  "p-data-row",
-  {},
-  { cells: [] as string[] },
-  {
-    render() {
-      const data: any[] = this.Use(Context);
-      this.Provide(
-        RowContext,
-        (key) => (this.State = { cells: [...this.State.cells, key] })
-      );
-
-      return (
-        <>
-          {data.map((d: any) => (
-            <div class="tr">
-              {this.State.cells.map((key) => (
-                <div class="td">{d[key]}</div>
-              ))}
-            </div>
-          ))}
-        </>
-      );
-    },
-    css() {
-      return Css.Init()
-        .With(
-          Rule.Init(".tr")
-            .With(CT.border.standard.WithDirection("bottom").WithRadius("0"))
-            .With(new Grid(this.State.cells.length, CT.padding.small_block.X))
-            .With(
-              "modifier",
-              Rule.Init(":nth-child(odd)").With(
+    }),
+    {},
+    WithChild(
+      WithIndex((props, total) => {
+        const { index } = UseIndex();
+        return WithStyles(
+          <div class="tr">{props.children}</div>,
+          Css.Init().With(
+            Rule.Init(".tr")
+              .With(CT.border.standard.WithDirection("bottom").WithRadius("0"))
+              .With(new Grid(total, "0"))
+              .With(
                 "background-color",
-                PreferDark ? "rgba(255, 255, 255, 0.1)" : "rgba(0, 0, 0, 0.1)"
+                index % 2 === 0
+                  ? PreferDark
+                    ? "rgba(255, 255, 255, 0.1)"
+                    : "rgba(0, 0, 0, 0.1)"
+                  : "transparent"
               )
-            )
-        )
-        .With(
-          Rule.Init(".td")
-            .With(CT.text.body.WithoutPadding())
-            .With(CT.padding.small_block)
+          )
         );
-    },
-  }
+      }),
+      {},
+      (props) => {
+        UseIndex();
+        return WithStyles(
+          <div class="td">{props.children}</div>,
+          Css.Init().With(
+            Rule.Init(".td")
+              .With(CT.text.body.WithoutPadding())
+              .With(CT.padding.small_block)
+          )
+        );
+      }
+    )
+  )
 );
 
-Define(
-  "p-data-cell",
-  { key: IsString },
-  {},
-  {
-    render() {
-      const register = this.Use(RowContext);
-      this.On("load", () => register(this.Props.key));
-      return <slot />;
-    },
-  }
-);
-
-Define(
+Register(
   "p-head-row",
   {},
-  { child: 0 },
-  {
-    render() {
-      this.On("children", () => {
-        this.State = { child: this.ChildElements.length };
-      });
-      return (
-        <div class="tr">
-          <slot />
-        </div>
+  WithChild(
+    WithIndex((props, total) =>
+      WithStyles(
+        <div class="tr">{props.children}</div>,
+        Css.Init().With(
+          Rule.Init(".tr")
+            .With(CT.border.standard.WithDirection("bottom").WithRadius("0"))
+            .With(new Grid(total, "0"))
+        )
+      )
+    ),
+    {},
+    (props) => {
+      UseIndex();
+      return WithStyles(
+        <div class="th">{props.children}</div>,
+        Css.Init().With(
+          Rule.Init(".th")
+            .With(CT.text.h6.WithoutPadding())
+            .With(CT.padding.small_block)
+        )
       );
-    },
-    css() {
-      return Css.Init().With(
-        Rule.Init(".tr")
-          .With(CT.border.standard.WithDirection("bottom").WithRadius("0"))
-          .With(new Grid(this.State.child, CT.padding.small_block.X))
-      );
-    },
-  }
-);
-
-Define(
-  "p-head-cell",
-  {},
-  {},
-  {
-    render() {
-      return (
-        <div class="th">
-          <slot />
-        </div>
-      );
-    },
-    css() {
-      return Css.Init().With(
-        Rule.Init(".th")
-          .With(CT.text.h6.WithoutPadding())
-          .With(CT.padding.small_block)
-      );
-    },
-  }
+    }
+  )
 );

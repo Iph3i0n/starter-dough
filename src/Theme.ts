@@ -204,6 +204,8 @@ export type Speed = keyof typeof CT["animation"];
 
 export const TextVariants = Object.Keys(CT.text);
 
+export type TextVariant = typeof TextVariants[number];
+
 export function GetColour(name: ColourName): Colour {
   return CT.colours[name];
 }

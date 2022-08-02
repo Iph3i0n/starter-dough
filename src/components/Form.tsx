@@ -1,24 +1,58 @@
-import {
-  IsBoolean,
-  IsLiteral,
-  IsString,
-  IsUnion,
-  Optional,
-} from "@paulpopat/safe-type";
-import Define from "Src/Component";
+import Register from "Src/Register";
+import { createContext, h } from "preact";
 import Css, { Media, Rule } from "Src/CSS";
-import Jsx from "Src/Jsx";
 import Absolute from "Src/styles/Absolute";
 import Flex from "Src/styles/Flex";
 import Transition from "Src/styles/Transition";
-import { ColourNames, CT, GetColour } from "Src/Theme";
+import { ColourName, ColourNames, CT, GetColour } from "Src/Theme";
 import C from "Src/utils/Class";
-import CreateContext from "Src/utils/Context";
 import Object from "Src/utils/Object";
-import { IsOneOf } from "Src/utils/Type";
+import { CustomElement, IsOneOf } from "Src/utils/Type";
 import { v4 as Guid } from "uuid";
+import { useContext, useEffect, useMemo, useRef, useState } from "preact/hooks";
+import WithStyles from "Src/utils/Styles";
+import "./Grid";
+import { IsLiteral, IsString, Optional } from "@paulpopat/safe-type";
 
-export const FormContext = CreateContext({
+declare global {
+  namespace preact.createElement.JSX {
+    interface IntrinsicElements {
+      "p-form": CustomElement<{}>;
+      "p-input": CustomElement<{
+        name: string;
+        help?: string;
+        type: string;
+        disabled?: true;
+        default?: string;
+        placeholder?: string;
+      }>;
+      "p-textarea": CustomElement<{
+        name: string;
+        help?: string;
+        type: string;
+        disabled?: true;
+        default?: string;
+        placeholder?: string;
+      }>;
+      "p-select": CustomElement<{
+        name: string;
+        help?: string;
+        disabled?: true;
+        default?: string;
+        options: string | string[];
+      }>;
+      "p-toggle": CustomElement<{
+        name: string;
+        type: "radio" | "checkbox" | "switch";
+        value?: string;
+        disabled?: boolean;
+        colour: ColourName;
+      }>;
+    }
+  }
+}
+
+export const FormContext = createContext({
   get: (key: string) => "" as string,
   set: (key: string, value: string) => {},
   submit: () => {},
@@ -33,29 +67,33 @@ class FormSubmitEvent<T> extends Event {
   }
 }
 
-Define(
-  "p-form",
-  {},
-  { value: {} as Record<string, string> },
-  {
-    render() {
-      this.Provide(FormContext, {
-        get: (key) => this.State.value[key] ?? "",
-        set: (key, value) =>
-          (this.State = { value: { ...this.State.value, [key]: value } }),
-        submit: () => {
-          this.dispatchEvent(new FormSubmitEvent(this.State.value));
-        },
-      });
+Register("p-form", {}, (props) => {
+  const [value, set_value] = useState({} as Record<string, string>);
+  const ref = useRef<HTMLFormElement>(null);
 
-      return (
-        <form on_submit={(e: any) => e.preventDefault()}>
-          <slot />
-        </form>
-      );
-    },
-  }
-);
+  const submit = () =>
+    ref.current?.getRootNode().dispatchEvent(new FormSubmitEvent(value));
+
+  return (
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        submit();
+      }}
+      ref={ref}
+    >
+      <FormContext.Provider
+        value={{
+          get: (key) => value[key] ?? "",
+          set: (key, value) => set_value((v) => ({ ...v, [key]: value })),
+          submit,
+        }}
+      >
+        {props.children}
+      </FormContext.Provider>
+    </form>
+  );
+});
 
 const InputRules = Css.Init()
   .With(Rule.Init("label").With(CT.text.body).With("display", "block"))
@@ -96,230 +134,191 @@ const InputRules = Css.Init()
     Rule.Init(".help-text").With(CT.text.small).With(CT.colours.faded_text)
   );
 
-Define(
+Register(
   "p-input",
   {
     name: IsString,
     help: Optional(IsString),
     type: Optional(IsString),
-    disabled: Optional(IsLiteral(true)),
     default: Optional(IsString),
     placeholder: Optional(IsString),
+    disabled: Optional(IsLiteral(true)),
   },
-  {},
-  {
-    render() {
-      const id = Guid();
-      const { get, set, submit } = this.Use(FormContext);
-      this.On("load", () => set(this.Props.name, this.Props.default ?? ""));
-      return (
-        <p-row flush>
-          <p-col xs="12" md="3" lg="2">
-            <label for={id}>
-              <slot />
-            </label>
-          </p-col>
-          <p-col xs="12" md="9" lg="10">
-            <input
-              id={id}
-              type={this.Props.type ?? "text"}
-              name={this.Props.name}
-              class="input"
-              disabled={this.Props.disabled}
-              value={get(this.Props.name)}
-              placeholder={this.Props.placeholder}
-              on_change={(e: any) =>
-                set(this.Props.name, e.currentTarget.value)
-              }
-              on_keypress={(e: KeyboardEvent) => {
-                if (e.key !== "Enter") return;
-                e.preventDefault();
-                set(this.Props.name, (e.currentTarget as any)?.value ?? "");
-                submit();
-              }}
-            />
-            {this.Props.help && (
-              <span class="help-text">{this.Props.help}</span>
-            )}
-          </p-col>
-        </p-row>
-      );
-    },
-    css() {
-      return InputRules;
-    },
+  (props) => {
+    const id = useMemo(() => Guid(), []);
+    const { get, set, submit } = useContext(FormContext);
+    useEffect(() => set(props.name, props.default ?? ""), []);
+
+    return WithStyles(
+      <p-row flush>
+        <p-col xs="12" md="3" lg="2" centre align="right">
+          <label for={id}>{props.children}</label>
+        </p-col>
+        <p-col xs="12" md="9" lg="10" centre>
+          <input
+            id={id}
+            type={props.type ?? "text"}
+            name={props.name}
+            class="input"
+            disabled={props.disabled ?? false}
+            value={get(props.name)}
+            placeholder={props.placeholder ?? undefined}
+            onChange={(e: any) => set(props.name, e.currentTarget.value)}
+            onKeyPress={(e: KeyboardEvent) => {
+              if (e.key !== "Enter") return;
+              e.preventDefault();
+              set(props.name, (e.currentTarget as any)?.value ?? "");
+              submit();
+            }}
+          />
+          {props.help && <span class="help-text">{props.help}</span>}
+        </p-col>
+      </p-row>,
+      InputRules
+    );
   }
 );
 
-Define(
+Register(
   "p-select",
   {
     name: IsString,
     help: Optional(IsString),
+    default: Optional(IsString),
     disabled: Optional(IsLiteral(true)),
-    default: IsString,
+    options: IsString,
   },
-  {},
-  {
-    render() {
-      const id = Guid();
-      const { get, set } = this.Use(FormContext);
-      this.On("load", () => set(this.Props.name, this.Props.default));
-      const options = Object.Keys(this.Props).filter((o) => o.startsWith("o-"));
-      const value = get(this.Props.name);
-      return (
-        <p-row flush>
-          <p-col xs="12" md="3" lg="2">
-            <label for={id}>
-              <slot />
-            </label>
-          </p-col>
-          <p-col xs="12" md="9" lg="10">
-            <select
-              id={id}
-              name={this.Props.name}
-              class="input"
-              disabled={this.Props.disabled}
-              on_change={(e: any) =>
-                set(this.Props.name, e.currentTarget.value)
-              }
-            >
-              {options.map((o) => (
-                <option
-                  value={o.replace("o-", "")}
-                  selected={value == o.replace("o-", "")}
-                >
-                  {this.Props[o]}
-                </option>
-              ))}
-            </select>
-            {this.Props.help && (
-              <span class="help-text">{this.Props.help}</span>
-            )}
-            <p-icon name="arrow-down-s" size="35px" colour="body" text />
-          </p-col>
-        </p-row>
-      );
-    },
-    css() {
-      return InputRules.With(
-        Rule.Init("p-col").With("position", "relative")
-      ).With(Rule.Init("p-icon").With(new Absolute({ top: "0", right: "0" })));
-    },
+  (props) => {
+    const id = useMemo(() => Guid(), []);
+    const { get, set } = useContext(FormContext);
+    useEffect(() => set(props.name, props.default ?? ""), []);
+    const value = get(props.name);
+
+    const options: string[] = Array.isArray(props.options)
+      ? props.options
+      : props.options.split(",");
+    return WithStyles(
+      <p-row flush>
+        <p-col xs="12" md="3" lg="2" centre align="right">
+          <label for={id}>{props.children}</label>
+        </p-col>
+        <p-col xs="12" md="9" lg="10" centre>
+          <select
+            id={id}
+            name={props.name}
+            class="input"
+            disabled={props.disabled ?? false}
+            onChange={(e) => set(props.name, e.currentTarget.value)}
+          >
+            {options.map((o: string) => (
+              <option key={o} value={o} selected={value == o}>
+                {o}
+              </option>
+            ))}
+          </select>
+          {props.help && <span class="help-text">{props.help}</span>}
+          <p-icon name="arrow-down-s" size="35px" colour="body" text />
+        </p-col>
+      </p-row>,
+      InputRules.With(Rule.Init("p-col").With("position", "relative")).With(
+        Rule.Init("p-icon").With(new Absolute({ top: "0", right: "0" }))
+      )
+    );
   }
 );
 
-Define(
+Register(
   "p-textarea",
   {
     name: IsString,
     help: Optional(IsString),
-    type: Optional(IsString),
-    disabled: Optional(IsLiteral(true)),
+    type: IsString,
     default: Optional(IsString),
     placeholder: Optional(IsString),
+    disabled: Optional(IsLiteral(true)),
   },
-  {},
-  {
-    render() {
-      const id = Guid();
-      const { get, set } = this.Use(FormContext);
-      this.On("load", () => set(this.Props.name, this.Props.default ?? ""));
-      return (
-        <p-row flush>
-          <p-col xs="12">
-            <label for={id} class="for-textarea">
-              <slot />
-            </label>
-          </p-col>
-          <p-col xs="12">
-            <textarea
-              id={id}
-              type={this.Props.type ?? "text"}
-              name={this.Props.name}
-              class="input"
-              disabled={this.Props.disabled}
-              placeholder={this.Props.placeholder}
-              on_change={() =>
-                set(
-                  this.Props.name,
-                  this.Root.querySelector("textarea")?.value ?? ""
-                )
-              }
-            >
-              {get(this.Props.name)}
-            </textarea>
-            {this.Props.help && (
-              <span class="help-text">{this.Props.help}</span>
-            )}
-          </p-col>
-        </p-row>
-      );
-    },
-    css() {
-      return InputRules.With(
+  (props) => {
+    const id = useMemo(() => Guid(), []);
+    const { get, set, submit } = useContext(FormContext);
+    useEffect(() => set(props.name, props.default ?? ""), []);
+
+    return WithStyles(
+      <p-row flush>
+        <p-col xs="12">
+          <label for={id} class="for-textarea">
+            {props.children}
+          </label>
+        </p-col>
+        <p-col xs="12">
+          <textarea
+            id={id}
+            type={props.type ?? "text"}
+            name={props.name}
+            class="input"
+            disabled={props.disabled ?? false}
+            value={get(props.name)}
+            placeholder={props.placeholder ?? undefined}
+            onChange={(e: any) => set(props.name, e.currentTarget.value)}
+            onKeyPress={(e: KeyboardEvent) => {
+              if (e.key !== "Enter") return;
+              e.preventDefault();
+              set(props.name, (e.currentTarget as any)?.value ?? "");
+              submit();
+            }}
+          />
+          {props.help && <span class="help-text">{props.help}</span>}
+        </p-col>
+      </p-row>,
+      InputRules.With(
         Rule.Init("textarea").With("height", "5rem").With("resize", "none")
-      );
-    },
+      )
+    );
   }
 );
 
-Define(
+Register(
   "p-toggle",
   {
     name: IsString,
-    type: IsUnion(
-      IsLiteral("checkbox"),
-      IsLiteral("radio"),
-      IsLiteral("switch")
-    ),
-    value: IsString,
+    help: Optional(IsString),
+    type: IsString,
+    default: Optional(IsString),
     disabled: Optional(IsLiteral(true)),
-    checked: Optional(IsBoolean),
+    value: IsString,
     colour: IsOneOf(...ColourNames),
   },
-  {},
-  {
-    render() {
-      const { get, set } = this.Use(FormContext);
-      const value = get(this.Props.name);
-      const type = this.Props.type === "radio" ? "radio" : "checkbox";
-      const checked = type
-        ? value.includes(this.Props.value)
-        : value === this.Props.value;
-      return (
-        <label class={C(["disabled", !!this.Props.disabled])}>
-          <input
-            class={this.Props.type}
-            type={type}
-            name={this.Props.name}
-            disabled={this.Props.disabled}
-            checked={checked}
-            on_click={(e: any) => {
-              e.preventDefault();
-              if (this.Props.type === "radio")
-                set(this.Props.name, this.Props.value);
-              else if (checked)
-                set(
-                  this.Props.name,
-                  value
-                    .split(",")
-                    .filter((v) => v !== this.Props.value)
-                    .join(",")
-                );
-              else
-                set(
-                  this.Props.name,
-                  value.split(",").concat(this.Props.value).join(",")
-                );
-            }}
-          />
-          <slot />
-        </label>
-      );
-    },
-    css() {
-      return Css.Init()
+  (props) => {
+    const { get, set } = useContext(FormContext);
+    const value = get(props.name);
+    const type = props.type === "radio" ? "radio" : "checkbox";
+    const checked = type ? value.includes(props.value) : value === props.value;
+
+    return WithStyles(
+      <label class={C(["disabled", !!props.disabled])}>
+        <input
+          class={props.type}
+          type={type}
+          name={props.name}
+          disabled={props.disabled ?? false}
+          checked={checked}
+          onClick={(e) => {
+            e.preventDefault();
+            if (props.type === "radio") set(props.name, props.value);
+            else if (checked)
+              set(
+                props.name,
+                value
+                  .split(",")
+                  .filter((v) => v !== props.value)
+                  .join(",")
+              );
+            else
+              set(props.name, value.split(",").concat(props.value).join(","));
+          }}
+        />
+        {props.children}
+      </label>,
+      Css.Init()
         .With(
           Rule.Init("label")
             .With(new Flex("center", "flex-start"))
@@ -369,14 +368,14 @@ Define(
         .With(Rule.Init(".radio").With("border-radius", CT.text.body.Size))
         .With(
           Rule.Init("input[checked]")
-            .With("border-color", GetColour(this.Props.colour).Hex)
-            .With("background-color", GetColour(this.Props.colour).Hex)
+            .With("border-color", GetColour(props.colour).Hex)
+            .With("background-color", GetColour(props.colour).Hex)
         )
         .With(
           Rule.Init(".switch[checked]::after")
-            .With("border-color", GetColour(this.Props.colour).Hex)
+            .With("border-color", GetColour(props.colour).Hex)
             .With("left", `calc(100% - (${CT.border.check.Width} * 5))`)
-        );
-    },
+        )
+    );
   }
 );

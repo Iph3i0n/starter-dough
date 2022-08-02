@@ -9,3 +9,5 @@ window.onmousemove = (event) => {
 export function GetMousePosition() {
   return [state.x, state.y] as const;
 }
+
+export type Position = ReturnType<typeof GetMousePosition>;

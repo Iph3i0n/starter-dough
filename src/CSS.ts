@@ -142,7 +142,7 @@ export class Keyframes {
   }
 }
 
-type CssChunk = Rule | Media | Keyframes;
+type CssChunk = Rule | Media | Keyframes | string;
 
 export default class Css {
   private readonly content: CssChunk[];

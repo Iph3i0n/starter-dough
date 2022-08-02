@@ -1,51 +1,64 @@
-import { IsLiteral, IsString, Optional } from "@paulpopat/safe-type";
-import Define from "Src/Component";
-import Jsx from "Src/Jsx";
-import { ColourNames, GetColour } from "Src/Theme";
-import { IsOneOf } from "Src/utils/Type";
+import Register from "Src/Register";
+import { h } from "preact";
+import { ColourName, ColourNames, GetColour } from "Src/Theme";
+import { CustomElement, IsOneOf } from "Src/utils/Type";
 // @ts-ignore: Importing CSS file content
 import style from "remixicon/fonts/remixicon.css";
 import Css, { Keyframes, Rule } from "Src/CSS";
 import Animation from "Src/styles/Animation";
+import WithStyles from "Src/utils/Styles";
+import { IsLiteral, IsString, Optional } from "@paulpopat/safe-type";
 
-Define(
+declare global {
+  namespace preact.createElement.JSX {
+    interface IntrinsicElements {
+      ["p-icon"]: CustomElement<
+        {
+          name: string;
+          size: string;
+          colour: ColourName;
+          text?: true;
+          spin?: true;
+        },
+        ""
+      >;
+    }
+  }
+}
+
+Register(
   "p-icon",
   {
     name: IsString,
     size: IsString,
-    colour: IsOneOf(...ColourNames),
+    colour: Optional(IsOneOf(...ColourNames)),
     text: Optional(IsLiteral(true)),
     spin: Optional(IsLiteral(true)),
   },
-  {},
-  {
-    render() {
-      return <span class={`ri-${this.Props.name}-line`} />;
-    },
-    css() {
-      const colour = GetColour(this.Props.colour);
-      let result = Css.Init().With(
+  ({ name, size, colour, text, spin }) => {
+    const input_colour = GetColour(colour ?? "body");
+    let result = Css.Init()
+      .With(
         Rule.Init("span")
           .With("line-height", "1.2")
-          .With("font-size", this.Props.size)
-          .With(this.Props.text ? colour.OnlyText() : colour.AsText())
-      );
+          .With("font-size", size)
+          .With(text ? input_colour.OnlyText() : input_colour.AsText())
+      )
+      .With(style);
 
-      if (this.Props.spin)
-        result = result
-          .With(
-            Keyframes.Init("spin")
-              .With(Rule.Init("from").With("transform", "rotate(0deg)"))
-              .With(Rule.Init("to").With("transform", "rotate(360deg)"))
-          )
-          .With(
-            Rule.Init("span:before")
-              .With(new Animation("spin", "slow", "infinite"))
-              .With("display", "inline-block")
-          );
+    if (spin)
+      result = result
+        .With(
+          Keyframes.Init("spin")
+            .With(Rule.Init("from").With("transform", "rotate(0deg)"))
+            .With(Rule.Init("to").With("transform", "rotate(360deg)"))
+        )
+        .With(
+          Rule.Init("span:before")
+            .With(new Animation("spin", "slow", "infinite"))
+            .With("display", "inline-block")
+        );
 
-      return result;
-    },
-    additional_css: style,
+    return WithStyles(<span class={`ri-${name}-line`} />, result);
   }
 );
