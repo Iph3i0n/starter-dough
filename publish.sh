@@ -1,6 +1,6 @@
-#! bin/bash
-NODE_ENV='production' webpack
+#!/bin/bash
+NODE_ENV='production' npx webpack
 cp ./package.json ./dist/package.json
-sed -i 's/VERSION_NUMBER/$RELEASE_VERSION/g' ./dist/package.json
 cd ./dist
+sed -i 's/0.0.0/$RELEASE_VERSION/g' package.json
 npm publish --access public

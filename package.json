@@ -1,6 +1,6 @@
 {
   "name": "@iph3i0n/blocks",
-  "version": "VERSION_NUMBER",
+  "version": "0.0.0",
   "description": "Another component library for web components",
   "main": "bundle.js",
   "scripts": {
