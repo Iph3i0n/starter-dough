@@ -1,10 +1,10 @@
 {
-  "name": "@paulpopat/blocks",
-  "version": "1.0.0",
+  "name": "@iph3i0n/blocks",
+  "version": "VERSION_NUMBER",
   "description": "Another component library for web components",
-  "main": "index.js",
+  "main": "bundle.js",
   "scripts": {
-    "pack": "NODE_ENV='production' webpack",
+    "prepublish": "./publish.sh",
     "dev": "webpack"
   },
   "repository": {
