@@ -5,7 +5,7 @@
   "main": "bundle.js",
   "scripts": {
     "dev": "webpack",
-    "prepublishOnly": "npm install && NODE_ENV=production webpack"
+    "prepublishOnly": "rm -r ./dist && npm install && NODE_ENV=production webpack"
   },
   "repository": {
     "type": "git",
