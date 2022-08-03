@@ -1,14 +1,15 @@
 {
-  "name": "@iph3i0n/blocks",
-  "version": "0.0.0",
+  "name": "starter-dough",
+  "version": "0.0.1",
   "description": "Another component library for web components",
   "main": "bundle.js",
   "scripts": {
-    "dev": "webpack"
+    "dev": "webpack",
+    "prepublishOnly": "npm install && NODE_ENV=production webpack"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/PaulPopat/blocks.git"
+    "url": "git+https://github.com/Iph3i0n/starter-dough.git"
   },
   "keywords": [
     "web-components"
@@ -16,9 +17,9 @@
   "author": "paulpopat",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/PaulPopat/blocks/issues"
+    "url": "https://github.com/Iph3i0n/starter-dough/issues"
   },
-  "homepage": "https://github.com/PaulPopat/blocks#readme",
+  "homepage": "https://github.com/Iph3i0n/starter-dough#readme",
   "dependencies": {
     "@paulpopat/safe-type": "^2.2.1",
     "element-internals-polyfill": "^1.1.4",
