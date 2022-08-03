@@ -54,7 +54,6 @@ Register(
     },
     { href: Optional(IsString), id: Optional(IsString) },
     (props) => {
-      console.log("Called");
       const colour = useContext(Context);
       const styles = Css.Init().With(
         Rule.Init("a, span")

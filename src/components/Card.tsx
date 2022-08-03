@@ -5,6 +5,7 @@ import WithStyles from "Src/utils/Styles";
 import { ColourName, ColourNames, CT, GetColour } from "Src/Theme";
 import Css, { Rule } from "Src/CSS";
 import { IsString, Optional } from "@paulpopat/safe-type";
+import { useEffect, useRef, useState } from "preact/hooks";
 
 declare global {
   namespace preact.createElement.JSX {
@@ -25,8 +26,14 @@ Register(
     "img-alt": Optional(IsString),
     colour: Optional(IsOneOf(...ColourNames)),
   },
-  (props) =>
-    WithStyles(
+  (props) => {
+    const [has_title, set_has_title] = useState(false);
+    const ref = useRef<HTMLSlotElement>(null);
+    useEffect(() => {
+      set_has_title((ref?.current?.assignedNodes().length ?? 0) > 0);
+    }, [ref.current]);
+
+    return WithStyles(
       <div class="card">
         {props.img && (
           <img
@@ -37,7 +44,7 @@ Register(
         )}
         <div class="card-body">
           <h5 class="card-title">
-            <slot name="title" />
+            <slot name="title" ref={ref} />
           </h5>
           {props.children}
         </div>
@@ -67,6 +74,8 @@ Register(
           Rule.Init(".card .card-title")
             .With(CT.text.body_large)
             .With(CT.padding.block.AsMargin().BottomOnly())
+            .With("display", has_title ? "block" : "none")
         )
-    )
+    );
+  }
 );
