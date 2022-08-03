@@ -25,6 +25,7 @@ export default class Font extends CssProperty {
       { name: "font-family", value: this.schema.family },
       { name: "font-size", value: this.schema.size },
       { name: "line-height", value: this.schema.line_height ?? "1.2" },
+      { name: "font-weight", value: this.schema.weight },
       ...this.schema.padding.Properties,
     ];
 

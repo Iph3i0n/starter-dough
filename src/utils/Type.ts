@@ -1,5 +1,11 @@
 import { Checker, IsIntersection, IsUnion } from "@paulpopat/safe-type";
-import { Attributes, ComponentChildren, RefObject, VNode } from "preact";
+import {
+  Attributes,
+  Component,
+  ComponentChildren,
+  RefObject,
+  VNode,
+} from "preact";
 
 type PrependNextNum<A extends Array<unknown>> = A["length"] extends infer T
   ? ((t: T, ...a: A) => void) extends (...x: infer X) => void
@@ -55,6 +61,7 @@ export type CustomElement<T, K extends string = ""> = Partial<
 >;
 
 export type FC<TProps = {}> = (
+  this: Component<TProps>,
   props: Readonly<
     Attributes & {
       children?: ComponentChildren;

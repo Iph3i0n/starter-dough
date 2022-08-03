@@ -10,6 +10,7 @@ import Transition from "Src/styles/Transition";
 import Flex from "Src/styles/Flex";
 import Padding from "Src/styles/Padding";
 import WithChild from "./Child";
+import { GetComponent } from "Src/utils/Html";
 
 Register(
   "p-toast",
@@ -34,8 +35,8 @@ Register(
         )
       ),
     { icon: IsString },
-    (props) =>
-      WithStyles(
+    function (props) {
+      return WithStyles(
         <>
           <div class="title">
             <img src={props.icon} alt="" />
@@ -46,7 +47,7 @@ Register(
 
             <div
               class="close-button"
-              onClick={() => props.ref?.current?.remove()}
+              onClick={() => GetComponent(this)?.remove()}
             >
               <p-icon name="close" size="2rem" colour="contrast" text />
             </div>
@@ -103,6 +104,7 @@ Register(
               .With(CT.box_shadow.small)
               .With(CT.padding.small_block.AsMargin())
           )
-      )
+      );
+    }
   )
 );

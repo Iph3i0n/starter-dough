@@ -1,11 +1,11 @@
 {
   "name": "starter-dough",
-  "version": "0.0.6",
+  "version": "0.0.10",
   "description": "Another component library for web components",
   "main": "dist/bundle.js",
   "scripts": {
     "dev": "webpack",
-    "prepublishOnly": "rm -r ./dist && npm install && NODE_ENV=production webpack"
+    "prepublishOnly": "npm install && NODE_ENV=production webpack"
   },
   "repository": {
     "type": "git",
@@ -23,6 +23,7 @@
   "dependencies": {
     "@paulpopat/safe-type": "^2.2.1",
     "element-internals-polyfill": "^1.1.4",
+    "highlight.js": "^11.6.0",
     "preact": "^10.10.0",
     "preact-custom-element": "^4.2.1",
     "remixicon": "^2.5.0",

@@ -8,6 +8,7 @@ import Css, { Rule } from "Src/CSS";
 import Flex from "Src/styles/Flex";
 import Transition from "Src/styles/Transition";
 import "./Icon";
+import { GetComponent } from "Src/utils/Html";
 
 class PageEvent extends Event {
   public constructor(
@@ -22,7 +23,7 @@ class PageEvent extends Event {
 Register(
   "p-paginator",
   { total: IsString, skip: IsString, take: IsString },
-  (props) => {
+  function (props) {
     const total = parseInt(props.total);
     const skip = parseInt(props.skip);
     const take = parseInt(props.take);
@@ -35,7 +36,7 @@ Register(
       ): JSX.MouseEventHandler<HTMLAnchorElement> =>
       (e) => {
         e.preventDefault();
-        props.ref?.current?.dispatchEvent(
+        GetComponent(this)?.dispatchEvent(
           new PageEvent(Math.max(skip, 0), Math.min(skip, total - take), total)
         );
       };
@@ -108,13 +109,7 @@ Register(
             .With("modifier", Rule.Init(":hover").With("opacity", "0.5"))
         )
         .With(Rule.Init("span").With(CT.colours.faded_text))
-        .With(
-          Rule.Init("nav")
-            .With(new Flex("center", "center"))
-            .With(CT.border.standard)
-            .With(CT.box_shadow.large)
-            .With(CT.colours.surface)
-        )
+        .With(Rule.Init("nav").With(new Flex("center", "center")))
     );
   }
 );

@@ -43,9 +43,13 @@ Register(
           />
         )}
         <div class="card-body">
-          <h5 class="card-title">
+          <p-text
+            variant="h5"
+            no-margin
+            style={`display: ${has_title ? "block" : "none"}`}
+          >
             <slot name="title" ref={ref} />
-          </h5>
+          </p-text>
           {props.children}
         </div>
       </div>,
@@ -71,10 +75,9 @@ Register(
         )
         .With(Rule.Init(".card .card-body").With(CT.padding.block))
         .With(
-          Rule.Init(".card .card-title")
-            .With(CT.text.body_large)
+          Rule.Init("p-text")
+            .With("display", "block")
             .With(CT.padding.block.AsMargin().BottomOnly())
-            .With("display", has_title ? "block" : "none")
         )
     );
   }

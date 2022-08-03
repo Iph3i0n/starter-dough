@@ -16,7 +16,7 @@ export default function Register<
 >(
   tag: TTag,
   is_props: { [TKey in keyof TProps]: Checker<TProps[TKey]> },
-  render: FC<TProps>
+  Target: FC<TProps>
 ) {
   register(
     (props) => {
@@ -24,12 +24,12 @@ export default function Register<
       if (!IsObject(is_props)(props, false)) {
         return h(Fragment, {});
       }
-      return render(props);
+      return <Target {...props} />;
     },
     tag,
     Object.Keys(is_props) as any,
     { shadow: true }
   );
 
-  return [tag, render];
+  return [tag, Target];
 }

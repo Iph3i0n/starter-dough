@@ -5,7 +5,7 @@ import Css, { Rule } from "Src/CSS";
 import Absolute from "Src/styles/Absolute";
 import Transition from "Src/styles/Transition";
 import { CT } from "Src/Theme";
-import { On } from "Src/utils/Html";
+import { GetComponent, On } from "Src/utils/Html";
 import { IsOneOf } from "Src/utils/Type";
 import { useEffect, useState } from "preact/hooks";
 import { IsString, Optional } from "@paulpopat/safe-type";
@@ -18,7 +18,7 @@ Register(
     position: Optional(IsOneOf("top", "bottom", "left", "right")),
     on: Optional(IsOneOf("click", "hover")),
   },
-  (props) => {
+  function (props) {
     const [open, set_open] = useState(false);
     const [dimensions, set_dimensions] = useState({
       top: 0,
@@ -34,7 +34,7 @@ Register(
       if (!target) throw new Error("No target for Popover");
 
       const bounds = target.getBoundingClientRect();
-      const current_bounds = props.ref?.current?.getBoundingClientRect();
+      const current_bounds = GetComponent(this)?.getBoundingClientRect();
       set_dimensions({
         top: bounds.top,
         left: bounds.left,
@@ -58,7 +58,7 @@ Register(
             return On(props.trigger, "click", () => set_open((o) => !o));
         }
       })();
-    }, [props.trigger, props.target, props.ref?.current]);
+    }, [props.trigger, props.target, this.base]);
     const [translate_start, translate_end, position] = (() => {
       switch (props.position) {
         case "left":
