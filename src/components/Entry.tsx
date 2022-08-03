@@ -11,9 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
           .With(CT.colours.body)
           .With(CT.text.body.WithPadding(new Padding("margin", "0")))
       )
-      .toString() +
-    `@import url("${CT.font_url}");
-  `;
+      .toString() + CT.font_urls.map((u) => `@import url("${u}");`);
 
   document.head.append(style);
 });

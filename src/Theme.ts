@@ -48,6 +48,13 @@ const DefaultTheme = {
     }),
   },
   text: {
+    code: new Font({
+      weight: "500",
+      size: "1rem",
+      family: "'Fira Code', monospace",
+      padding: new Padding("margin", "1rem", "0"),
+      tag: "code",
+    }),
     display_h1: new Font({
       weight: "300",
       size: "5rem",
@@ -179,8 +186,10 @@ const DefaultTheme = {
     slow: PreferNoMotion ? "0ms" : "500ms",
   },
   animation_curve: "linear",
-  font_url:
+  font_urls: [
     "https://fonts.googleapis.com/css2?family=Poppins:wght@100;300;500&family=Raleway:wght@300;500;700&display=swap",
+    "https://fonts.googleapis.com/css2?family=Fira+Code:wght@500&display=swap",
+  ],
 };
 
 export const CT = Object.DeepMerge(
