@@ -116,8 +116,8 @@ export class Media {
     return new Media(this.query, ...[...this.rules, chunk]);
   }
 
-  public static Init(query: string) {
-    return new Media(query);
+  public static Init(rule: string, value: string) {
+    return new Media(`${rule}:${value}`);
   }
 }
 

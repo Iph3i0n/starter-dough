@@ -40,7 +40,7 @@ Register(
 
     for (const size of Sizes) {
       css = css.With(
-        Media.Init(`min-width: ${CT.screen[size].breakpoint}`).With(
+        Media.Init("min-width", CT.screen[size].breakpoint).With(
           Rule.Init(":host(:not(.full-width))").With(
             "max-width",
             CT.screen[size].width
@@ -84,7 +84,7 @@ Register(
     for (const size of Sizes) {
       if (props[size])
         css = css.With(
-          Media.Init(`min-width: ${CT.screen[size].breakpoint}`).With(
+          Media.Init("min-width", CT.screen[size].breakpoint).With(
             Rule.Init(":host").With("grid-column", "auto / span " + props[size])
           )
         );
@@ -109,4 +109,13 @@ Register(
 
     return WithStyles(<>{props.children}</>, css);
   }
+);
+
+Register("p-spacer", { size: IsOneOf(...Object.Keys(CT.padding)) }, (props) =>
+  WithStyles(
+    <></>,
+    Css.Init().With(
+      Rule.Init(":host").With("display", "block").With(CT.padding[props.size])
+    )
+  )
 );

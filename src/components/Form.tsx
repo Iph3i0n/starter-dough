@@ -74,7 +74,7 @@ Register("p-form", {}, (props) => {
   const submit = () =>
     ref.current?.getRootNode().dispatchEvent(new FormSubmitEvent(value));
 
-  return (
+  return WithStyles(
     <form
       onSubmit={(e) => {
         e.preventDefault();
@@ -91,14 +91,21 @@ Register("p-form", {}, (props) => {
       >
         {props.children}
       </FormContext.Provider>
-    </form>
+    </form>,
+    Css.Init().With(
+      Rule.Init(":host")
+        .With("display", "block")
+        .With("flex", "1")
+        .With("width", "100%")
+    )
   );
 });
 
 const InputRules = Css.Init()
+  .With(Rule.Init(":host").With("display", "block").With("flex", "1"))
   .With(Rule.Init("label").With(CT.text.body).With("display", "block"))
   .With(
-    Media.Init(`min-width: ${CT.screen.md.breakpoint}`).With(
+    Media.Init("min-width", CT.screen.md.breakpoint).With(
       Rule.Init("label:not(.for-textarea)")
         .With("text-align", "right")
         .With(
@@ -143,6 +150,7 @@ Register(
     default: Optional(IsString),
     placeholder: Optional(IsString),
     disabled: Optional(IsLiteral(true)),
+    "no-label": Optional(IsLiteral(true)),
   },
   (props) => {
     const id = useMemo(() => Guid(), []);
@@ -151,10 +159,17 @@ Register(
 
     return WithStyles(
       <p-row flush>
-        <p-col xs="12" md="3" lg="2" centre align="right">
-          <label for={id}>{props.children}</label>
-        </p-col>
-        <p-col xs="12" md="9" lg="10" centre>
+        {!props["no-label"] && (
+          <p-col xs="12" md="3" lg="2" centre align="right">
+            <label for={id}>{props.children}</label>
+          </p-col>
+        )}
+        <p-col
+          xs="12"
+          md={props["no-label"] ? undefined : "9"}
+          lg={props["no-label"] ? undefined : "10"}
+          centre
+        >
           <input
             id={id}
             type={props.type ?? "text"}
@@ -187,6 +202,7 @@ Register(
     default: Optional(IsString),
     disabled: Optional(IsLiteral(true)),
     options: IsString,
+    "no-label": Optional(IsLiteral(true)),
   },
   (props) => {
     const id = useMemo(() => Guid(), []);
@@ -199,10 +215,17 @@ Register(
       : props.options.split(",");
     return WithStyles(
       <p-row flush>
-        <p-col xs="12" md="3" lg="2" centre align="right">
-          <label for={id}>{props.children}</label>
-        </p-col>
-        <p-col xs="12" md="9" lg="10" centre>
+        {!props["no-label"] && (
+          <p-col xs="12" md="3" lg="2" centre align="right">
+            <label for={id}>{props.children}</label>
+          </p-col>
+        )}
+        <p-col
+          xs="12"
+          md={props["no-label"] ? undefined : "9"}
+          lg={props["no-label"] ? undefined : "10"}
+          centre
+        >
           <select
             id={id}
             name={props.name}
@@ -236,6 +259,7 @@ Register(
     default: Optional(IsString),
     placeholder: Optional(IsString),
     disabled: Optional(IsLiteral(true)),
+    "no-label": Optional(IsLiteral(true)),
   },
   (props) => {
     const id = useMemo(() => Guid(), []);
@@ -244,11 +268,13 @@ Register(
 
     return WithStyles(
       <p-row flush>
-        <p-col xs="12">
-          <label for={id} class="for-textarea">
-            {props.children}
-          </label>
-        </p-col>
+        {!props["no-label"] && (
+          <p-col xs="12">
+            <label for={id} class="for-textarea">
+              {props.children}
+            </label>
+          </p-col>
+        )}
         <p-col xs="12">
           <textarea
             id={id}
