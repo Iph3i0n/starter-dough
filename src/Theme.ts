@@ -162,13 +162,13 @@ const DefaultTheme = {
     }),
   },
   colours: {
-    body: new Colour("#f7f3f1"),
-    surface: new Colour("#fff"),
-    contrast: new Colour("#322"),
+    body: new Colour(PreferDark ? "#222" : "#f7f3f1"),
+    surface: new Colour(PreferDark ? "#333" : "#fff"),
+    contrast: new Colour(PreferDark ? "#000" : "#322"),
 
     faded_text: new Colour([0, 0, 0, 0], "#999"),
 
-    primary: new Colour("#9889bb").GreyscaleTransform(50),
+    primary: new Colour("#9889bb").GreyscaleTransform(PreferDark ? 80 : 50),
     info: new Colour("#0087cb"),
     success: new Colour("#3fc9a2").GreyscaleTransform(80),
     warning: new Colour("#ff9600"),

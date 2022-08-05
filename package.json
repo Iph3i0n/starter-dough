@@ -5,7 +5,7 @@
   "main": "dist/bundle.js",
   "scripts": {
     "dev": "webpack",
-    "prepublishOnly": "npm install && NODE_ENV=production webpack"
+    "prepublishOnly": "rm -r dist && npm install && NODE_ENV=production webpack"
   },
   "repository": {
     "type": "git",
@@ -25,8 +25,8 @@
     "element-internals-polyfill": "^1.1.4",
     "highlight.js": "^11.6.0",
     "preact": "^10.10.0",
-    "preact-custom-element": "^4.2.1",
     "remixicon": "^2.5.0",
+    "tinymce": "^6.1.2",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
