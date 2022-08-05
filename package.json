@@ -1,8 +1,8 @@
 {
   "name": "starter-dough",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "description": "Another component library for web components",
-  "main": "dist/bundle.js",
+  "browser": "dist/bundle.js",
   "scripts": {
     "dev": "webpack",
     "prepublishOnly": "rm -r dist && npm install && NODE_ENV=production webpack"
