@@ -61,9 +61,10 @@ export default BuildComponent(
             .With("border-bottom-right-radius", "0")
         )
         .With(
-          Rule.Init(".card-body").With(
-            props.flush ? new Padding("padding", "0") : CT.padding.block
-          )
+          Rule.Init(".card-body")
+            .With(props.flush ? new Padding("padding", "0") : CT.padding.block)
+            .With("height", "100%")
+            .With("box-sizing", "border-box")
         )
         .With(
           Rule.Init("p-text")
