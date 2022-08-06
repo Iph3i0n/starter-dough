@@ -42,6 +42,6 @@ export default BuildComponent(
         )
       );
 
-    return WithStyles(<>{props.children}</>, css);
+    return WithStyles(<><slot /></>, css);
   }
 );

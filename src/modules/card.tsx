@@ -13,6 +13,7 @@ export default BuildComponent(
     "img-alt": Optional(IsString),
     colour: Optional(IsOneOf(...ColourNames)),
     flush: Optional(IsLiteral(true)),
+    fill: Optional(IsLiteral(true)),
   },
   (props) => {
     const [has_title, set_has_title] = useState(false);
@@ -22,7 +23,7 @@ export default BuildComponent(
     }, [ref.current]);
 
     return WithStyles(
-      <div class="card">
+      <>
         {props.img && (
           <img
             src={props.img}
@@ -36,18 +37,20 @@ export default BuildComponent(
           </p-text>
           {props.children}
         </div>
-      </div>,
+      </>,
       Css.Init()
         .With(
-          Rule.Init(".card")
+          Rule.Init(":host")
+            .With("display", "block")
             .With(GetColour(props.colour ?? "surface"))
             .With(CT.border.standard)
             .With(CT.box_shadow.large)
             .With("overflow", "hidden")
             .With("position", "relative")
+            .With("height", props.fill ? "100%" : "auto")
         )
         .With(
-          Rule.Init(".card .card-img-top")
+          Rule.Init(".card-img-top")
             .With("display", "block")
             .With("max-width", "100%")
             .With("object-fit", "cover")
@@ -58,7 +61,7 @@ export default BuildComponent(
             .With("border-bottom-right-radius", "0")
         )
         .With(
-          Rule.Init(".card .card-body").With(
+          Rule.Init(".card-body").With(
             props.flush ? new Padding("padding", "0") : CT.padding.block
           )
         )

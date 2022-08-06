@@ -8,7 +8,10 @@ export default BuildComponent({ colour: IsOneOf(...ColourNames) }, (props) =>
   WithStyles(
     <>{props.children}</>,
     Css.Init().With(
-      Rule.Init(":host").With(GetColour(props.colour)).With("display", "block")
+      Rule.Init(":host")
+        .With(GetColour(props.colour))
+        .With("display", "block")
+        .With("height", "100%")
     )
   )
 );

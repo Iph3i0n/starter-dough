@@ -5,9 +5,14 @@ import Grid from "Src/styles/Grid";
 import WithStyles from "Src/utils/Styles";
 import { IsLiteral, IsString, Optional } from "@paulpopat/safe-type";
 import BuildComponent from "Src/BuildComponent";
+import { IsOneOf } from "Src/utils/Type";
 
 export default BuildComponent(
-  { cols: Optional(IsString), flush: Optional(IsLiteral(true)) },
+  {
+    cols: Optional(IsString),
+    flush: Optional(IsLiteral(true)),
+    fill: Optional(IsOneOf("screen", "container")),
+  },
   (props) =>
     WithStyles(
       <>{props.children}</>,
@@ -18,6 +23,10 @@ export default BuildComponent(
             props.flush
               ? new Padding("margin", "0")
               : CT.padding.block.AsMargin().YOnly()
+          )
+          .With(
+            "height",
+            props.fill ? (props.fill === "screen" ? "100vh" : "100%") : "auto"
           )
       )
     )
