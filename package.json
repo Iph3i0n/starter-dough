@@ -22,7 +22,8 @@
   "homepage": "https://github.com/Iph3i0n/starter-dough#readme",
   "dependencies": {
     "@paulpopat/safe-type": "^2.2.1",
-    "element-internals-polyfill": "^1.1.4",
+    "element-internals-polyfill": "^1.1.6",
+    "form-request-submit-polyfill": "^2.0.0",
     "highlight.js": "^11.6.0",
     "preact": "^10.10.0",
     "remixicon": "^2.5.0",

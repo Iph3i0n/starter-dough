@@ -10,16 +10,19 @@ import Transition from "Src/styles/Transition";
 import { ColourNames, CT, GetColour } from "Src/Theme";
 import { IsOneOf } from "Src/utils/Type";
 import { useEffect, useState } from "preact/hooks";
-import BuildComponent from "Src/BuildComponent";
+import PreactComponent, { FromProps, IsProps } from "Src/BuildComponent";
 
-export default BuildComponent(
-  {
-    value: IsString,
-    colour: IsString,
-    labels: Optional(IsLiteral(true)),
-    striped: Optional(IsLiteral(true)),
-  },
-  (props) => {
+const Props = {
+  value: IsString,
+  colour: IsString,
+  labels: Optional(IsLiteral(true)),
+  striped: Optional(IsLiteral(true)),
+};
+
+export default class Progress extends PreactComponent<typeof Props> {
+  protected IsProps = Props;
+
+  protected Render(props: FromProps<typeof Props>) {
     const [values, set_values] = useState<(readonly [number, Colour])[]>([]);
     useEffect(() => {
       const initial = props.colour.split(",");
@@ -115,4 +118,4 @@ export default BuildComponent(
       styles
     );
   }
-);
+}

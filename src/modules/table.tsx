@@ -4,53 +4,69 @@ import Css, { Rule } from "Src/CSS";
 import { ColourNames, CT, GetColour, PreferDark } from "Src/Theme";
 import Grid from "Src/styles/Grid";
 import { IsOneOf } from "Src/utils/Type";
-import { UseIndex, WithIndex } from "Src/utils/Index";
-import WithChild from "Src/contexts/WithChild";
-import BuildComponent from "Src/BuildComponent";
+import PreactComponent, { FromProps } from "Src/BuildComponent";
+import { UseChildElements } from "Src/utils/Hooks";
 
-export default BuildComponent(
-  { colour: Optional(IsOneOf(...ColourNames)) },
-  WithChild(
-    WithIndex((props) => {
-      let rule = Rule.Init(".table").With(CT.border.standard);
+const Props = { colour: Optional(IsOneOf(...ColourNames)) };
 
-      if (props.colour) rule = rule.With(GetColour(props.colour));
-      return WithStyles(
-        <div class="table">
-          <div class="thead">
-            <slot name="head" />
-          </div>
-          <div class="tbody">{props.children}</div>
-        </div>,
-        Css.Init().With(rule)
-      );
-    }),
-    {},
-    WithChild(
-      WithIndex((props, total) => {
-        const { index } = UseIndex();
+export default class Table extends PreactComponent<typeof Props> {
+  public constructor() {
+    super();
+    this.SetChild({}, function (props) {
+      this.SetChild({}, function (props) {
         return WithStyles(
-          <div class="tr">{props.children}</div>,
+          <slot />,
           Css.Init().With(
-            Rule.Init(".tr")
-              .With(CT.border.standard.WithDirection("bottom").WithRadius("0"))
-              .With(new Grid(total, "0"))
-              .With(index % 2 === 0 ? CT.colours.body : CT.colours.surface)
-          )
-        );
-      }),
-      {},
-      (props) => {
-        UseIndex();
-        return WithStyles(
-          <div class="td">{props.children}</div>,
-          Css.Init().With(
-            Rule.Init(".td")
+            Rule.Init(":host")
+              .With("display", "block")
               .With(CT.text.body.WithoutPadding())
               .With(CT.padding.small_block)
           )
         );
-      }
-    )
-  )
-);
+      });
+
+      const [ref, children] = UseChildElements();
+
+      return WithStyles(
+        <slot ref={ref} />,
+        Css.Init().With(
+          Rule.Init(":host")
+            .With("display", "block")
+            .With(CT.text.body.WithoutPadding())
+            .With(new Grid(children.length, "0"))
+            .With(
+              "background-color",
+              this.IndexOfParent % 2
+                ? PreferDark
+                  ? "rgba(255, 255, 255, 0.1)"
+                  : "rgba(0, 0, 0, 0.1)"
+                : "transparent"
+            )
+        )
+      );
+    });
+  }
+
+  protected IsProps = Props;
+
+  protected Render(props: FromProps<typeof Props>) {
+    const colour = GetColour(props.colour ?? "surface");
+    return WithStyles(
+      <div class="table">
+        <div class="thead">
+          <slot name="head" />
+        </div>
+        <div class="tbody">
+          <slot />
+        </div>
+      </div>,
+      Css.Init()
+        .With(Rule.Init(".table").With(CT.border.standard).With(colour))
+        .With(
+          Rule.Init("p-child:nth-child(even)").With(
+            colour.GreyscaleTransform(90)
+          )
+        )
+    );
+  }
+}

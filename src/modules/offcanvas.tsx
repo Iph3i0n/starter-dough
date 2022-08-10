@@ -10,15 +10,18 @@ import { On } from "Src/utils/Html";
 import { useEffect, useState } from "preact/hooks";
 import { IsLiteral, IsString, Optional } from "@paulpopat/safe-type";
 import SharedStyles from "Src/rules/Modal";
-import BuildComponent from "Src/BuildComponent";
+import PreactComponent, { FromProps, IsProps } from "Src/BuildComponent";
 
-export default BuildComponent(
-  {
-    watch: IsString,
-    large: Optional(IsLiteral(true)),
-    colour: Optional(IsOneOf(...ColourNames)),
-  },
-  (props) => {
+const Props = {
+  watch: IsString,
+  large: Optional(IsLiteral(true)),
+  colour: Optional(IsOneOf(...ColourNames)),
+};
+
+export default class Offcanvas extends PreactComponent<typeof Props> {
+  protected IsProps = Props;
+
+  protected Render(props: FromProps<typeof Props>) {
     const [open, set_open] = useState(false);
 
     useEffect(() => On(props.watch, "click", () => set_open(true)), []);
@@ -27,7 +30,9 @@ export default BuildComponent(
       <section class={C("container", ["open", open])}>
         <div class="backdrop" onClick={() => set_open(false)} />
         <div class="offcanvas">
-          <div class="content">{props.children}</div>
+          <div class="content">
+            <slot />
+          </div>
           <div class="close-button" onClick={() => set_open(false)}>
             <p-icon name="close" size="2rem" colour="body" text />
           </div>
@@ -61,4 +66,4 @@ export default BuildComponent(
         )
     );
   }
-);
+}

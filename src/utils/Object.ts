@@ -89,7 +89,7 @@ export default {
     key: TKey,
     value:
       | { writable: boolean; value: TValue }
-      | { get(): TValue; set(value: TValue): void }
+      | { get(this: T): TValue; set(this: T, value: TValue): void }
   ) {
     return Object.defineProperty(subject, key, value);
   },

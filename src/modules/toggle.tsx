@@ -5,52 +5,74 @@ import Transition from "Src/styles/Transition";
 import { ColourNames, CT, GetColour } from "Src/Theme";
 import C from "Src/utils/Class";
 import { IsOneOf } from "Src/utils/Type";
-import { useContext } from "preact/hooks";
 import WithStyles from "Src/utils/Styles";
-import { IsLiteral, IsString, Optional } from "@paulpopat/safe-type";
-import FormContext from "Src/contexts/Form";
-import BuildComponent from "Src/BuildComponent";
+import {
+  IsLiteral,
+  IsString,
+  Optional,
+  PatternMatch,
+} from "@paulpopat/safe-type";
+import { FromProps, IsProps } from "Src/BuildComponent";
+import FormComponent from "Src/utils/Form";
 
-export default BuildComponent(
-  {
-    name: IsString,
-    help: Optional(IsString),
-    type: IsString,
-    default: Optional(IsString),
-    disabled: Optional(IsLiteral(true)),
-    value: IsString,
-    colour: IsOneOf(...ColourNames),
-  },
-  (props) => {
-    const { get, set } = useContext(FormContext);
-    const value = get(props.name);
-    const type = props.type === "radio" ? "radio" : "checkbox";
-    const checked = type ? value.includes(props.value) : value === props.value;
+const Props = {
+  name: IsString,
+  help: Optional(IsString),
+  type: IsOneOf("radio", "checkbox", "toggle"),
+  default: Optional(IsString),
+  disabled: Optional(IsLiteral(true)),
+  value: IsString,
+  colour: IsOneOf(...ColourNames),
+};
+
+export default class Toggle extends FormComponent<typeof Props> {
+  protected IsProps = Props;
+
+  protected Render(props: FromProps<typeof Props>) {
+    const checked = PatternMatch(
+      IsLiteral("radio"),
+      IsLiteral("checkbox"),
+      IsLiteral("toggle")
+    )(
+      () => this.value === props.value,
+      () => this.value?.toString().includes(props.value),
+      () => !!this.value
+    )(props.type);
 
     return WithStyles(
       <label class={C(["disabled", !!props.disabled])}>
         <input
           class={props.type}
-          type={type}
+          type={PatternMatch(
+            IsLiteral("radio"),
+            IsLiteral("checkbox"),
+            IsLiteral("toggle")
+          )(
+            () => "radio" as const,
+            () => "checkbox" as const,
+            () => "radio" as const
+          )(props.type)}
           name={props.name}
           disabled={props.disabled ?? false}
           checked={checked}
           onClick={(e) => {
             e.preventDefault();
-            if (props.type === "radio") set(props.name, props.value);
-            else if (checked)
-              set(
-                props.name,
-                value
-                  .split(",")
-                  .filter((v) => v !== props.value)
-                  .join(",")
-              );
-            else
-              set(props.name, value.split(",").concat(props.value).join(","));
+            PatternMatch(
+              IsLiteral("radio"),
+              IsLiteral("checkbox"),
+              IsLiteral("toggle")
+            )(
+              () => (this.value = props.value),
+              () =>
+                (this.value = [
+                  ...this.value?.toString().split(","),
+                  props.value,
+                ].join(",")),
+              () => (this.value = (!this.value).toString())
+            )(props.type);
           }}
         />
-        {props.children}
+        <slot />
       </label>,
       Css.Init()
         .With(
@@ -112,4 +134,4 @@ export default BuildComponent(
         )
     );
   }
-);
+}

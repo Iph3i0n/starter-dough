@@ -5,8 +5,7 @@ import { CT } from "Src/Theme";
 import Css, { Rule } from "Src/CSS";
 import Flex from "Src/styles/Flex";
 import Transition from "Src/styles/Transition";
-import { GetComponent } from "Src/utils/Html";
-import BuildComponent from "Src/BuildComponent";
+import PreactComponent, { FromProps, IsProps } from "Src/BuildComponent";
 
 class PageEvent extends Event {
   public constructor(
@@ -18,9 +17,11 @@ class PageEvent extends Event {
   }
 }
 
-export default BuildComponent(
-  { total: IsString, skip: IsString, take: IsString },
-  function (props) {
+const Props = { total: IsString, skip: IsString, take: IsString };
+export default class Button extends PreactComponent<typeof Props> {
+  protected IsProps = Props;
+
+  protected Render(props: FromProps<typeof Props>) {
     const total = parseInt(props.total);
     const skip = parseInt(props.skip);
     const take = parseInt(props.take);
@@ -33,7 +34,7 @@ export default BuildComponent(
       ): JSX.MouseEventHandler<HTMLAnchorElement> =>
       (e) => {
         e.preventDefault();
-        GetComponent(this)?.dispatchEvent(
+        this.dispatchEvent(
           new PageEvent(Math.max(skip, 0), Math.min(skip, total - take), total)
         );
       };
@@ -109,4 +110,4 @@ export default BuildComponent(
         .With(Rule.Init("nav").With(new Flex("center", "center")))
     );
   }
-);
+}

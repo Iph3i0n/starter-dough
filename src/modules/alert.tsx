@@ -6,18 +6,28 @@ import { useState } from "preact/hooks";
 import WithStyles from "Src/utils/Styles";
 import { IsOneOf } from "Src/utils/Type";
 import { IsLiteral, Optional } from "@paulpopat/safe-type";
-import BuildComponent from "Src/BuildComponent";
+import PreactComponent, { FromProps } from "Src/BuildComponent";
+import { JSX } from "preact/jsx-runtime";
 
-export default BuildComponent(
-  { colour: IsOneOf(...ColourNames), dismissable: Optional(IsLiteral(true)) },
-  ({ colour, dismissable, children }) => {
+const Props = {
+  colour: IsOneOf(...ColourNames),
+  dismissable: Optional(IsLiteral(true)),
+};
+
+export default class Alert extends PreactComponent<typeof Props> {
+  protected Render({
+    dismissable,
+    colour,
+  }: FromProps<typeof Props>): JSX.Element {
     const [open, set_open] = useState(true);
 
     if (open) return <></>;
 
     return WithStyles(
       <div class="alert">
-        <div>{children}</div>
+        <div>
+          <slot />
+        </div>
         {dismissable && (
           <div class="close-button" onClick={() => set_open(false)}>
             <p-icon name="close" size="2rem" colour={colour} text />
@@ -43,4 +53,6 @@ export default BuildComponent(
         .With(Rule.Init(".close-button:hover").With("opacity", "0.5"))
     );
   }
-);
+
+  protected override IsProps = Props;
+}

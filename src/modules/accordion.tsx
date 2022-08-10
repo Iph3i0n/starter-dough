@@ -1,4 +1,4 @@
-import { useContext, useEffect, useMemo, useRef, useState } from "preact/hooks";
+import { useEffect, useMemo, useRef, useState } from "preact/hooks";
 import { CT } from "Src/Theme";
 import Css, { Rule } from "Src/CSS";
 import Transition from "Src/styles/Transition";
@@ -6,31 +6,17 @@ import Flex from "Src/styles/Flex";
 import { v4 as Guid } from "uuid";
 import WithStyles from "Src/utils/Styles";
 import { IsString } from "@paulpopat/safe-type";
-import WithChild from "Src/contexts/WithChild";
-import Context from "Src/contexts/Accordion";
-import BuildComponent from "Src/BuildComponent";
+import PreactComponent from "Src/BuildComponent";
 
-export default BuildComponent(
-  {},
-  WithChild(
-    ({ children }) => {
-      const [open, set_open] = useState("");
-
-      return (
-        <Context.Provider
-          value={{ click: (index) => set_open(index), current: open }}
-        >
-          {children}
-        </Context.Provider>
-      );
-    },
-    { title: IsString },
-    ({ title, children }) => {
+export default class Accordion extends PreactComponent<{}, { open: string }> {
+  public constructor() {
+    super({ open: "" });
+    this.SetChild({ title: IsString }, function ({ title }, parent) {
       const id = useMemo(() => Guid(), []);
-      const { click, current } = useContext(Context);
       const [height, set_height] = useState(0);
+
       const ref = useRef<HTMLDivElement>(null);
-      const open = current === id;
+      const open = parent.Current === id;
 
       useEffect(() => {
         if (!ref.current) return;
@@ -39,7 +25,7 @@ export default BuildComponent(
 
       return WithStyles(
         <>
-          <div class="item-heading" onClick={() => click(id)}>
+          <div class="item-heading" onClick={() => (parent.Current = id)}>
             <p-text variant="h6" no-margin>
               {title}
             </p-text>
@@ -52,7 +38,7 @@ export default BuildComponent(
           </div>
           <div class="container">
             <div class="content" ref={ref}>
-              {children}
+              <slot />
             </div>
           </div>
         </>,
@@ -83,6 +69,15 @@ export default BuildComponent(
               .With(new Transition("fast", "transform"))
           )
       );
-    }
-  )
-);
+    });
+  }
+
+  protected override IsProps = {};
+  protected override Render(props: {}) {
+    return <slot />;
+  }
+
+  public set Current(current: string) {
+    this.State = { ...this.State, open: current };
+  }
+}

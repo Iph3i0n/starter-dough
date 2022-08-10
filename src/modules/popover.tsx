@@ -3,20 +3,23 @@ import Css, { Rule } from "Src/CSS";
 import Absolute from "Src/styles/Absolute";
 import Transition from "Src/styles/Transition";
 import { CT } from "Src/Theme";
-import { GetComponent, On } from "Src/utils/Html";
+import { On } from "Src/utils/Html";
 import { IsOneOf } from "Src/utils/Type";
 import { useEffect, useState } from "preact/hooks";
 import { IsString, Optional } from "@paulpopat/safe-type";
-import BuildComponent from "Src/BuildComponent";
+import PreactComponent, { FromProps, IsProps } from "Src/BuildComponent";
 
-export default BuildComponent(
-  {
-    target: IsString,
-    trigger: IsString,
-    position: Optional(IsOneOf("top", "bottom", "left", "right")),
-    on: Optional(IsOneOf("click", "hover")),
-  },
-  function (props) {
+const Props = {
+  target: IsString,
+  trigger: IsString,
+  position: Optional(IsOneOf("top", "bottom", "left", "right")),
+  on: Optional(IsOneOf("click", "hover")),
+};
+
+export default class Popover extends PreactComponent<typeof Props> {
+  protected IsProps = Props;
+
+  protected Render(props: FromProps<typeof Props>) {
     const [open, set_open] = useState(false);
     const [dimensions, set_dimensions] = useState({
       top: 0,
@@ -32,7 +35,7 @@ export default BuildComponent(
       if (!target) throw new Error("No target for Popover");
 
       const bounds = target.getBoundingClientRect();
-      const current_bounds = GetComponent(this)?.getBoundingClientRect();
+      const current_bounds = this.getBoundingClientRect();
       set_dimensions({
         top: bounds.top,
         left: bounds.left,
@@ -56,7 +59,7 @@ export default BuildComponent(
             return On(props.trigger, "click", () => set_open((o) => !o));
         }
       })();
-    }, [props.trigger, props.target, this.base]);
+    }, [props.trigger, props.target, this.getBoundingClientRect()]);
     const [translate_start, translate_end, position] = (() => {
       switch (props.position) {
         case "left":
@@ -100,7 +103,7 @@ export default BuildComponent(
     })();
 
     return WithStyles(
-      <>{props.children}</>,
+      <slot />,
       Css.Init().With(
         Rule.Init(":host")
           .With("display", "block")
@@ -122,4 +125,4 @@ export default BuildComponent(
       )
     );
   }
-);
+}

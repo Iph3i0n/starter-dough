@@ -1,5 +1,3 @@
-import { Component } from "preact";
-
 export function On<K extends keyof HTMLElementEventMap>(
   selector: string,
   event: K,
@@ -28,9 +26,4 @@ export function IsVisible(target: Element | null) {
     window.innerHeight
   );
   return !(rect.bottom < 0 || rect.top - height >= 0);
-}
-
-export function GetComponent(target: Component<any>): HTMLElement | undefined {
-  const root: ShadowRoot = target.base?.getRootNode() as any;
-  return root?.host as any;
 }

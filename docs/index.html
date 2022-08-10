@@ -1,36 +1,37 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <script src="https://cdn.jsdelivr.net/npm/starter-dough@0.0.11/dist/bundle.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/starter-dough@0.0.14/dist/bundle.js"></script>
     <title>Welcome to Starter Dough</title>
-    <link rel="icon" href="/img/logo.svg" type="image/svg+xml">
+    <link rel="icon" href="/img/logo.svg" type="image/svg+xml" />
   </head>
   <body>
     <p-navbar icon="/img/logo.svg" bg="primary">
       <p-child href="/docs">Documentation</p-child>
+      <p-icon name="earth" size="1rem" colour="primary" text />
     </p-navbar>
     <p-container>
       <p-row>
-        <p-col xs="12">
+        <p-child xs="12">
           <p-text variant="display_h1">Welcome to Starter Dough</p-text>
-        </p-col>
+        </p-child>
       </p-row>
     </p-container>
     <p-panel colour="surface">
       <p-container>
         <p-row>
-          <p-col xs="12">
+          <p-child xs="12">
             <p-text variant="body">
               Get started with this simple tool to build fast and efficient web
               applications that are beautiful and easy to use.
             </p-text>
-          </p-col>
+          </p-child>
         </p-row>
       </p-container>
     </p-panel>
     <p-container>
       <p-row>
-        <p-col xs="12" md="6" lg="4">
+        <p-child xs="12" md="6" lg="4">
           <p-card>
             <span slot="title">Drop in style!</span>
             <p-text variant="body">
@@ -39,8 +40,8 @@
               framework or rendering engine.
             </p-text>
           </p-card>
-        </p-col>
-        <p-col xs="12" md="6" lg="4">
+        </p-child>
+        <p-child xs="12" md="6" lg="4">
           <p-card colour="info">
             <span slot="title">Your favourite, but better</span>
             <p-text variant="body">
@@ -53,8 +54,8 @@
               ommitting that tag, that was required to make your page work.
             </p-text>
           </p-card>
-        </p-col>
-        <p-col xs="12" md="6" lg="4">
+        </p-child>
+        <p-child xs="12" md="6" lg="4">
           <p-card>
             <span slot="title">Custom themes as standard</span>
             <p-text variant="body">
@@ -63,21 +64,21 @@
               " function at the top of the your page and watch the magic happen!
             </p-text>
           </p-card>
-        </p-col>
+        </p-child>
       </p-row>
     </p-container>
     <p-panel colour="surface">
       <p-container>
         <p-row>
-          <p-col xs="12">
+          <p-child xs="12">
             <p-text variant="display_h2"> Getted started is simple </p-text>
-          </p-col>
+          </p-child>
         </p-row>
       </p-container>
     </p-panel>
     <p-container>
       <p-row>
-        <p-col xs="12">
+        <p-child xs="12">
           <p-card>
             <p-code language="html" colour="contrast"
               >&lt;script&nbsp;src=&quot;https://cdn.jsdelivr.net/npm/starter-doug/dist/bundle.js&quot;&gt;&lt;/script&gt;</p-code
@@ -85,7 +86,7 @@
             <p-spacer size="small_block"></p-spacer>
             <p-text variant="body"> And you are good to go. </p-text>
           </p-card>
-        </p-col>
+        </p-child>
       </p-row>
     </p-container>
   </body>

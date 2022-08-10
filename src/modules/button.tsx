@@ -1,23 +1,24 @@
 import { IsOneOf } from "Src/utils/Type";
 import { ColourNames, CT, GetColour } from "Src/Theme";
-import FormContext from "Src/contexts/Form";
 import Css, { Rule } from "Src/CSS";
 import Transition from "Src/styles/Transition";
 import Colour from "Src/styles/Colour";
-import { useContext } from "preact/hooks";
 import WithStyles from "Src/utils/Styles";
 import { IsLiteral, IsString, Optional } from "@paulpopat/safe-type";
 import Absolute from "Src/styles/Absolute";
-import BuildComponent from "Src/BuildComponent";
+import PreactComponent, { FromProps, IsProps } from "Src/BuildComponent";
 
-export default BuildComponent(
-  {
-    colour: IsOneOf(...ColourNames),
-    outline: Optional(IsLiteral(true)),
-    href: Optional(IsString),
-    type: Optional(IsString),
-  },
-  (props) => {
+const Props = {
+  colour: IsOneOf(...ColourNames),
+  outline: Optional(IsLiteral(true)),
+  href: Optional(IsString),
+  type: Optional(IsString),
+};
+
+export default class Button extends PreactComponent<typeof Props> {
+  protected IsProps = Props;
+
+  protected Render(props: FromProps<typeof Props>) {
     const css = Css.Init()
       .With(
         Rule.Init(":host")
@@ -66,29 +67,18 @@ export default BuildComponent(
     if (props.href)
       return WithStyles(
         <>
-          {props.children}
+          <slot />
           <a href={props.href} class="button" />
         </>,
         css
       );
 
-    if (props.type === "submit") {
-      const { submit } = useContext(FormContext);
-      return WithStyles(
-        <>
-          <button type="submit" class="button" onClick={(e: any) => submit()} />
-          {props.children}
-        </>,
-        css
-      );
-    }
-
     return WithStyles(
       <>
         <button type={props.type ?? ""} class="button" />
-        {props.children}
+        <slot />
       </>,
       css
     );
   }
-);
+}

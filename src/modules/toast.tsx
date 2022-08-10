@@ -8,33 +8,16 @@ import Animation from "Src/styles/Animation";
 import Transition from "Src/styles/Transition";
 import Flex from "Src/styles/Flex";
 import Padding from "Src/styles/Padding";
-import WithChild from "Src/contexts/WithChild";
-import { GetComponent } from "Src/utils/Html";
-import BuildComponent from "Src/BuildComponent";
+import PreactComponent, { FromProps, IsProps } from "Src/BuildComponent";
 
-export default BuildComponent(
-  { position: IsOneOf("top-left", "top-right", "bottom-left", "bottom-right") },
-  WithChild(
-    (props) =>
-      WithStyles(
-        <>{props.children}</>,
-        Css.Init().With(
-          Rule.Init(":host")
-            .With("display", "block")
-            .With(
-              new Absolute({
-                variant: "fixed",
-                top: props.position.startsWith("top") ? "0" : undefined,
-                bottom: props.position.startsWith("bottom") ? "0" : undefined,
-                left: props.position.endsWith("left") ? "0" : undefined,
-                right: props.position.endsWith("right") ? "0" : undefined,
-              })
-            )
-            .With(CT.padding.block)
-        )
-      ),
-    { icon: IsString },
-    function (props) {
+const Props = {
+  position: IsOneOf("top-left", "top-right", "bottom-left", "bottom-right"),
+};
+
+export default class Toast extends PreactComponent<typeof Props> {
+  public constructor() {
+    super();
+    this.SetChild({ icon: IsString }, function (props) {
       return WithStyles(
         <>
           <div class="title">
@@ -44,14 +27,13 @@ export default BuildComponent(
               <slot name="title" />
             </span>
 
-            <div
-              class="close-button"
-              onClick={() => GetComponent(this)?.remove()}
-            >
+            <div class="close-button" onClick={() => this.remove()}>
               <p-icon name="close" size="2rem" colour="contrast" text />
             </div>
           </div>
-          <div class="body">{props.children}</div>
+          <div class="body">
+            <slot />
+          </div>
         </>,
         Css.Init()
           .With(
@@ -104,6 +86,28 @@ export default BuildComponent(
               .With(CT.padding.small_block.AsMargin())
           )
       );
-    }
-  )
-);
+    });
+  }
+
+  protected IsProps = Props;
+
+  protected Render(props: FromProps<typeof Props>) {
+    return WithStyles(
+      <slot />,
+      Css.Init().With(
+        Rule.Init(":host")
+          .With("display", "block")
+          .With(
+            new Absolute({
+              variant: "fixed",
+              top: props.position.startsWith("top") ? "0" : undefined,
+              bottom: props.position.startsWith("bottom") ? "0" : undefined,
+              left: props.position.endsWith("left") ? "0" : undefined,
+              right: props.position.endsWith("right") ? "0" : undefined,
+            })
+          )
+          .With(CT.padding.block)
+      )
+    );
+  }
+}

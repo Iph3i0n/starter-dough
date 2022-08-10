@@ -1,4 +1,4 @@
-import BuildComponent from "Src/BuildComponent";
+import PreactComponent, { FromProps } from "Src/BuildComponent";
 import { IsOneOf } from "Src/utils/Type";
 import WithStyles from "Src/utils/Styles";
 import { ColourNames, CT, GetColour } from "Src/Theme";
@@ -7,19 +7,22 @@ import { IsLiteral, IsString, Optional } from "@paulpopat/safe-type";
 import { useEffect, useRef, useState } from "preact/hooks";
 import Padding from "Src/styles/Padding";
 
-export default BuildComponent(
-  {
-    img: Optional(IsString),
-    "img-alt": Optional(IsString),
-    colour: Optional(IsOneOf(...ColourNames)),
-    flush: Optional(IsLiteral(true)),
-    fill: Optional(IsLiteral(true)),
-  },
-  (props) => {
+const Props = {
+  img: Optional(IsString),
+  "img-alt": Optional(IsString),
+  colour: Optional(IsOneOf(...ColourNames)),
+  flush: Optional(IsLiteral(true)),
+  fill: Optional(IsLiteral(true)),
+};
+
+export default class Card extends PreactComponent<typeof Props> {
+  protected IsProps = Props;
+
+  protected Render(props: FromProps<typeof Props>) {
     const [has_title, set_has_title] = useState(false);
     const ref = useRef<HTMLSlotElement>(null);
     useEffect(() => {
-      set_has_title((ref?.current?.assignedNodes().length ?? 0) > 0);
+      set_has_title((ref.current?.assignedNodes().length ?? 0) > 0);
     }, [ref.current]);
 
     return WithStyles(
@@ -35,7 +38,7 @@ export default BuildComponent(
           <p-text variant="h5" no-margin>
             <slot name="title" ref={ref} />
           </p-text>
-          {props.children}
+          <slot />
         </div>
       </>,
       Css.Init()
@@ -73,4 +76,4 @@ export default BuildComponent(
         )
     );
   }
-);
+}

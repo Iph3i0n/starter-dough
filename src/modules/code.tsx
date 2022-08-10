@@ -3,15 +3,20 @@ import Css, { Rule } from "Src/CSS";
 import { ColourNames, CT, GetColour } from "Src/Theme";
 import { IsOneOf } from "Src/utils/Type";
 import WithStyles from "Src/utils/Styles";
-import { GetComponent } from "Src/utils/Html";
-import BuildComponent from "Src/BuildComponent";
+import PreactComponent, { FromProps } from "Src/BuildComponent";
 import Highlight from "highlight.js";
 
-export default BuildComponent(
-  { language: Optional(IsString), colour: Optional(IsOneOf(...ColourNames)) },
-  function (props) {
+const Props = {
+  language: Optional(IsString),
+  colour: Optional(IsOneOf(...ColourNames)),
+};
+
+export default class Code extends PreactComponent<typeof Props> {
+  protected IsProps = Props;
+
+  protected Render(props: FromProps<typeof Props>) {
     const colour = GetColour(props.colour ?? "surface");
-    const html = Highlight.highlight(GetComponent(this)?.textContent ?? "", {
+    const html = Highlight.highlight(this.textContent ?? "", {
       language: props.language as any,
     }).value;
 
@@ -60,4 +65,4 @@ export default BuildComponent(
       )
     );
   }
-);
+}

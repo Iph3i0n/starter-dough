@@ -5,16 +5,19 @@ import Padding from "Src/styles/Padding";
 import { CT } from "Src/Theme";
 import { IsOneOf } from "Src/utils/Type";
 import WithStyles from "Src/utils/Styles";
-import BuildComponent from "Src/BuildComponent";
+import PreactComponent, { FromProps, IsProps } from "Src/BuildComponent";
 
-export default BuildComponent(
-  {
-    data: IsString,
-    variant: IsOneOf("ordered", "unordered"),
-    align: Optional(IsOneOf("left", "right", "center")),
-    "no-margin": Optional(IsLiteral(true)),
-  },
-  (props) => {
+const Props = {
+  data: IsString,
+  variant: IsOneOf("ordered", "unordered"),
+  align: Optional(IsOneOf("left", "right", "center")),
+  "no-margin": Optional(IsLiteral(true)),
+};
+
+export default class List extends PreactComponent<typeof Props> {
+  protected IsProps = Props;
+
+  protected Render(props: FromProps<typeof Props>) {
     const tag = (() => {
       switch (props.variant) {
         case "ordered":
@@ -46,4 +49,4 @@ export default BuildComponent(
       )
     );
   }
-);
+}

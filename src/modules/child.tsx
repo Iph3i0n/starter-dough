@@ -1,14 +1,27 @@
-import { useContext } from "preact/hooks";
-import { ChildContext } from "Src/contexts/WithChild";
-import { FC } from "Src/utils/Type";
+import { IsObject } from "@paulpopat/safe-type";
+import PreactComponent, { Child } from "Src/BuildComponent";
 
-const Component: FC<any> = (props) => {
-  const Child = useContext(ChildContext);
-  if (!Child) {
-    return <></>;
+type State = { render: Child<any, PreactComponent<any, any>>; state: any };
+
+export default class ChildComponent extends PreactComponent<any, State> {
+  public constructor() {
+    super();
+    this.ChildType.then((p) => {
+      this.State = { render: p, state: p.parent.State };
+      p.parent.OnState = (state: any) => {
+        this.State = { ...this.State, state: state };
+      };
+    });
   }
 
-  return <Child {...props} />;
-};
+  protected override Render(props: any, state: State): any {
+    if (!state) return <></>;
 
-export default Component;
+    if (!IsObject(state.render.is_props)(props, false))
+      throw new Error("Invalid props for " + this.tagName);
+
+    return state.render.handler.bind(this)(props, state.render.parent);
+  }
+
+  protected override IsProps = {};
+}

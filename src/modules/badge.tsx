@@ -3,12 +3,17 @@ import Css, { Rule } from "Src/CSS";
 import Absolute from "Src/styles/Absolute";
 import WithStyles from "Src/utils/Styles";
 import { IsOneOf } from "Src/utils/Type";
-import { IsLiteral, Optional } from "@paulpopat/safe-type";
-import BuildComponent from "Src/BuildComponent";
+import { Checker, IsLiteral, Optional } from "@paulpopat/safe-type";
+import PreactComponent, { FromProps } from "Src/BuildComponent";
+import { JSX } from "preact/jsx-runtime";
 
-export default BuildComponent(
-  { colour: IsOneOf(...ColourNames), "top-right": Optional(IsLiteral(true)) },
-  (props) => {
+const Props = {
+  colour: IsOneOf(...ColourNames),
+  "top-right": Optional(IsLiteral(true)),
+};
+
+export default class Badge extends PreactComponent<typeof Props> {
+  protected Render(props: FromProps<typeof Props>, state: {}): JSX.Element {
     let rule = Rule.Init(":host")
       .With(GetColour(props.colour))
       .With(CT.padding.badge)
@@ -21,6 +26,8 @@ export default BuildComponent(
         )
         .With(CT.box_shadow.small);
 
-    return WithStyles(<>{props.children}</>, Css.Init().With(rule));
+    return WithStyles(<slot />, Css.Init().With(rule));
   }
-);
+
+  protected override IsProps = Props;
+}

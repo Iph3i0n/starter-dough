@@ -1,34 +1,40 @@
 import { v4 as Guid } from "uuid";
-import { useContext, useEffect, useMemo } from "preact/hooks";
+import { useEffect, useMemo } from "preact/hooks";
 import WithStyles from "Src/utils/Styles";
 import { IsLiteral, IsString, Optional } from "@paulpopat/safe-type";
-import FormContext from "Src/contexts/Form";
 import InputRules from "Src/rules/Input";
-import BuildComponent from "Src/BuildComponent";
+import FormComponent from "Src/utils/Form";
+import { FromProps } from "Src/BuildComponent";
 
-export default BuildComponent(
-  {
-    name: IsString,
-    help: Optional(IsString),
-    type: Optional(IsString),
-    default: Optional(IsString),
-    placeholder: Optional(IsString),
-    disabled: Optional(IsLiteral(true)),
-    "no-label": Optional(IsLiteral(true)),
-  },
-  (props) => {
+const Props = {
+  name: IsString,
+  help: Optional(IsString),
+  type: Optional(IsString),
+  default: Optional(IsString),
+  placeholder: Optional(IsString),
+  disabled: Optional(IsLiteral(true)),
+  "no-label": Optional(IsLiteral(true)),
+};
+
+export default class Input extends FormComponent<typeof Props> {
+  protected IsProps = Props;
+
+  protected Render(props: FromProps<typeof Props>) {
     const id = useMemo(() => Guid(), []);
-    const { get, set, submit } = useContext(FormContext);
-    useEffect(() => set(props.name, props.default ?? ""), []);
+    useEffect(() => {
+      this.value = props.default ?? "";
+    }, []);
 
     return WithStyles(
       <p-row flush>
         {!props["no-label"] && (
-          <p-col xs="12" md="3" lg="2" centre align="right">
-            <label for={id}>{props.children}</label>
-          </p-col>
+          <p-child xs="12" md="3" lg="2" centre align="right">
+            <label for={id}>
+              <slot />
+            </label>
+          </p-child>
         )}
-        <p-col
+        <p-child
           xs="12"
           md={props["no-label"] ? undefined : "9"}
           lg={props["no-label"] ? undefined : "10"}
@@ -40,20 +46,19 @@ export default BuildComponent(
             name={props.name}
             class="input"
             disabled={props.disabled ?? false}
-            value={get(props.name)}
+            value={this.value?.toString()}
             placeholder={props.placeholder ?? undefined}
-            onChange={(e: any) => set(props.name, e.currentTarget.value)}
+            onChange={(e) => (this.value = e.currentTarget.value)}
             onKeyPress={(e: KeyboardEvent) => {
               if (e.key !== "Enter") return;
               e.preventDefault();
-              set(props.name, (e.currentTarget as any)?.value ?? "");
-              submit();
+              this.Submit();
             }}
           />
           {props.help && <span class="help-text">{props.help}</span>}
-        </p-col>
+        </p-child>
       </p-row>,
       InputRules
     );
   }
-);
+}

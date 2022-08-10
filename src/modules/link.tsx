@@ -3,18 +3,21 @@ import Css, { Rule } from "Src/CSS";
 import Transition from "Src/styles/Transition";
 import { CT } from "Src/Theme";
 import WithStyles from "Src/utils/Styles";
-import BuildComponent from "Src/BuildComponent";
+import PreactComponent, { FromProps, IsProps } from "Src/BuildComponent";
 
-export default BuildComponent(
-  {
-    href: IsString,
-    target: Optional(IsString),
-    disabled: Optional(IsLiteral(true)),
-  },
-  (props) =>
-    WithStyles(
+const Props = {
+  href: IsString,
+  target: Optional(IsString),
+  disabled: Optional(IsLiteral(true)),
+};
+
+export default class Link extends PreactComponent<typeof Props> {
+  protected IsProps = Props;
+
+  protected Render(props: FromProps<typeof Props>) {
+    return WithStyles(
       <a href={props.href} target={props.target ?? undefined}>
-        {props.children}
+        <slot />
       </a>,
       Css.Init().With(
         Rule.Init("a")
@@ -34,5 +37,6 @@ export default BuildComponent(
           .With("text-decoration", "none")
           .With("cursor", "pointer")
       )
-    )
-);
+    );
+  }
+}

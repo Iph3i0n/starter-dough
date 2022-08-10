@@ -3,15 +3,18 @@ import Css, { Media, Rule } from "Src/CSS";
 import Padding from "Src/styles/Padding";
 import WithStyles from "Src/utils/Styles";
 import { IsLiteral, Optional } from "@paulpopat/safe-type";
-import BuildComponent from "Src/BuildComponent";
+import PreactComponent, { FromProps } from "Src/BuildComponent";
 
-export default BuildComponent(
-  {
-    "full-width": Optional(IsLiteral(true)),
-    flush: Optional(IsLiteral(true)),
-    fill: Optional(IsLiteral(true)),
-  },
-  (props) => {
+const Props = {
+  "full-width": Optional(IsLiteral(true)),
+  flush: Optional(IsLiteral(true)),
+  fill: Optional(IsLiteral(true)),
+};
+
+export default class Container extends PreactComponent<typeof Props> {
+  protected IsProps = Props;
+
+  protected Render(props: FromProps<typeof Props>) {
     let section = Rule.Init(":host")
       .With("display", "block")
       .With("margin", "auto")
@@ -34,6 +37,6 @@ export default BuildComponent(
       );
     }
 
-    return WithStyles(<>{props.children}</>, css);
+    return WithStyles(<slot />, css);
   }
-);
+}

@@ -2,7 +2,7 @@ import Css, { Rule } from "Src/CSS";
 import { useEffect, useRef } from "preact/hooks";
 import WithStyles from "Src/utils/Styles";
 import { IsString, Optional } from "@paulpopat/safe-type";
-import BuildComponent from "Src/BuildComponent";
+import PreactComponent, { FromProps, IsProps } from "Src/BuildComponent";
 import tinymce from "tinymce";
 
 import "tinymce/icons/default";
@@ -28,12 +28,15 @@ import ContentCss from "tinymce/skins/content/default/content.css";
 import { CT } from "Src/Theme";
 import Colour from "Src/styles/Colour";
 
-export default BuildComponent(
-  {
-    name: IsString,
-    default: Optional(IsString),
-  },
-  (props) => {
+const Props = {
+  name: IsString,
+  default: Optional(IsString),
+};
+
+export default class RichText extends PreactComponent<typeof Props> {
+  protected IsProps = Props;
+
+  protected Render(props: FromProps<typeof Props>) {
     const ref = useRef<HTMLTextAreaElement>(null);
 
     useEffect(() => {
@@ -71,4 +74,4 @@ export default BuildComponent(
         .With(Rule.Init(".tox .tox-statusbar").With("display", "none"))
     );
   }
-);
+}
