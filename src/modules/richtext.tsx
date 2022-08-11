@@ -2,7 +2,7 @@ import Css, { Rule } from "Src/CSS";
 import { useEffect, useRef } from "preact/hooks";
 import WithStyles from "Src/utils/Styles";
 import { IsString, Optional } from "@paulpopat/safe-type";
-import PreactComponent, { FromProps, IsProps } from "Src/BuildComponent";
+import { FromProps, IsProps } from "Src/BuildComponent";
 import tinymce from "tinymce";
 
 import "tinymce/icons/default";
@@ -27,13 +27,14 @@ import ContentUiCss from "tinymce/skins/ui/oxide/content.css";
 import ContentCss from "tinymce/skins/content/default/content.css";
 import { CT } from "Src/Theme";
 import Colour from "Src/styles/Colour";
+import FormComponent from "Src/utils/Form";
 
 const Props = {
   name: IsString,
   default: Optional(IsString),
 };
 
-export default class RichText extends PreactComponent<typeof Props> {
+export default class RichText extends FormComponent<typeof Props> {
   protected IsProps = Props;
 
   protected Render(props: FromProps<typeof Props>) {
@@ -43,7 +44,16 @@ export default class RichText extends PreactComponent<typeof Props> {
       const target = ref.current;
       if (!target) return;
 
-      tinymce.init({ target: target, skin: false, content_css: false });
+      tinymce.init({
+        target: target,
+        skin: false,
+        content_css: false,
+        setup: (ed) => {
+          ed.on("change", () => {
+            this.value = ed.getContent();
+          });
+        },
+      });
     }, [ref.current]);
     return WithStyles(
       <textarea name={props.name} ref={ref} />,

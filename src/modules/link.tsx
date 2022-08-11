@@ -1,11 +1,13 @@
 import { IsLiteral, IsString, Optional } from "@paulpopat/safe-type";
 import Css, { Rule } from "Src/CSS";
 import Transition from "Src/styles/Transition";
-import { CT } from "Src/Theme";
+import { ColourNames, CT, GetColour } from "Src/Theme";
 import WithStyles from "Src/utils/Styles";
 import PreactComponent, { FromProps, IsProps } from "Src/BuildComponent";
+import { IsOneOf } from "Src/utils/Type";
 
 const Props = {
+  colour: Optional(IsOneOf(...ColourNames)),
   href: IsString,
   target: Optional(IsString),
   disabled: Optional(IsLiteral(true)),
@@ -23,7 +25,7 @@ export default class Link extends PreactComponent<typeof Props> {
         Rule.Init("a")
           .With(
             "disabled" in props
-              ? CT.colours.primary.AsText()
+              ? GetColour(props.colour ?? "primary").AsText()
               : CT.colours.faded_text
           )
           .With("opacity", "1")
