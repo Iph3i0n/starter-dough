@@ -32,6 +32,6 @@ export default function AddComponent(
       }
     });
 
-    observer.observe(document.body, { childList: true });
+    observer.observe(document.body, { childList: true, subtree: true });
   });
 }
