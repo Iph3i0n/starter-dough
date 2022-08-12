@@ -13,6 +13,10 @@ import PreactComponent, { FromProps, IsProps } from "Src/BuildComponent";
 const Props = { flush: Optional(IsLiteral(true)) };
 
 export default class ListGroup extends PreactComponent<typeof Props> {
+  public static get observedAttributes() {
+    return Object.keys(Props);
+  }
+
   public constructor() {
     super();
     this.SetChild(

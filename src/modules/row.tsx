@@ -16,6 +16,10 @@ const Props = {
 };
 
 export default class Row extends PreactComponent<typeof Props> {
+  public static get observedAttributes() {
+    return Object.Keys(Props);
+  }
+
   public constructor() {
     super();
     this.SetChild(

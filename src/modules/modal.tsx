@@ -19,6 +19,10 @@ const Props = {
 };
 
 export default class Modal extends PreactComponent<typeof Props> {
+  public static get observedAttributes() {
+    return Object.keys(Props);
+  }
+
   protected IsProps = Props;
 
   protected Render(props: FromProps<typeof Props>) {

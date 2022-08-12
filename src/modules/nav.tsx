@@ -29,6 +29,10 @@ const Props = {
 };
 
 export default class Nav extends PreactComponent<typeof Props> {
+  public static get observedAttributes() {
+    return Object.keys(Props);
+  }
+
   public constructor() {
     super();
     this.SetChild(

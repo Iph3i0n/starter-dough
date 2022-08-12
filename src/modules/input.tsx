@@ -19,11 +19,15 @@ const Props = {
 export default class Input extends FormComponent<typeof Props> {
   protected IsProps = Props;
 
+  public static get observedAttributes() {
+    return Object.keys(Props);
+  }
+
   protected Render(props: FromProps<typeof Props>) {
     const id = useMemo(() => Guid(), []);
     useEffect(() => {
       this.value = props.default ?? "";
-    }, []);
+    }, [props.default]);
 
     return WithStyles(
       <p-row flush>

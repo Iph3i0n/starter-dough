@@ -25,6 +25,10 @@ export default class Button extends PreactComponent<
   typeof Props,
   { current: number }
 > {
+  public static get observedAttributes() {
+    return Object.Keys(Props);
+  }
+
   public constructor() {
     super();
     this.SetChild({ img: IsString }, function (props, parent) {

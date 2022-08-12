@@ -17,6 +17,10 @@ const Props = {
 };
 
 export default class Submit extends PreactComponent<typeof Props> {
+  public static get observedAttributes() {
+    return Object.keys(Props);
+  }
+
   public static formAssociated = true;
   private readonly internals: ElementInternals;
 

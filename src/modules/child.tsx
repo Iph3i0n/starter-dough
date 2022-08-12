@@ -4,6 +4,10 @@ import PreactComponent, { Child } from "Src/BuildComponent";
 type State = { render: Child<any, PreactComponent<any, any>>; state: any };
 
 export default class ChildComponent extends PreactComponent<any, State> {
+  public static get observedAttributes() {
+    return Object.keys({});
+  }
+
   public constructor() {
     super();
     this.ChildType.then((p) => {

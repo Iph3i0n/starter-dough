@@ -9,6 +9,10 @@ import { IsString } from "@paulpopat/safe-type";
 import PreactComponent from "Src/BuildComponent";
 
 export default class Accordion extends PreactComponent<{}, { open: string }> {
+  public static get observedAttributes() {
+    return [];
+  }
+
   public constructor() {
     super({ open: "" });
     this.SetChild({ title: IsString }, function ({ title }, parent) {

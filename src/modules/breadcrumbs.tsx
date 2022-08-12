@@ -7,6 +7,10 @@ import PreactComponent, { FromProps } from "Src/BuildComponent";
 import { JSX } from "preact/jsx-runtime";
 
 export default class Breadcrumbs extends PreactComponent {
+  public static get observedAttributes() {
+    return Object.keys({});
+  }
+
   public constructor() {
     super();
 

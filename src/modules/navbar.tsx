@@ -14,6 +14,10 @@ export default class Navbar extends PreactComponent<
   typeof Props,
   { colour: Colour }
 > {
+  public static get observedAttributes() {
+    return Object.keys(Props);
+  }
+
   public get Colour() {
     return this.State.colour;
   }

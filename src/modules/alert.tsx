@@ -15,6 +15,10 @@ const Props = {
 };
 
 export default class Alert extends PreactComponent<typeof Props> {
+  public static get observedAttributes() {
+    return Object.keys(Props);
+  }
+
   protected Render({
     dismissable,
     colour,

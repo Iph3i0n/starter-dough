@@ -15,6 +15,10 @@ const Props = {
 };
 
 export default class Toast extends PreactComponent<typeof Props> {
+  public static get observedAttributes() {
+    return Object.keys(Props);
+  }
+
   public constructor() {
     super();
     this.SetChild({ icon: IsString }, function (props) {

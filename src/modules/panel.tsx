@@ -7,6 +7,10 @@ import PreactComponent, { FromProps, IsProps } from "Src/BuildComponent";
 const Props = { colour: IsOneOf(...ColourNames) };
 
 export default class Panel extends PreactComponent<typeof Props> {
+  public static get observedAttributes() {
+    return Object.keys(Props);
+  }
+
   protected IsProps = Props;
 
   protected Render(props: FromProps<typeof Props>) {

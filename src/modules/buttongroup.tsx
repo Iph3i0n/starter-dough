@@ -5,6 +5,10 @@ import PreactComponent, { FromProps, IsProps } from "Src/BuildComponent";
 import { JSX } from "preact/jsx-runtime";
 
 export default class ButtonGroup extends PreactComponent {
+  public static get observedAttributes() {
+    return Object.keys({});
+  }
+
   protected Render(props: FromProps<{}>, state: any): JSX.Element {
     return WithStyles(
       <slot />,

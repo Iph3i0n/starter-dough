@@ -4,7 +4,10 @@ import PreactComponent, { IsProps } from "Src/BuildComponent";
 
 export default abstract class FormComponent<
   TProps extends IsProps = {}
-> extends PreactComponent<TProps, Record<string, string | boolean>> {
+> extends PreactComponent<
+  TProps,
+  Record<string, string | boolean | undefined>
+> {
   public static formAssociated = true;
   private readonly internals: ElementInternals;
   private readonly on_change = () => (this.State = this.FormValues);
@@ -37,11 +40,12 @@ export default abstract class FormComponent<
   }
 
   public get value() {
-    return this.State[this.Props.name];
+    return this.State[this.Props.name] ?? undefined;
   }
 
-  public set value(v: string | boolean) {
-    this.internals.setFormValue(v.toString());
+  public set value(v: string | boolean | undefined) {
+    this.State = { ...this.State, [this.Props.name]: v };
+    this.internals.setFormValue(v?.toString() ?? null);
   }
 
   public get name() {

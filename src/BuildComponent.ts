@@ -50,7 +50,10 @@ export default abstract class PreactComponent<
 
     props = ProcessProps(props);
     if (!IsObject(this.IsProps)(props, false))
-      throw new Error("Invalid props for " + this.tagName);
+      throw new Error(
+        "Invalid props for " + this.tagName + " see received above"
+      );
+
     return props as FromProps<TProps>;
   }
 
@@ -179,6 +182,7 @@ export default abstract class PreactComponent<
   }
 
   public attributeChangedCallback() {
+    if (!this.isConnected) return;
     this.props_handler(this.Props);
   }
 }

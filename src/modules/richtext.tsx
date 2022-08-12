@@ -1,9 +1,9 @@
 import Css, { Rule } from "Src/CSS";
-import { useEffect, useRef } from "preact/hooks";
+import { useEffect, useRef, useState } from "preact/hooks";
 import WithStyles from "Src/utils/Styles";
 import { IsString, Optional } from "@paulpopat/safe-type";
 import { FromProps, IsProps } from "Src/BuildComponent";
-import tinymce from "tinymce";
+import tinymce, { Editor } from "tinymce";
 
 import "tinymce/icons/default";
 import "tinymce/models/dom";
@@ -28,6 +28,7 @@ import ContentCss from "tinymce/skins/content/default/content.css";
 import { CT } from "Src/Theme";
 import Colour from "Src/styles/Colour";
 import FormComponent from "Src/utils/Form";
+import Object from "Src/utils/Object";
 
 const Props = {
   name: IsString,
@@ -37,24 +38,42 @@ const Props = {
 export default class RichText extends FormComponent<typeof Props> {
   protected IsProps = Props;
 
+  public static get observedAttributes() {
+    return Object.Keys(Props);
+  }
+
   protected Render(props: FromProps<typeof Props>) {
     const ref = useRef<HTMLTextAreaElement>(null);
+    const [editor, set_editor] = useState<Editor>();
 
     useEffect(() => {
       const target = ref.current;
       if (!target) return;
 
-      tinymce.init({
-        target: target,
-        skin: false,
-        content_css: false,
-        setup: (ed) => {
-          ed.on("change", () => {
-            this.value = ed.getContent();
-          });
-        },
-      });
+      tinymce
+        .init({
+          target: target,
+          skin: false,
+          content_css: false,
+          setup: (ed) => {
+            ed.on("init", () => {
+              ed.setContent(props.default ?? "");
+              this.value = props.default ?? "";
+            });
+
+            ed.on("change", () => {
+              this.value = ed.getContent();
+            });
+          },
+        })
+        .then(([e]) => set_editor(e));
     }, [ref.current]);
+
+    useEffect(() => {
+      editor?.setContent(props.default ?? "");
+      this.value = props.default ?? "";
+    }, [props.default]);
+
     return WithStyles(
       <textarea name={props.name} ref={ref} />,
       Css.Init()

@@ -13,6 +13,10 @@ const Props = {
 };
 
 export default class Badge extends PreactComponent<typeof Props> {
+  public static get observedAttributes() {
+    return Object.keys(Props);
+  }
+  
   protected Render(props: FromProps<typeof Props>, state: {}): JSX.Element {
     let rule = Rule.Init(":host")
       .With(GetColour(props.colour))

@@ -6,6 +6,10 @@ import PreactComponent, { FromProps } from "Src/BuildComponent";
 import { UseChildElements } from "Src/utils/Hooks";
 
 export default class Headrow extends PreactComponent<{}> {
+  public static get observedAttributes() {
+    return Object.keys({});
+  }
+
   public constructor() {
     super();
     this.SetChild({}, function (props) {

@@ -19,6 +19,10 @@ class PageEvent extends Event {
 
 const Props = { total: IsString, skip: IsString, take: IsString };
 export default class Button extends PreactComponent<typeof Props> {
+  public static get observedAttributes() {
+    return Object.keys(Props);
+  }
+
   protected IsProps = Props;
 
   protected Render(props: FromProps<typeof Props>) {

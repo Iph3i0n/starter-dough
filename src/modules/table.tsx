@@ -10,6 +10,10 @@ import { UseChildElements } from "Src/utils/Hooks";
 const Props = { colour: Optional(IsOneOf(...ColourNames)) };
 
 export default class Table extends PreactComponent<typeof Props> {
+  public static get observedAttributes() {
+    return Object.keys(Props);
+  }
+
   public constructor() {
     super();
     this.SetChild({}, function (props) {

@@ -26,6 +26,10 @@ const Props = {
 };
 
 export default class Toggle extends FormComponent<typeof Props> {
+  public static get observedAttributes() {
+    return Object.keys(Props);
+  }
+
   protected IsProps = Props;
 
   protected Render(props: FromProps<typeof Props>) {
@@ -65,7 +69,7 @@ export default class Toggle extends FormComponent<typeof Props> {
               () => (this.value = props.value),
               () =>
                 (this.value = [
-                  ...this.value?.toString().split(","),
+                  ...(this.value?.toString().split(",") ?? []),
                   props.value,
                 ].join(",")),
               () => (this.value = (!this.value).toString())

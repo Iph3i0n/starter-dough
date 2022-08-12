@@ -15,6 +15,10 @@ const Props = {
 };
 
 export default class Icon extends PreactComponent<typeof Props> {
+  public static get observedAttributes() {
+    return Object.keys(Props);
+  }
+
   protected IsProps = Props;
 
   protected Render({

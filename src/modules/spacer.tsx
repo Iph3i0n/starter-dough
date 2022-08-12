@@ -8,6 +8,10 @@ import PreactComponent, { FromProps, IsProps } from "Src/BuildComponent";
 const Props = { size: IsOneOf(...Object.Keys(CT.padding)) };
 
 export default class Spacer extends PreactComponent<typeof Props> {
+  public static get observedAttributes() {
+    return Object.Keys(Props);
+  }
+
   protected IsProps = Props;
 
   protected Render(props: FromProps<typeof Props>) {

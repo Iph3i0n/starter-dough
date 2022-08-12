@@ -13,6 +13,10 @@ import PreactComponent, { FromProps } from "Src/BuildComponent";
 const Props = { target: IsString };
 
 export default class Dropdown extends PreactComponent<typeof Props> {
+  public static get observedAttributes() {
+    return Object.keys(Props);
+  }
+
   public constructor() {
     super();
     this.SetChild({ divider: Optional(IsLiteral(true)) }, function (props) {
