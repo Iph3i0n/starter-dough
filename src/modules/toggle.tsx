@@ -7,10 +7,12 @@ import C from "Src/utils/Class";
 import { IsOneOf } from "Src/utils/Type";
 import WithStyles from "Src/utils/Styles";
 import {
+  IsBoolean,
   IsLiteral,
   IsString,
   Optional,
   PatternMatch,
+  IsUnion,
 } from "@paulpopat/safe-type";
 import { FromProps, IsProps } from "Src/BuildComponent";
 import FormComponent from "Src/utils/Form";
@@ -19,7 +21,7 @@ const Props = {
   name: IsString,
   help: Optional(IsString),
   type: IsOneOf("radio", "checkbox", "toggle"),
-  default: Optional(IsString),
+  default: Optional(IsUnion(IsString, IsBoolean)),
   disabled: Optional(IsLiteral(true)),
   value: IsString,
   colour: IsOneOf(...ColourNames),

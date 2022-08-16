@@ -12,19 +12,20 @@ export default abstract class FormComponent<
   private readonly internals: ElementInternals;
   private readonly on_change = () => (this.State = this.FormValues);
 
+  private get form(): HTMLFormElement {
+    const form = this.internals.form;
+    if (!form) throw new Error("Form elements must be inside a form");
+
+    return form;
+  }
+
   public constructor() {
     super();
     this.internals = this.attachInternals();
-
-    this.State = this.FormValues;
-    this.internals.form?.addEventListener("change", this.on_change);
   }
 
   public get FormValues() {
-    const form = this.internals.form;
-    if (!form) return {};
-
-    const data = new FormData(form);
+    const data = new FormData(this.form);
     const result: Record<string, string | boolean> = {};
     for (const [key, value] of data.entries()) {
       const v = value.toString();
@@ -34,9 +35,17 @@ export default abstract class FormComponent<
     return result;
   }
 
+  public connectedCallback() {
+    this.State = this.FormValues;
+    if (!this.form.FormValue) this.form.FormValue = {};
+    this.form.removeEventListener("change", this.on_change);
+
+    super.connectedCallback();
+  }
+
   public disconnectedCallback() {
     super.disconnectedCallback();
-    this.internals.form?.removeEventListener("change", this.on_change);
+    this.form.removeEventListener("change", this.on_change);
   }
 
   public get value() {
@@ -46,6 +55,10 @@ export default abstract class FormComponent<
   public set value(v: string | boolean | undefined) {
     this.State = { ...this.State, [this.Props.name]: v };
     this.internals.setFormValue(v?.toString() ?? null);
+
+    this.form.removeEventListener("change", this.on_change);
+    this.form.dispatchEvent(new Event("change"));
+    this.form.addEventListener("change", this.on_change);
   }
 
   public get name() {
@@ -54,5 +67,13 @@ export default abstract class FormComponent<
 
   protected Submit() {
     this.internals.form?.requestSubmit();
+  }
+
+  public formDisabledCallback(disabled: boolean) {
+    this.setAttribute("disabled", disabled.toString());
+  }
+
+  public formResetCallback() {
+    this.value = this.getAttribute("default") ?? "";
   }
 }

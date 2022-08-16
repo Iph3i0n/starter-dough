@@ -3,7 +3,13 @@ import Absolute from "Src/styles/Absolute";
 import { v4 as Guid } from "uuid";
 import { useEffect, useMemo } from "preact/hooks";
 import WithStyles from "Src/utils/Styles";
-import { IsLiteral, IsString, Optional } from "@paulpopat/safe-type";
+import {
+  IsBoolean,
+  IsLiteral,
+  IsString,
+  Optional,
+  IsUnion,
+} from "@paulpopat/safe-type";
 import InputRules from "Src/rules/Input";
 import FormComponent from "Src/utils/Form";
 import { FromProps } from "Src/BuildComponent";
@@ -13,7 +19,7 @@ const Props = {
   label: Optional(IsString),
   name: IsString,
   help: Optional(IsString),
-  default: Optional(IsString),
+  default: Optional(IsUnion(IsString, IsBoolean)),
   disabled: Optional(IsLiteral(true)),
   "no-label": Optional(IsLiteral(true)),
 };
@@ -28,7 +34,7 @@ export default class Select extends FormComponent<typeof Props> {
   protected Render(props: FromProps<typeof Props>) {
     const id = useMemo(() => Guid(), []);
     useEffect(() => {
-      this.value = props.default ?? "";
+      if (typeof props.default === "string") this.value = props.default ?? "";
     }, [props.default]);
     return WithStyles(
       <p-row flush>

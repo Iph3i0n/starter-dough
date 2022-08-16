@@ -1,7 +1,7 @@
 import Css, { Rule } from "Src/CSS";
 import { useEffect, useRef, useState } from "preact/hooks";
 import WithStyles from "Src/utils/Styles";
-import { IsString, Optional } from "@paulpopat/safe-type";
+import { IsBoolean, IsString, Optional, IsUnion } from "@paulpopat/safe-type";
 import { FromProps, IsProps } from "Src/BuildComponent";
 import tinymce, { Editor } from "tinymce";
 
@@ -32,7 +32,7 @@ import Object from "Src/utils/Object";
 
 const Props = {
   name: IsString,
-  default: Optional(IsString),
+  default: Optional(IsUnion(IsString, IsBoolean)),
 };
 
 export default class RichText extends FormComponent<typeof Props> {
@@ -57,7 +57,8 @@ export default class RichText extends FormComponent<typeof Props> {
           content_css: false,
           setup: (ed) => {
             ed.on("init", () => {
-              ed.setContent(props.default ?? "");
+              if (typeof props.default === "string")
+                ed.setContent(props.default ?? "");
               this.value = props.default ?? "";
             });
 
@@ -70,7 +71,8 @@ export default class RichText extends FormComponent<typeof Props> {
     }, [ref.current]);
 
     useEffect(() => {
-      editor?.setContent(props.default ?? "");
+      if (typeof props.default === "string")
+        editor?.setContent(props.default ?? "");
       this.value = props.default ?? "";
     }, [props.default]);
 
