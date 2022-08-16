@@ -84,4 +84,8 @@ export default class Accordion extends PreactComponent<{}, { open: string }> {
   public set Current(current: string) {
     this.State = { ...this.State, open: current };
   }
+
+  public get Current() {
+    return this.State.open;
+  }
 }

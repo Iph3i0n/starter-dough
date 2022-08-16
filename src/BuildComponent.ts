@@ -140,6 +140,7 @@ export default abstract class PreactComponent<
   public set State(value: TState) {
     this.state = value;
     this.state_handler(value);
+    for (const listener of this.listeners) listener(value);
   }
 
   public GetChild(slot?: string) {
