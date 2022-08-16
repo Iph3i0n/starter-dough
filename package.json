@@ -1,6 +1,6 @@
 {
   "name": "starter-dough",
-  "version": "0.0.20",
+  "version": "0.0.21",
   "description": "Another component library for web components",
   "browser": "dist/bundle.js",
   "scripts": {

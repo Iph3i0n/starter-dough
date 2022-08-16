@@ -45,7 +45,6 @@ export default abstract class FormComponent<
 
   public disconnectedCallback() {
     super.disconnectedCallback();
-    this.form.removeEventListener("change", this.on_change);
   }
 
   public get value() {
