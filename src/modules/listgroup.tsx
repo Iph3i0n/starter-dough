@@ -33,6 +33,7 @@ export default class ListGroup extends PreactComponent<typeof Props> {
         const hover_background = background.GreyscaleTransform(140, true);
         const index = this.IndexOfParent;
         const css = Css.Init()
+          .With(Rule.Init(":host").With("display", "block"))
           .With(
             Rule.Init("span, a")
               .With(new Flex("center", "space-between"))

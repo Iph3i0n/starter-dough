@@ -13,17 +13,17 @@ export default class ButtonGroup extends PreactComponent {
     return WithStyles(
       <slot />,
       Css.Init()
-        .With(Rule.Init(":host").With("font-size", "0"))
-        .With(Rule.Init("p-button").With("border-radius", "0"))
         .With(
-          Rule.Init("p-button:first-child")
-            .With("border-top-left-radius", CT.border.standard.Radius)
-            .With("border-bottom-left-radius", CT.border.standard.Radius)
+          Rule.Init(":host")
+            .With("display", "inline-block")
+            .With("font-size", "0")
+            .With("overflow", "hidden")
+            .With(CT.border.standard)
         )
         .With(
-          Rule.Init("p-button:last-child")
-            .With("border-top-right-radius", CT.border.standard.Radius)
-            .With("border-bottom-right-radius", CT.border.standard.Radius)
+          Rule.Init("::slotted(p-button)")
+            .With("border-radius", "0")
+            .With("border", "none")
         )
     );
   }

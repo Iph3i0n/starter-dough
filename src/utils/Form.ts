@@ -43,10 +43,6 @@ export default abstract class FormComponent<
     super.connectedCallback();
   }
 
-  public disconnectedCallback() {
-    super.disconnectedCallback();
-  }
-
   public get value() {
     return this.State[this.Props.name] ?? undefined;
   }

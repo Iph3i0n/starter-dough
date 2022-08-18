@@ -5,10 +5,16 @@ import Css, { Rule } from "Src/CSS";
 import NavStyles from "Src/rules/Nav";
 import PreactComponent, { FromProps } from "Src/BuildComponent";
 import { JSX } from "preact/jsx-runtime";
+import { UseSlotRef } from "Src/utils/Hooks";
 
-export default class Breadcrumbs extends PreactComponent {
+const IsProps = {};
+
+export default class Breadcrumbs extends PreactComponent<
+  typeof IsProps,
+  { children: number }
+> {
   public static get observedAttributes() {
-    return Object.keys({});
+    return Object.keys(IsProps);
   }
 
   public constructor() {
@@ -58,9 +64,18 @@ export default class Breadcrumbs extends PreactComponent {
   }
 
   protected Render(props: FromProps<{}>, state: {}): JSX.Element {
+    const ref = UseSlotRef((slot) => {
+      slot.addEventListener("slotchange", () => {
+        this.State = {
+          ...this.State,
+          children: slot.assignedElements().length,
+        };
+      });
+    });
+
     return WithStyles(
       <nav>
-        <slot />
+        <slot ref={ref} />
       </nav>,
       NavStyles
     );
