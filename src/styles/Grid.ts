@@ -4,13 +4,14 @@ import { AddToGlobalScope } from "Src/utils/Interface";
 export default class Grid extends CssProperty {
   public constructor(
     private readonly columns: number,
-    private readonly gap: string
+    private readonly gap: string,
+    private readonly rows?: number
   ) {
     super();
   }
 
   public override get Properties() {
-    return [
+    const result = [
       { name: "display", value: "grid" },
       {
         name: "grid-template-columns",
@@ -18,6 +19,14 @@ export default class Grid extends CssProperty {
       },
       { name: "gap", value: this.gap },
     ];
+
+    if (this.rows)
+      result.push({
+        name: "grid-template-rows",
+        value: `repeat(${this.rows}, minmax(0, 1fr))`,
+      });
+
+    return result;
   }
 }
 

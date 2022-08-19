@@ -52,6 +52,10 @@ export function IsTextNode(node: any): node is Text {
   return node && node.nodeType && node.nodeType === node.TEXT_NODE;
 }
 
+export function HasValue<T>(subject: T | null | undefined): subject is T {
+  return subject != null;
+}
+
 export type CustomEvents<K extends string> = {
   [key in K]: (event: CustomEvent) => void;
 };

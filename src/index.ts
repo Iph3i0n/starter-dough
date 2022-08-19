@@ -40,6 +40,7 @@ AddComponent("p-dropdown", () => import("./modules/dropdown"));
 AddComponent("p-headrow", () => import("./modules/headrow"));
 AddComponent("p-icon", () => import("./modules/icon"));
 AddComponent("p-input", () => import("./modules/input"));
+AddComponent("p-layout", () => import("./modules/layout"));
 AddComponent("p-link", () => import("./modules/link"));
 AddComponent("p-list", () => import("./modules/list"));
 AddComponent("p-listgroup", () => import("./modules/listgroup"));

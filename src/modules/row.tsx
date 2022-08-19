@@ -8,6 +8,7 @@ import PreactComponent, { FromProps, IsProps } from "Src/BuildComponent";
 import { IsOneOf } from "Src/utils/Type";
 import Object from "Src/utils/Object";
 import Flex from "Src/styles/Flex";
+import GridLocation from "Src/styles/GridLocation";
 
 const Props = {
   cols: Optional(IsString),
@@ -36,8 +37,7 @@ export default class Row extends PreactComponent<typeof Props> {
             css = css.With(
               Media.Init("min-width", CT.screen[size].breakpoint).With(
                 Rule.Init(":host").With(
-                  "grid-column",
-                  "auto / span " + props[size]
+                  new GridLocation(parseInt(props[size] ?? "-1"))
                 )
               )
             );
