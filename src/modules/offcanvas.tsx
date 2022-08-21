@@ -70,4 +70,8 @@ export default class Offcanvas extends PreactComponent<typeof Props> {
         )
     );
   }
+
+  public static get IncludedTags(): string[] {
+    return ["p-icon"];
+  }
 }

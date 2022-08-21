@@ -59,4 +59,8 @@ export default class Alert extends PreactComponent<typeof Props> {
   }
 
   protected override IsProps = Props;
+
+  public static get IncludedTags(): string[] {
+    return ["p-icon"];
+  }
 }

@@ -67,4 +67,8 @@ export default class Select extends FormComponent<typeof Props> {
       )
     );
   }
+
+  public static get IncludedTags(): string[] {
+    return ["p-row", "p-child", "p-icon"];
+  }
 }

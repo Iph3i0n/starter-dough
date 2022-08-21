@@ -88,4 +88,8 @@ export default class Accordion extends PreactComponent<{}, { open: string }> {
   public get Current() {
     return this.State.open;
   }
+
+  public static get IncludedTags(): string[] {
+    return ["p-icon", "p-text"];
+  }
 }

@@ -114,4 +114,8 @@ export default class Button extends PreactComponent<typeof Props> {
         .With(Rule.Init("nav").With(new Flex("center", "center")))
     );
   }
+
+  public static get IncludedTags(): string[] {
+    return ["p-icon"];
+  }
 }

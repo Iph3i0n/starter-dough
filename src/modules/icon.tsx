@@ -5,6 +5,11 @@ import Animation from "Src/styles/Animation";
 import WithStyles from "Src/utils/Styles";
 import { IsLiteral, IsString, Optional } from "@paulpopat/safe-type";
 import PreactComponent, { FromProps } from "Src/BuildComponent";
+// @ts-ignore: CSS import
+import styles from "remixicon/fonts/remixicon.css";
+import { useEffect } from "preact/hooks";
+
+const global_styles_id = "starter-dough-remix-icon-code";
 
 const Props = {
   name: IsString,
@@ -49,16 +54,17 @@ export default class Icon extends PreactComponent<typeof Props> {
             .With("display", "inline-block")
         );
 
+    useEffect(() => {
+      if (document.getElementById(global_styles_id)) return;
+      const style = document.createElement("style");
+      style.innerHTML = styles.toString();
+      style.id = global_styles_id;
+      document.head.append(style);
+    }, []);
+
     return WithStyles(
-      <>
-        <span class={`ri-${name}-line`} />
-        <link
-          href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css"
-          rel="stylesheet"
-          type="text/css;charset=UTF-8"
-        />
-      </>,
-      result
+      <span class={`ri-${name}-line`} />,
+      result.With(styles.toString())
     );
   }
 }

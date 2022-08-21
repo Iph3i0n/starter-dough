@@ -168,4 +168,8 @@ export default class Button extends PreactComponent<
         .With(Rule.Init(".arrow-button:hover").With("opacity", "0.5"))
     );
   }
+
+  public static get IncludedTags(): string[] {
+    return ["p-icon"];
+  }
 }

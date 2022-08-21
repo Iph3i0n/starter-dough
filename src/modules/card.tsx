@@ -80,4 +80,8 @@ export default class Card extends PreactComponent<typeof Props> {
         )
     );
   }
+
+  public static get IncludedTags(): string[] {
+    return ["p-text"];
+  }
 }

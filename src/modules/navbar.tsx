@@ -126,4 +126,8 @@ export default class Navbar extends PreactComponent<
         )
     );
   }
+
+  public static get IncludedTags(): string[] {
+    return ["p-container", "p-row", "p-child"];
+  }
 }

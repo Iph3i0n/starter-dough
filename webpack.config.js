@@ -13,7 +13,14 @@ module.exports = {
       },
       {
         test: /\.css$/i,
-        use: ["css-loader"],
+        use: [
+          {
+            loader: "css-loader",
+            options: {
+              esModule: false,
+            },
+          },
+        ],
       },
       {
         test: /\.(png|svg|jpg|jpeg|gif)$/i,
@@ -34,6 +41,7 @@ module.exports = {
   output: {
     filename: "bundle.js",
     path: Path.resolve(__dirname, "dist"),
+    publicPath: "dist/",
   },
   mode: is_dev ? "development" : "production",
   watch: is_dev,

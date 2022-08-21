@@ -66,4 +66,8 @@ export default class Modal extends PreactComponent<typeof Props> {
         .With(Rule.Init(".open .modal").With("transform", "translate(0, 0)"))
     );
   }
+
+  public static get IncludedTags(): string[] {
+    return ["p-icon"];
+  }
 }

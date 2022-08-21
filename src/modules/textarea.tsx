@@ -69,4 +69,8 @@ export default class Textarea extends FormComponent<typeof Props> {
       )
     );
   }
+
+  public static get IncludedTags(): string[] {
+    return ["p-row", "p-child"];
+  }
 }

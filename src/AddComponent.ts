@@ -1,37 +1,54 @@
 import PreactComponent from "./BuildComponent";
 
-export default function AddComponent(
+const starters = {} as Record<string, ReturnType<typeof Starter>>;
+
+function Starter(
   tag: string,
-  init: () => Promise<{ default: new () => PreactComponent<any> }>
+  init: () => Promise<{ default: new () => PreactComponent<any> }>,
+  observer: MutationObserver
 ) {
-  const start = () =>
+  let started = false;
+  const result = () => {
+    observer.disconnect();
+    if (started) return;
+    started = true;
+
     init().then(({ default: Component }) => {
+      for (const tag of (Component as any).IncludedTags) {
+        starters[tag] && starters[tag]();
+      }
+
       try {
         customElements.define(tag, Component);
       } catch {
         console.error(`Attempting to add duplicate tag name ${tag}`);
       }
     });
+  };
 
-  if (document.querySelector(tag)) {
-    start();
-    return;
-  }
+  starters[tag] = result;
 
-  document.addEventListener("DOMContentLoaded", function () {
+  return result;
+}
+
+export default function AddComponent(
+  tag: string,
+  init: () => Promise<{ default: new () => PreactComponent<any> }>
+) {
+  const observer = new MutationObserver(() => {
     if (document.querySelector(tag)) {
       start();
-      return;
+
+      observer.disconnect();
     }
-
-    const observer = new MutationObserver(() => {
-      if (document.querySelector(tag)) {
-        start();
-
-        observer.disconnect();
-      }
-    });
-
-    observer.observe(document.body, { childList: true, subtree: true });
   });
+
+  const start = Starter(tag, init, observer);
+
+  if (document.querySelector(tag)) start();
+  else
+    document.addEventListener("DOMContentLoaded", function () {
+      if (document.querySelector(tag)) start();
+      else observer.observe(document.body, { childList: true, subtree: true });
+    });
 }

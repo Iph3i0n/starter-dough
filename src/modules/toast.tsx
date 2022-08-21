@@ -114,4 +114,8 @@ export default class Toast extends PreactComponent<typeof Props> {
       )
     );
   }
+
+  public static get IncludedTags(): string[] {
+    return ["p-icon"];
+  }
 }

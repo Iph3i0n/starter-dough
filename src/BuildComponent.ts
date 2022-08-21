@@ -186,4 +186,8 @@ export default abstract class PreactComponent<
     if (!this.isConnected) return;
     this.props_handler(this.Props);
   }
+
+  public static get IncludedTags() {
+    return [] as string[];
+  }
 }

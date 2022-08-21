@@ -71,4 +71,8 @@ export default class Input extends FormComponent<typeof Props> {
       InputRules
     );
   }
+
+  public static get IncludedTags(): string[] {
+    return ["p-row", "p-child"];
+  }
 }
