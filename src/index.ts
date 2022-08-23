@@ -28,7 +28,6 @@ AddComponent("p-layout", () => import("./modules/layout"));
 AddComponent("p-link", () => import("./modules/link"));
 AddComponent("p-list", () => import("./modules/list"));
 AddComponent("p-listgroup", () => import("./modules/listgroup"));
-AddComponent("p-markdown", () => import("./modules/markdown"));
 AddComponent("p-modal", () => import("./modules/modal"));
 AddComponent("p-nav", () => import("./modules/nav"));
 AddComponent("p-navbar", () => import("./modules/navbar"));
