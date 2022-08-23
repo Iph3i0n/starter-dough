@@ -28,9 +28,9 @@ export default class Link extends PreactComponent<typeof Props> {
       Css.Init().With(
         Rule.Init("a")
           .With(
-            "disabled" in props
-              ? GetColour(props.colour ?? "primary").AsText()
-              : CT.colours.faded_text
+            props.disabled
+              ? CT.colours.faded_text
+              : GetColour(props.colour ?? "info").AsText()
           )
           .With("opacity", "1")
           .With(new Transition("fast", "opacity"))

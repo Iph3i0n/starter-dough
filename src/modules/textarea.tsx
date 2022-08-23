@@ -12,15 +12,17 @@ import {
 import InputRules from "Src/rules/Input";
 import FormComponent from "Src/utils/Form";
 import { FromProps } from "Src/BuildComponent";
+import { CT } from "Src/Theme";
 
 const Props = {
   name: IsString,
   help: Optional(IsString),
-  type: IsString,
   default: Optional(IsUnion(IsString, IsBoolean)),
   placeholder: Optional(IsString),
   disabled: Optional(IsLiteral(true)),
   "no-label": Optional(IsLiteral(true)),
+  code: Optional(IsLiteral(true)),
+  height: Optional(IsString),
 };
 
 export default class Textarea extends FormComponent<typeof Props> {
@@ -36,6 +38,12 @@ export default class Textarea extends FormComponent<typeof Props> {
       if (typeof props.default === "string") this.value = props.default ?? "";
     }, []);
 
+    let rule = Rule.Init(".input")
+      .With("height", props.height ?? "5rem")
+      .With("resize", "none");
+
+    if (props.code) rule = rule.With(CT.text.code);
+
     return WithStyles(
       <p-row flush>
         {!props["no-label"] && (
@@ -48,25 +56,17 @@ export default class Textarea extends FormComponent<typeof Props> {
         <p-child xs="12">
           <textarea
             id={id}
-            type={props.type ?? "text"}
             name={props.name}
             class="input"
             disabled={props.disabled ?? false}
             value={this.value?.toString()}
             placeholder={props.placeholder ?? undefined}
             onChange={(e) => (this.value = e.currentTarget.value)}
-            onKeyPress={(e: KeyboardEvent) => {
-              if (e.key !== "Enter") return;
-              e.preventDefault();
-              this.Submit();
-            }}
           />
           {props.help && <span class="help-text">{props.help}</span>}
         </p-child>
       </p-row>,
-      InputRules.With(
-        Rule.Init("textarea").With("height", "5rem").With("resize", "none")
-      )
+      InputRules.With(rule)
     );
   }
 

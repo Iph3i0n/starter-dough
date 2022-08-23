@@ -8,7 +8,6 @@ import WithStyles from "Src/utils/Styles";
 import PreactComponent, { FromProps, IsProps } from "Src/BuildComponent";
 
 const Props = {
-  data: IsString,
   variant: IsOneOf("ordered", "unordered"),
   align: Optional(IsOneOf("left", "right", "center")),
   "no-margin": Optional(IsLiteral(true)),
@@ -33,13 +32,7 @@ export default class List extends PreactComponent<typeof Props> {
     })();
 
     return WithStyles(
-      h(
-        tag,
-        { class: "list" },
-        ...props.data
-          .split(",")
-          .map((item: string, index: number) => <li key={index}>{item}</li>)
-      ),
+      h(tag, { class: "list" }, <slot />),
       Css.Init().With(
         Rule.Init(".list")
           .With(CT.text.body.WithPadding(new Padding("margin", "0")))

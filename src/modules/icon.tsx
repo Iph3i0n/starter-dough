@@ -8,8 +8,9 @@ import PreactComponent, { FromProps } from "Src/BuildComponent";
 // @ts-ignore: CSS import
 import styles from "remixicon/fonts/remixicon.css";
 import { useEffect } from "preact/hooks";
+import { AddChunk } from "Src/PageStyles";
 
-const global_styles_id = "starter-dough-remix-icon-code";
+let included = false;
 
 const Props = {
   name: IsString,
@@ -55,11 +56,9 @@ export default class Icon extends PreactComponent<typeof Props> {
         );
 
     useEffect(() => {
-      if (document.getElementById(global_styles_id)) return;
-      const style = document.createElement("style");
-      style.innerHTML = styles.toString();
-      style.id = global_styles_id;
-      document.head.append(style);
+      if (included) return;
+      included = true;
+      AddChunk(styles.toString());
     }, []);
 
     return WithStyles(

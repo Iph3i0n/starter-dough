@@ -1,21 +1,5 @@
 import AddComponent from "./AddComponent";
-import Css, { Rule } from "Src/CSS";
-import Padding from "Src/styles/Padding";
-import { CT } from "Src/Theme";
-
-document.addEventListener("DOMContentLoaded", function () {
-  const style = document.createElement("style");
-  style.textContent =
-    Css.Init()
-      .With(
-        Rule.Init("body")
-          .With(CT.colours.body)
-          .With(CT.text.body.WithPadding(new Padding("margin", "0")))
-      )
-      .toString() + CT.font_urls.map((u) => `@import url("${u}");`);
-
-  document.head.append(style);
-});
+import "./PageStyles";
 
 declare global {
   namespace preact.createElement.JSX {
@@ -44,6 +28,7 @@ AddComponent("p-layout", () => import("./modules/layout"));
 AddComponent("p-link", () => import("./modules/link"));
 AddComponent("p-list", () => import("./modules/list"));
 AddComponent("p-listgroup", () => import("./modules/listgroup"));
+AddComponent("p-markdown", () => import("./modules/markdown"));
 AddComponent("p-modal", () => import("./modules/modal"));
 AddComponent("p-nav", () => import("./modules/nav"));
 AddComponent("p-navbar", () => import("./modules/navbar"));
@@ -52,7 +37,6 @@ AddComponent("p-paginator", () => import("./modules/paginator"));
 AddComponent("p-panel", () => import("./modules/panel"));
 AddComponent("p-popover", () => import("./modules/popover"));
 AddComponent("p-progress", () => import("./modules/progress"));
-AddComponent("p-richtext", () => import("./modules/richtext"));
 AddComponent("p-row", () => import("./modules/row"));
 AddComponent("p-select", () => import("./modules/select"));
 AddComponent("p-spacer", () => import("./modules/spacer"));

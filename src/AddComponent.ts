@@ -1,4 +1,6 @@
 import PreactComponent from "./BuildComponent";
+import { Rule } from "./CSS";
+import { AddChunk, RemoveChunk } from "./PageStyles";
 
 const starters = {} as Record<string, ReturnType<typeof Starter>>;
 
@@ -7,7 +9,11 @@ function Starter(
   init: () => Promise<{ default: new () => PreactComponent<any> }>,
   observer: MutationObserver
 ) {
+  const chunk = Rule.Init(tag).With("display", "none");
+  AddChunk(chunk);
+
   let started = false;
+
   const result = () => {
     observer.disconnect();
     if (started) return;
@@ -20,6 +26,7 @@ function Starter(
 
       try {
         customElements.define(tag, Component);
+        RemoveChunk(chunk);
       } catch {
         console.error(`Attempting to add duplicate tag name ${tag}`);
       }

@@ -1,6 +1,6 @@
 {
   "name": "starter-dough",
-  "version": "0.0.26",
+  "version": "0.0.27",
   "description": "Another component library for web components",
   "browser": "dist/bundle.js",
   "scripts": {
@@ -22,18 +22,21 @@
   "homepage": "https://github.com/Iph3i0n/starter-dough#readme",
   "dependencies": {
     "@paulpopat/safe-type": "^2.2.1",
+    "commonmark": "^0.30.0",
     "element-internals-polyfill": "^1.1.6",
     "form-request-submit-polyfill": "^2.0.0",
     "highlight.js": "^11.6.0",
+    "markdown-it": "^13.0.1",
     "preact": "^10.10.0",
     "remixicon": "^2.5.0",
-    "tinymce": "^6.1.2",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.18.10",
     "@babel/preset-env": "^7.18.10",
     "@babel/preset-react": "^7.18.6",
+    "@types/commonmark": "^0.27.5",
+    "@types/markdown-it": "^12.2.3",
     "@types/preact-custom-element": "^4.0.1",
     "@types/uuid": "^8.3.4",
     "css-loader": "^6.7.1",

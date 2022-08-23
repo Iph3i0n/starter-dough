@@ -13,7 +13,10 @@ export default {
 
     return result;
   },
-  MapArray<T, TResult>(keys: T[], mapper: (key: T) => TResult): TResult {
+  MapArray<T, TResult>(
+    keys: T[],
+    mapper: (key: T) => Partial<TResult>
+  ): TResult {
     let result = {} as any;
     for (const key of keys) result = { ...result, ...mapper(key) };
     return result;
