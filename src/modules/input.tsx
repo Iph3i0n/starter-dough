@@ -62,6 +62,7 @@ export default class Input extends FormComponent<typeof Props> {
             onKeyPress={(e: KeyboardEvent) => {
               if (e.key !== "Enter") return;
               e.preventDefault();
+              this.value = (e.currentTarget as any).value;
               this.Submit();
             }}
           />
