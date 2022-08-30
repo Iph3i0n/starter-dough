@@ -1,4 +1,4 @@
-import Css, { Media, Rule } from "Src/CSS";
+import Css, { Rule } from "Src/CSS";
 import Transition from "Src/styles/Transition";
 import { CT } from "Src/Theme";
 
@@ -6,14 +6,13 @@ export default Css.Init()
   .With(Rule.Init(":host").With("display", "block").With("flex", "1"))
   .With(Rule.Init("label").With(CT.text.body).With("display", "block"))
   .With(
-    Media.Init("min-width", CT.screen.md.breakpoint).With(
-      Rule.Init("label:not(.for-textarea)")
-        .With("text-align", "right")
-        .With(
-          "line-height",
-          `calc((${CT.text.body.Size} * ${CT.text.body.LineHeight}) + (${CT.text.body.Padding.Y} * 2))`
-        )
-    )
+    Rule.Init("label:not(.for-textarea)")
+      .With("text-align", "right", "min-width:" + CT.screen.md.breakpoint)
+      .With(
+        "line-height",
+        `calc((${CT.text.body.Size} * ${CT.text.body.LineHeight}) + (${CT.text.body.Padding.Y} * 2))`,
+        "min-width:" + CT.screen.md.breakpoint
+      )
   )
   .With(
     Rule.Init(".input")

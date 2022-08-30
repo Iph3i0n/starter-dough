@@ -7,14 +7,15 @@ export default class Font extends CssProperty {
     private readonly schema: {
       style?: string;
       variant?: string;
+      line_height?: string;
+      align?: "left" | "right" | "center";
+      decoration?: string;
+
       weight: string;
       size: string;
-      line_height?: string;
       family: string;
       padding: Padding;
-      align?: "left" | "right" | "center";
       tag: string;
-      decoration?: string;
     }
   ) {
     super();

@@ -3,9 +3,9 @@ import { IsString, Optional } from "@paulpopat/safe-type";
 import { IsOneOf } from "Src/utils/Type";
 import { ColourNames, CT, GetColour } from "Src/Theme";
 import Colour from "Src/styles/Colour";
-import Css, { Media, Rule } from "Src/CSS";
+import Css, { Rule } from "Src/CSS";
 import Flex from "Src/styles/Flex";
-import PreactComponent, { FromProps, IsProps } from "Src/BuildComponent";
+import PreactComponent, { FromProps } from "Src/BuildComponent";
 import { useEffect } from "preact/hooks";
 
 const Props = { icon: IsString, bg: Optional(IsOneOf(...ColourNames)) };
@@ -28,22 +28,19 @@ export default class Navbar extends PreactComponent<
       { href: Optional(IsString), id: Optional(IsString) },
       function (props, parent) {
         const colour = parent.Colour;
-        const styles = Css.Init()
-          .With(
-            Rule.Init("a, span")
-              .With("display", "inline-block")
-              .With(CT.text.h6)
-              .With("text-decoration", "none")
-              .With(new Colour([0, 0, 0, 0], colour.Text))
-              .With("cursor", "pointer")
-              .With("user-select", "none")
-              .With(CT.padding.small_block.AsMargin().YOnly())
-          )
-          .With(
-            Media.Init(`min-width`, CT.screen.sm.breakpoint).With(
-              Rule.Init("a, span").With(CT.padding.input)
+        const styles = Css.Init().With(
+          Rule.Init("a, span")
+            .With("display", "inline-block")
+            .With(CT.text.h6)
+            .With("text-decoration", "none")
+            .With(new Colour([0, 0, 0, 0], colour.Text))
+            .With("cursor", "pointer")
+            .With("user-select", "none")
+            .With(CT.padding.small_block.AsMargin().YOnly())
+            .With(
+              CT.padding.input.WithMedia(`min-width`, CT.screen.sm.breakpoint)
             )
-          );
+        );
         if (props.href) {
           return WithStyles(
             <a href={props.href} id={props.id ?? undefined}>
@@ -111,18 +108,21 @@ export default class Navbar extends PreactComponent<
                 new Flex("flex-start", "flex-start", { direction: "column" })
               )
             )
-        )
-        .With(
-          Media.Init(`min-width`, CT.screen.sm.breakpoint).With(
-            Rule.Init(".section")
-              .With(new Flex("center", "flex-start", { direction: "row" }))
-              .With(
-                "modifier",
-                Rule.Init(".right").With(
-                  new Flex("center", "flex-end", { direction: "row" })
+            .With(
+              new Flex("center", "flex-start", { direction: "row" }).WithMedia(
+                `min-width`,
+                CT.screen.sm.breakpoint
+              )
+            )
+            .With(
+              "modifier",
+              Rule.Init(".right").With(
+                new Flex("center", "flex-end", { direction: "row" }).WithMedia(
+                  `min-width`,
+                  CT.screen.sm.breakpoint
                 )
               )
-          )
+            )
         )
     );
   }

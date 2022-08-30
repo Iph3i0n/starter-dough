@@ -1,5 +1,5 @@
 import { CT, Sizes } from "Src/Theme";
-import Css, { Media, Rule } from "Src/CSS";
+import Css, { Rule } from "Src/CSS";
 import Padding from "Src/styles/Padding";
 import Grid from "Src/styles/Grid";
 import WithStyles from "Src/utils/Styles";
@@ -30,37 +30,33 @@ export default class Row extends PreactComponent<typeof Props> {
         align: Optional(IsOneOf("centre", "right", "left")),
       },
       function (props) {
-        let css = Css.Init();
+        let rule = Rule.Init(":host");
 
-        for (const size of Sizes) {
+        for (const size of Sizes)
           if (props[size])
-            css = css.With(
-              Media.Init("min-width", CT.screen[size].breakpoint).With(
-                Rule.Init(":host").With(
-                  new GridLocation(parseInt(props[size] ?? "-1"))
-                )
+            rule = rule.With(
+              new GridLocation(parseInt(props[size] ?? "-1")).WithMedia(
+                "min-width",
+                CT.screen[size].breakpoint
               )
             );
-        }
 
         if (props.centre || props.align)
-          css = css.With(
-            Rule.Init(":host").With(
-              new Flex(
-                props.centre ? "center" : "flex-start",
-                props.align === "centre"
-                  ? "center"
-                  : props.align === "right"
-                  ? "flex-end"
-                  : props.align === "left"
-                  ? "flex-start"
-                  : "stretch",
-                { wrap: true }
-              )
+          rule = rule.With(
+            new Flex(
+              props.centre ? "center" : "flex-start",
+              props.align === "centre"
+                ? "center"
+                : props.align === "right"
+                ? "flex-end"
+                : props.align === "left"
+                ? "flex-start"
+                : "stretch",
+              { wrap: true }
             )
           );
 
-        return WithStyles(<slot />, css);
+        return WithStyles(<slot />, Css.Init().With(rule));
       }
     );
   }

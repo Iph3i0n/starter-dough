@@ -8,7 +8,7 @@ import {
   IsType,
   Optional,
 } from "@paulpopat/safe-type";
-import Css, { Media, Rule } from "Src/CSS";
+import Css, { Rule } from "Src/CSS";
 import WithStyles from "Src/utils/Styles";
 import PreactComponent, { FromProps } from "Src/BuildComponent";
 import Object from "Src/utils/Object";
@@ -95,22 +95,26 @@ export default class Layout extends PreactComponent<typeof Props> {
   protected Render(props: FromProps<typeof Props>) {
     const model = this.Model;
     let css = Css.Init()
-      .With(Rule.Init(":host").With(new Grid(12, "0", 12)).With("height", "100%"))
+      .With(
+        Rule.Init(":host").With(new Grid(12, "0", 12)).With("height", "100%")
+      )
       .With(Rule.Init("div").With(CT.padding.block));
     for (const { name, colour, breakpoints } of model) {
-      if (colour) css = css.With(Rule.Init("." + name).With(GetColour(colour)));
+      let rule = Rule.Init("." + name);
+      if (colour) rule = rule.With(GetColour(colour));
 
       for (const {
         breakpoint,
         dimensions: [left, width, top, height],
       } of breakpoints)
-        css = css.With(
-          Media.Init("min-width", CT.screen[breakpoint].breakpoint).With(
-            Rule.Init("." + name).With(
-              new GridLocation([left, width], [top, height])
-            )
+        rule = rule.With(
+          new GridLocation([left, width], [top, height]).WithMedia(
+            "min-width",
+            CT.screen[breakpoint].breakpoint
           )
         );
+
+      css = css.With(rule);
     }
 
     return WithStyles(
