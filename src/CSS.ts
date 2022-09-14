@@ -27,12 +27,19 @@ export abstract class CssProperty {
   public WithMedia(test: string, value: string) {
     return new ExtendedProperties(this.Properties, `${test}:${value}`);
   }
+
+  public WithProperties(input: CssProperty) {
+    return new ExtendedProperties(
+      [...this.Properties, ...input.Properties],
+      undefined
+    );
+  }
 }
 
 class ExtendedProperties extends CssProperty {
   public constructor(
     private readonly properties: PropertyModel[],
-    private readonly media: string
+    private readonly media: string | undefined
   ) {
     super();
   }

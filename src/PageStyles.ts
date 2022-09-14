@@ -19,7 +19,7 @@ const Render = Debounce(() => {
 });
 
 export function AddChunk(chunk: CssChunk) {
-  Rules = [...Rules, chunk];
+  Rules = [...Rules.filter((c) => c !== chunk), chunk];
   Render();
 }
 

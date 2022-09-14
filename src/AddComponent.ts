@@ -4,6 +4,8 @@ import { AddChunk, RemoveChunk } from "./PageStyles";
 
 const starters = {} as Record<string, ReturnType<typeof Starter>>;
 
+const started_css = Rule.Init("body").With("display", "block !important");
+
 function Starter(
   tag: string,
   init: () => Promise<{ default: new () => PreactComponent<any> }>,
@@ -27,6 +29,7 @@ function Starter(
       try {
         customElements.define(tag, Component);
         RemoveChunk(chunk);
+        AddChunk(started_css);
       } catch {
         console.error(`Attempting to add duplicate tag name ${tag}`);
       }
