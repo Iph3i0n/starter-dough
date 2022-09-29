@@ -25,10 +25,10 @@ export default class Alert extends PreactComponent<typeof Props> {
   }: FromProps<typeof Props>): JSX.Element {
     const [open, set_open] = useState(true);
 
-    if (open) return <></>;
+    if (!open) return <></>;
 
     return WithStyles(
-      <div class="alert">
+      <>
         <div>
           <slot />
         </div>
@@ -37,10 +37,10 @@ export default class Alert extends PreactComponent<typeof Props> {
             <p-icon name="close" size="2rem" colour={colour} text />
           </div>
         )}
-      </div>,
+      </>,
       Css.Init()
         .With(
-          Rule.Init(".alert")
+          Rule.Init(":host")
             .With(GetColour(colour))
             .With(CT.padding.block)
             .With(CT.text.body_large)
