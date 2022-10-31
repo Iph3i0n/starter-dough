@@ -13,7 +13,6 @@ import PreactComponent, { FromProps } from "Src/BuildComponent";
 const Props = {
   colour: IsOneOf(...ColourNames),
   outline: Optional(IsLiteral(true)),
-  href: Optional(IsString),
 };
 
 export default class Submit extends PreactComponent<typeof Props> {

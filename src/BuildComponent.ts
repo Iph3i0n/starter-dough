@@ -49,10 +49,14 @@ export default abstract class PreactComponent<
     }
 
     props = ProcessProps(props);
-    if (!IsObject(this.IsProps)(props, false))
+    if (!IsObject(this.IsProps)(props, false)) {
+      try {
+        console.error(props);
+      } catch {}
       throw new Error(
         "Invalid props for " + this.tagName + " see received above"
       );
+    }
 
     return props as FromProps<TProps>;
   }

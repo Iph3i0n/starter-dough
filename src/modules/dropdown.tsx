@@ -24,9 +24,9 @@ export default class Dropdown extends PreactComponent<typeof Props> {
         props.divider ? (
           <hr />
         ) : (
-          <button type="button">
+          <div>
             <slot />
-          </button>
+          </div>
         ),
         props.divider
           ? Css.Init().With(
@@ -42,7 +42,7 @@ export default class Dropdown extends PreactComponent<typeof Props> {
             )
           : Css.Init()
               .With(
-                Rule.Init("button")
+                Rule.Init("div")
                   .With(CT.padding.block)
                   .With("cursor", "pointer")
                   .With(CT.colours.surface)
@@ -54,7 +54,7 @@ export default class Dropdown extends PreactComponent<typeof Props> {
                   .With("width", "100%")
                   .With("text-align", "left")
               )
-              .With(Rule.Init("button:hover").With(CT.colours.contrast))
+              .With(Rule.Init("div:hover").With(CT.colours.body))
       );
     });
   }

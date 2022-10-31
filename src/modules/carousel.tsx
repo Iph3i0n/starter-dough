@@ -21,7 +21,7 @@ function Circularise(value: number, max: number) {
 
 const Props = { colour: Optional(IsOneOf(...ColourNames)), height: IsString };
 
-export default class Button extends PreactComponent<
+export default class Carousel extends PreactComponent<
   typeof Props,
   { current: number }
 > {

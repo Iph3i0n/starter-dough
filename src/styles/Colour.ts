@@ -164,6 +164,10 @@ export default class Colour extends CssProperty {
     return ToString(this.colour);
   }
 
+  public BackgroundFromText() {
+    return new Colour(this.Text);
+  }
+
   public static TextDark = { r: 0, g: 0, b: 0, a: 1 };
   public static TextLight = { r: 255, g: 255, b: 255, a: 1 };
 }
