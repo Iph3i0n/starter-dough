@@ -7,7 +7,7 @@ export default Css.Init()
     Rule.Init(":host")
       .With("display", "block")
       .With("flex", "1")
-      .With(CT.padding.input)
+      .With(CT.padding.input.YOnly())
   )
   .With(Rule.Init("label").With(CT.text.body).With("display", "block"))
   .With(
