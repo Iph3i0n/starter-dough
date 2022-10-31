@@ -38,7 +38,7 @@ export default class Input extends FormComponent<typeof Props> {
     return WithStyles(
       <p-row flush>
         {!props["no-label"] && (
-          <p-child xs="12" md="3" lg="2" centre align="right">
+          <p-child xs="12" md="3" lg="2" align="right">
             <label for={id}>
               <slot />
             </label>

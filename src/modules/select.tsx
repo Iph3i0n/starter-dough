@@ -39,7 +39,7 @@ export default class Select extends FormComponent<typeof Props> {
     return WithStyles(
       <p-row flush>
         {props.label && (
-          <p-child xs="12" md="3" lg="2" centre align="right">
+          <p-child xs="12" md="3" lg="2" align="right">
             <label for={id}>{props.label}</label>
           </p-child>
         )}
