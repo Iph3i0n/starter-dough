@@ -15,6 +15,7 @@ The package is also on NPM with all of the source available for anyone that want
 Themes are fully configurable (docs to come). There are default options for colours, padding, breakpoints, text variants. They are as follows.
 
 Colours:
+
 - body
 - surface
 - contrast
@@ -26,12 +27,14 @@ Colours:
 - danger
 
 Padding
+
 - block
 - small_block
 - badge
 - input
 
 Text:
+
 - code
 - display_h1
 - display_h2
@@ -50,6 +53,7 @@ Text:
 - small
 
 Breakpoints:
+
 - xs
 - sm
 - md
@@ -110,6 +114,10 @@ Below is a list of the components and their props as well as their children. Som
 - `p-dropdown`
   - props
     - `target` - The ID of the clickable element
+  - `p-child`
+    - `divider` - Boolean (No value)
+    - `href` - String (optional)
+    - `target` - String (optional)
 - `p-headrow`
 - `p-icon`
   - props

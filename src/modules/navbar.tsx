@@ -92,7 +92,11 @@ export default class Navbar extends PreactComponent<
       </nav>,
       Css.Init()
         .With(Rule.Init("nav").With(colour).With(CT.padding.block))
-        .With(Rule.Init(".icon-area").With(new Flex("center", "space-between")))
+        .With(
+          Rule.Init(".icon-area")
+            .With(new Flex("center", "space-between"))
+            .With(CT.padding.block.LeftOnly())
+        )
         .With(
           Rule.Init("img")
             .With("max-height", "3rem")
@@ -104,9 +108,11 @@ export default class Navbar extends PreactComponent<
             .With("flex", "1")
             .With(
               "modifier",
-              Rule.Init(".right").With(
-                new Flex("flex-start", "flex-start", { direction: "column" })
-              )
+              Rule.Init(".right")
+                .With(
+                  new Flex("flex-start", "flex-start", { direction: "column" })
+                )
+                .With(CT.padding.block.RightOnly())
             )
             .With(
               new Flex("center", "flex-start", { direction: "row" }).WithMedia(
