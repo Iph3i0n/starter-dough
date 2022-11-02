@@ -114,6 +114,7 @@ Below is a list of the components and their props as well as their children. Som
 - `p-dropdown`
   - props
     - `target` - The ID of the clickable element
+    - `anchor` - `left` or `right` (optional)
   - `p-child`
     - `divider` - Boolean (No value)
     - `href` - String (optional)
