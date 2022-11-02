@@ -124,9 +124,7 @@ Below is a list of the components and their props as well as their children. Som
     - `help` - Help text (optional)
     - `type` - The input type (e.g. text) (optional)
     - `default` - String (the default value) (optional)
-    - `placeholder` - String (optional)
     - `disabled` - Boolean (No value)
-    - `no-label` - Boolean (No value)
 - `p-layout`
   - props
     - `areas` - The slot names for the areas (comma separated)
@@ -215,7 +213,6 @@ Below is a list of the components and their props as well as their children. Som
     - `help` - String (optional)
     - `default` - String (optional)
     - `disabled` - Boolean (no value)
-    - `no-label` - Boolean (no value)
 - `p-spacer`
   - props
     - `size` - A padding option
@@ -239,9 +236,7 @@ Below is a list of the components and their props as well as their children. Som
     - `name` - String
     - `help` - String (optional)
     - `default` - String (optional)
-    - `placeholder` - String (optional)
     - `disabled` - Boolean (no value)
-    - `no-label` - Boolean (no value)
     - `code` - Boolean (no value)
     - `height` - Css Height (optional)
 - `p-toast`

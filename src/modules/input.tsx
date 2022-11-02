@@ -17,9 +17,7 @@ const Props = {
   help: Optional(IsString),
   type: Optional(IsString),
   default: Optional(IsUnion(IsString, IsBoolean)),
-  placeholder: Optional(IsString),
   disabled: Optional(IsLiteral(true)),
-  "no-label": Optional(IsLiteral(true)),
 };
 
 export default class Input extends FormComponent<typeof Props> {
@@ -36,39 +34,28 @@ export default class Input extends FormComponent<typeof Props> {
     }, [props.default]);
 
     return WithStyles(
-      <p-row flush>
-        {!props["no-label"] && (
-          <p-child xs="12" md="3" lg="2" align="right">
-            <label for={id}>
-              <slot />
-            </label>
-          </p-child>
-        )}
-        <p-child
-          xs="12"
-          md={props["no-label"] ? undefined : "9"}
-          lg={props["no-label"] ? undefined : "10"}
-          centre
-        >
-          <input
-            id={id}
-            type={props.type ?? "text"}
-            name={props.name}
-            class="input"
-            disabled={props.disabled ?? false}
-            value={this.value?.toString()}
-            placeholder={props.placeholder ?? undefined}
-            onChange={(e) => (this.value = e.currentTarget.value)}
-            onKeyPress={(e: KeyboardEvent) => {
-              if (e.key !== "Enter") return;
-              e.preventDefault();
-              this.value = (e.currentTarget as any).value;
-              this.Submit();
-            }}
-          />
-          {props.help && <span class="help-text">{props.help}</span>}
-        </p-child>
-      </p-row>,
+      <>
+        <input
+          id={id}
+          type={props.type ?? "text"}
+          name={props.name}
+          class="input"
+          disabled={props.disabled ?? false}
+          value={this.value?.toString()}
+          onChange={(e) => (this.value = e.currentTarget.value)}
+          onKeyPress={(e: KeyboardEvent) => {
+            if (e.key !== "Enter") return;
+            e.preventDefault();
+            this.value = (e.currentTarget as any).value;
+            this.Submit();
+          }}
+          placeholder=" "
+        />
+        <label for={id}>
+          <slot />
+        </label>
+        {props.help && <span class="help-text">{props.help}</span>}
+      </>,
       InputRules
     );
   }

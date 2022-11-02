@@ -18,9 +18,7 @@ const Props = {
   name: IsString,
   help: Optional(IsString),
   default: Optional(IsUnion(IsString, IsBoolean)),
-  placeholder: Optional(IsString),
   disabled: Optional(IsLiteral(true)),
-  "no-label": Optional(IsLiteral(true)),
   code: Optional(IsLiteral(true)),
   height: Optional(IsString),
 };
@@ -42,30 +40,24 @@ export default class Textarea extends FormComponent<typeof Props> {
       .With("height", props.height ?? "5rem")
       .With("resize", "none");
 
-    if (props.code) rule = rule.With(CT.text.code);
+    if (props.code) rule = rule.With(CT.text.code.WithoutPadding());
 
     return WithStyles(
-      <p-row flush>
-        {!props["no-label"] && (
-          <p-child xs="12">
-            <label for={id} class="for-textarea">
-              <slot />
-            </label>
-          </p-child>
-        )}
-        <p-child xs="12">
-          <textarea
-            id={id}
-            name={props.name}
-            class="input"
-            disabled={props.disabled ?? false}
-            value={this.value?.toString()}
-            placeholder={props.placeholder ?? undefined}
-            onChange={(e) => (this.value = e.currentTarget.value)}
-          />
-          {props.help && <span class="help-text">{props.help}</span>}
-        </p-child>
-      </p-row>,
+      <>
+        <textarea
+          id={id}
+          name={props.name}
+          class="input"
+          disabled={props.disabled ?? false}
+          value={this.value?.toString()}
+          placeholder=" "
+          onChange={(e) => (this.value = e.currentTarget.value)}
+        />
+        <label for={id} class="for-textarea">
+          <slot />
+        </label>
+        {props.help && <span class="help-text">{props.help}</span>}
+      </>,
       InputRules.With(rule)
     );
   }
