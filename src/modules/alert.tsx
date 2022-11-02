@@ -42,9 +42,9 @@ export default class Alert extends PreactComponent<typeof Props> {
         .With(
           Rule.Init(":host")
             .With(GetColour(colour))
-            .With(CT.padding.block)
             .With(CT.text.body_large)
-            .With(new Flex("center", "sspace-between"))
+            .With(CT.padding.input)
+            .With(new Flex("center", "space-between"))
             .With(CT.border.standard)
             .With(CT.box_shadow.large)
         )
